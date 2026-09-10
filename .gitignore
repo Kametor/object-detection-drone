@@ -1,0 +1,25 @@
+# data (large, not committed — see README for how to reconstruct)
+/data/
+*.mp4
+*.avi
+*.mov
+
+# model weights / checkpoints
+*.pt
+*.pth
+*.onnx
+*.engine
+
+# python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# OS
+.DS_Store
+
+# large generated results (plots/tables/logs stay tracked, videos/checkpoints don't)
+results/**/*.mp4
+results/**/*.avi
