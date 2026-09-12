@@ -6,7 +6,16 @@ seed: 42
 
 dedup_threshold: 8.0
 max_gap_seconds: 2.0
-confidence_threshold: 0.3
+# Raised from 0.3 to 0.5 on 2026-09-12: the smoke test's one false
+# positive (likely a runner's shadow, not a duplicate detection) scored
+# 0.47 — 0.5 is the user's deliberate choice to exclude it outright,
+# accepting the risk that genuine hard/small instances (Bluemlisalphutte,
+# DJI_0596) scoring similarly low get excluded too. ByteTrack temporal
+# filtering (a better discriminator for exactly this failure mode, since
+# it wouldn't have this precision/recall trade-off) is deliberately
+# deferred for now; manual review of the full train+val labeling run is
+# the actual backstop for whatever this threshold gets wrong either way.
+confidence_threshold: 0.5
 
 output_dir: results/pseudo_labels
 manifest_dir: results/manifests

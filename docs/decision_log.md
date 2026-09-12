@@ -589,3 +589,26 @@ what the Day 4 quality pipeline's NMS step exists to clean up. Inference
 took ~750ms/frame on the T4, which is acceptable for a one-time labeling
 pass over ~500 frames. Cleared to proceed to labeling all train+val
 videos.
+
+**Follow-up — user re-examined the smoke test result and made a scope
+call:** looking again at the low-confidence (0.47) box's position (offset
+to the side of the second runner, not nested inside their box), the user
+judged it's more likely the runner's **shadow** than a duplicate/fragment
+detection — a sharper read than Claude's first guess. Claude's
+recommendation was to leave `confidence_threshold` alone and rely on the
+already-planned ByteTrack temporal-consistency filter instead, since a
+single-frame confidence score can't distinguish "hard-but-real" (our
+small/occluded instances) from "confidently wrong" (a shadow) — both can
+score similarly low for legitimate-sounding reasons. The user decided
+differently: SAM3's pseudo-labels are too important to the project to
+leave at a permissive threshold right now, ByteTrack isn't being
+implemented at the moment (deprioritized, not ruled out later), and
+manual review of the full train+val labeling run (already about to
+happen) is the actual backstop. `confidence_threshold` raised from 0.3,
+first to 0.4 (Claude's suggested moderate step), then the user pushed
+further to **0.5** — deliberately high enough to exclude the observed
+0.47 shadow outright, explicitly accepting the risk that genuine
+hard/small instances (Bluemlisalphutte, DJI_0596) scoring similarly low
+get excluded too. Revisit after the manual review if this turns out to
+have cut too much real recall, or if shadow-type noise still shows up
+despite the higher bar.
