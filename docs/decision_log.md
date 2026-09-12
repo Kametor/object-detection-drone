@@ -627,3 +627,35 @@ bypassed entirely. So cell 6 was already going to apply 0.5 correctly;
 only the smoke test was misleading. Fixed by having the smoke-test cell
 load the same config and filter with it, so it previews production
 behavior instead of an unrelated default.
+
+## 2026-09-12 — Kernel crash during bulk labeling: leftover GPU memory from the smoke test
+
+**Bug found:** partway through the train+val labeling loop, the Colab
+kernel crashed and auto-restarted (visible in the runtime logs — not a
+normal Python exception, the whole kernel process died). Root cause:
+cell 5's smoke test creates `detector = Sam3Detector(...)`, which loads
+a full SAM3 model onto the GPU and never frees it — that object stays
+resident in the notebook kernel's memory for the rest of the session.
+Cell 6 then spawns a **separate subprocess per video**, each loading its
+own full copy of SAM3 onto the *same physical* T4. Two SAM3 instances
+(one idle in the kernel, one active per subprocess) together exceeded
+the 14.56GB card even though either alone fits comfortably at
+`imgsz=1024`.
+
+**Fix:** cell 6 now starts by explicitly freeing the smoke-test
+detector's GPU memory (`del detector; gc.collect();
+torch.cuda.empty_cache()`) before spawning any labeling subprocess.
+Also made the labeling loop **idempotent** — it now skips any video
+whose `results/pseudo_labels/annotations/<stem>.json` already exists, so
+a crash partway through doesn't require redoing already-completed
+videos (a kernel restart, unlike a full runtime disconnect, typically
+leaves the VM's disk intact — the 50-minute total loss from earlier the
+same day was a full runtime reset, a different failure mode from this
+one).
+
+**Broader lesson:** on free-tier Colab, both failure modes (full runtime
+reset, and in-session kernel crash) are real and distinct risks for a
+long-running GPU loop — persisting progress incrementally (this
+idempotent skip-if-done check) and not letting notebook cells hold GPU
+objects alive longer than needed are both worth doing by default for
+later long-running steps (YOLO26s/RT-DETR training, Day 4-5).

@@ -37,7 +37,7 @@ over polishing any single component.
 is built on; if it's wrong, all of Saturday is wasted.
 
 - [x] Download the Kaggle `kmader/drone-videos` dataset (put it on Drive —
-      Colab Pro will read from there)
+      Colab will read from there)
 - [x] `scripts/01_inventory.py`: extract sample frames from each video at
       regular intervals, record duration/resolution/FPS per video
 - [x] Visual triage: which objects appear repeatedly, is there scale
@@ -148,8 +148,8 @@ perform person-specific detection.)
 - [ ] Produce a result video (if applicable)
 - [ ] `README.md`: setup + run steps, one-command reproducibility
 - [ ] End-to-end verification of the notebook on Colab **free-tier T4** —
-      the delivery environment is what counts, not the dev environment
-      (Pro/L4)
+      this is also the dev environment (see `CLAUDE.md` Section 3), so
+      this step mainly confirms nothing broke after a session reset
 
 **Output:** `README.md`, the delivery notebook under `notebooks/` green on
 T4, result video (if applicable) in `results/`.
