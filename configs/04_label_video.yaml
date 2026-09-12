@@ -22,7 +22,13 @@ model:
   checkpoint: null # sam3: path to approved sam3.pt | yolo_world: e.g. yolov8s-worldv2.pt
   device: cpu
   # Most source video is 4K; the Ultralytics default (640) would shrink a
-  # 40x80px person to ~7x13px before the model ever sees it. Raised to
-  # 1280 — a further fix (SAHI tiling) is a separate, deliberate
-  # experiment on YOLO26s (Tier 1 item 1), not built into this tool.
-  imgsz: 1920
+  # 40x80px person to ~7x13px before the model ever sees it, so we raise
+  # this — but not too far. SAM3 is ViT-based, so its self-attention
+  # memory cost grows quadratically with imgsz: 1920 (-> 1932 after
+  # stride rounding) OOM'd on a 14.56GB T4 wanting 10.81GB for one
+  # attention op (confirmed 2026-09-12, real Colab run). 1024 is a safe
+  # middle ground — still better than 640, comfortably fits a T4. A more
+  # thorough fix for small objects (SAHI tiling) is a separate,
+  # deliberate experiment on YOLO26s (Tier 1 item 1), not built into this
+  # tool.
+  imgsz: 1024

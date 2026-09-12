@@ -544,3 +544,37 @@ as a GitHub collaborator) rather than needing to be public by default.
 regardless — a reviewer with repo access just needs to point
 `DRIVE_VIDEO_DIR` at their own video. Revisit only if a reviewer actually
 asks and hits friction.
+
+## 2026-09-12 — SAM3 imgsz corrected from 1920 to 1024 after a real OOM
+
+**Decision/correction:** the smoke test in `notebooks/01_sam3_autolabel.ipynb`
+was run for real on a T4 (14.56GB) and hit `CUDA out of memory` — a single
+attention operation wanted 10.81GB at `imgsz=1920` (rounded to 1932 for
+SAM3's stride-14 patch grid). `imgsz` was lowered to 1024 for both
+`Sam3Detector` and `YoloWorldDetector` (`configs/04_label_video.yaml`,
+`src/methods/sam3_zeroshot/model.py`).
+
+**Root cause:** SAM3 is ViT-based; self-attention cost scales
+quadratically with the number of image patches, i.e. roughly with
+`imgsz^2`. This was missed on 2026-09-12 when `imgsz` was first raised
+from 640 to 1280 and then to 1920 — that reasoning (more resolution
+preserves small objects, T4 "should" handle it) only accounted for
+compute/detail trade-offs, not attention memory, and was never actually
+verified against a real GPU before this point (both detectors were
+explicitly flagged as "not smoke-tested yet"). `YoloWorldDetector` (a CNN)
+is not subject to the same quadratic blowup, but its default was also
+kept at 1024 for now since it hasn't been tested above that value in this
+project either — raising it later is a reasonable thing to try, just not
+assumed safe without checking.
+
+**Outcome:** 1024 is a middle ground — still meaningfully better than
+Ultralytics' default 640 for our mostly-4K source video (per the earlier
+2026-09-12 entry), while comfortably fitting a T4. The smoke test was
+re-run after this fix; see the notebook run for the actual result.
+
+**Lesson for this project:** two docstrings had said "not smoke-tested
+yet, verify before trusting at scale" and were right to hedge — the
+untested assumption inside them (1920 is a safe default) turned out
+wrong on the very first real run. Worth remembering before raising
+resolution/batch-size defaults on other GPU-bound methods (RT-DETR,
+ConvNeXt+CenterNet) later without an equivalent real check.

@@ -49,7 +49,7 @@ def config_hash(config: dict) -> str:
 
 def build_detector(model_config: dict):
     name = model_config["name"]
-    imgsz = model_config.get("imgsz", 1920)
+    imgsz = model_config.get("imgsz", 1024)
     if name == "mock":
         return MockDetector()
     if name == "sam3":

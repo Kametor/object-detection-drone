@@ -37,14 +37,17 @@ class Sam3Detector:
     `checkpoint`. Do this as early as possible — don't wait until this
     class is actually needed (Day 3-4) to discover approval is slow.
 
-    Not smoke-tested yet (no GPU locally) — run it once on a single real
-    frame on Colab before trusting it at scale; the exact `set_image`/
-    `predictor(text=...)` call shape may need a small adjustment against
-    whatever `ultralytics` version actually installs.
+    Smoke-tested 2026-09-12 on a real T4: `set_image`/`predictor(text=...)`
+    call shape works as written.
 
-    `imgsz` default raised to 1920 for the same reason as `YoloWorldDetector`
-    below — most source video is 4K and the default 640 would shrink small
-    people below what the network can represent.
+    `imgsz` default is 1024, not higher — SAM3 is ViT-based, so its
+    self-attention memory cost grows quadratically with resolution.
+    imgsz=1920 (rounded to 1932 for stride alignment) OOM'd on a 14.56GB
+    T4, wanting 10.81GB for a single attention op. 1024 is a safe middle
+    ground: still better than the Ultralytics default (640) for our
+    mostly-4K source video, without blowing GPU memory. Unlike
+    `YoloWorldDetector` (a CNN, much cheaper per pixel), don't casually
+    raise this without checking available VRAM first.
     """
 
     def __init__(
@@ -52,7 +55,7 @@ class Sam3Detector:
         checkpoint: str = "sam3.pt",
         device: str = "cuda",
         conf: float = 0.25,
-        imgsz: int = 1920,
+        imgsz: int = 1024,
     ) -> None:
         from ultralytics.models.sam import SAM3SemanticPredictor
 
@@ -93,21 +96,21 @@ class YoloWorldDetector:
     `model.predict(image)` against the installed `ultralytics` version on
     Colab before trusting it at scale.
 
-    `imgsz` matters a lot here: most of our source video is 4K
-    (3840x2160), and Ultralytics' default inference size (640) would
-    shrink it by ~6x before the model ever sees it — a 40x80px person
-    becomes ~7x13px, likely below what the network can represent at all.
-    Default raised to 1920 (2026-09-12) for this reason; a more thorough
-    fix (SAHI-style tiled inference) is deferred to the dedicated
-    YOLO26s+SAHI experiment (Tier 1, item 1) rather than built into this
-    generic labeling tool.
+    `imgsz` matters here too, though less riskily than for `Sam3Detector`
+    above — YOLO-World is CNN-based, not ViT/attention-based, so its
+    memory cost scales far more gently with resolution. Default kept at
+    1024 to match `Sam3Detector` for now (both untested above that on a
+    T4 in this project) rather than assumed-safe at something higher; a
+    more thorough small-object fix (SAHI-style tiled inference) is
+    deferred to the dedicated YOLO26s+SAHI experiment (Tier 1, item 1)
+    rather than built into this generic labeling tool.
     """
 
     def __init__(
         self,
         checkpoint: str = "yolov8s-worldv2.pt",
         conf: float = 0.25,
-        imgsz: int = 1920,
+        imgsz: int = 1024,
     ) -> None:
         from ultralytics import YOLOWorld
 
