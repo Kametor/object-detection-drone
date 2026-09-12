@@ -59,28 +59,36 @@ is built on; if it's wrong, all of Saturday is wasted.
 - [x] Gold test set: manually label ~100-200 frames (CVAT). Done —
       151 frames, 541 `person` boxes, `data/gold_test/annotations.json`.
       Never touched by SAM3/YOLO-World.
-- [ ] YOLO26s zero-shot COCO-pretrained sanity check: run on the gold test
-      set to measure the domain gap (nadir view, small objects), as a
-      measuring stick, not a contender
-- [ ] Score it on the gold test set for the first time (not final yet)
+- [x] YOLO26n zero-shot COCO-pretrained sanity check: run on the gold test
+      set (locally, CPU — nano is CNN-based, no GPU needed) to measure the
+      domain gap. Done: mAP@0.5 0.546 overall, but 0.007 on small objects
+      vs. 0.669 on large — domain gap confirmed with numbers, not just
+      visual impression. See `docs/decision_log.md` 2026-09-13.
+- [x] Scored on the gold test set — `results/eval/yolo26n_zeroshot/`,
+      `results/eval/comparison.csv` (first row of the running cross-method
+      table).
 
 **Output:** `data/splits/{train,val,test}.txt` (video lists) — done,
-`data/gold_test/` labeled set, first zero-shot YOLO26s results in
-`results/yolo26s_zeroshot/`.
+`data/gold_test/` labeled set — done, zero-shot YOLO26n results in
+`results/yolo26_zeroshot/` and `results/eval/yolo26n_zeroshot/` — done.
 
 ## Day 3 — Sunday: SAM3 setup and the evaluation infrastructure
 
-- [ ] Set up SAM3 (fall back to YOLO-World) for two roles: (a) the labeling tool
-      that will pseudo-label train+val, and (b) a zero-shot foundation-model
-      detector prompted with "person", benchmarked on the test set (Tier 1,
-      item 3 — this is what satisfies the "genuinely different alternative"
-      grading criterion, see `docs/decision_log.md` 2026-09-12)
-- [ ] `src/eval/`: mAP@0.5, mAP@0.5:0.95, PR curve, breakdown by size
-      (small/medium/large), TIDE error decomposition
+- [ ] Set up SAM3 (fall back to YOLO-World) for its second role: a
+      zero-shot foundation-model detector prompted with "person",
+      benchmarked on the test set (Tier 1, item 3 — this is what satisfies
+      the "genuinely different alternative" grading criterion, see
+      `docs/decision_log.md` 2026-09-12). Blocked on free-tier Colab GPU
+      quota resetting (2026-09-12 entry) — SAM3's labeling role (train+val)
+      is already done.
+- [x] `src/eval/`: mAP@0.5, mAP@0.5:0.95, breakdown by size
+      (small/medium/large), per-video breakdown — done
+      (`src/eval/metrics.py`, `scripts/06_evaluate.py`, reusable for every
+      method). Still open: PR curve plot, TIDE error decomposition.
 - [ ] **No comparison at a fixed score threshold** — motion energy, class
       confidence, and text-image similarity are not on the same scale
-- [ ] First two-way quantitative table for YOLO26s zero-shot and SAM3
-      zero-shot
+- [ ] First two-way quantitative table for YOLO26 zero-shot and SAM3
+      zero-shot (YOLO26 half already in `results/eval/comparison.csv`)
 
 **Output:** `src/methods/sam3_zeroshot/`, `src/eval/metrics.py`,
 `results/comparison_v1/` (first 2-method table + PR curves).
