@@ -1,0 +1,29 @@
+seed: 42
+
+# Scoped 2026-09-12 to the test split ONLY. Train/val/background are now
+# extracted+labeled together by scripts/04_label_video.py (see
+# src/methods/sam3_zeroshot/pipeline.py), which calls the same
+# sample_diverse_frames() function internally. This script's remaining job
+# is producing the gold-set frames for manual CVAT labeling — no detector
+# is ever imported here, so the test split structurally cannot be touched
+# by SAM3 (Non-negotiable rule 2).
+
+raw_video_dir: data/raw/drone_videos
+splits_dir: data/splits
+output_dir: data/processed/frames
+manifest_dir: results/manifests
+
+# Per-split sampling parameters.
+# fps: baseline candidate sampling rate (frames per second of video time)
+# dedup_threshold: mean abs pixel difference (0-255, on a downsized grayscale
+#   copy) below which a candidate frame is considered a near-duplicate of the
+#   last KEPT frame and is skipped
+# max_gap_seconds: force-keep a frame even if it looks like a near-duplicate,
+#   so temporal coverage never has a gap longer than this
+splits:
+  test:
+    fps: 3.0
+    dedup_threshold: 8.0
+    max_gap_seconds: 2.0
+
+jpeg_quality: 90

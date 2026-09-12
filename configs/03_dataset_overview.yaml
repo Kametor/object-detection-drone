@@ -1,0 +1,7 @@
+seed: 42
+
+inventory_csv: results/inventory/video_inventory.csv
+notes_csv: docs/video_notes.csv
+splits_dir: data/splits
+output_dir: results/dataset_overview
+manifest_dir: results/manifests

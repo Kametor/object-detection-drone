@@ -1,0 +1,15 @@
+{
+  "script": "02_sample_frames.py",
+  "config_path": "configs/02_sample_frames.yaml",
+  "config_hash": "02d40b6cfdea",
+  "seed": 42,
+  "git_sha": "dd7f7925e106b276577ff65d2b5b576beaef6e03",
+  "timestamp": "2026-09-11T21:19:47.739351+00:00",
+  "total_frames": 567,
+  "frames_per_split": {
+    "train": 274,
+    "val": 54,
+    "test": 128,
+    "background": 111
+  }
+}

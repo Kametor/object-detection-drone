@@ -3,6 +3,7 @@
 *.mp4
 *.avi
 *.mov
+*.zip
 
 # model weights / checkpoints
 *.pt

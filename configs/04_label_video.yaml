@@ -1,0 +1,28 @@
+seed: 42
+
+# --video, --prompt and --fps are supplied on the command line (these are
+# exactly the three inputs a reviewer enters for their own uploaded video).
+# Everything else defaults from here and can be overridden with flags.
+
+dedup_threshold: 8.0
+max_gap_seconds: 2.0
+confidence_threshold: 0.3
+
+output_dir: results/pseudo_labels
+manifest_dir: results/manifests
+jpeg_quality: 90
+
+# Guard: refuse to run on a video listed in data/splits/test.txt unless
+# --force is passed. Set splits_dir to "" to disable the check entirely
+# (e.g. for a reviewer's video that was never part of our own dataset).
+splits_dir: data/splits
+
+model:
+  name: mock # mock (local, no GPU) | sam3 (Colab, gated weights) | yolo_world (Colab, fallback)
+  checkpoint: null # sam3: path to approved sam3.pt | yolo_world: e.g. yolov8s-worldv2.pt
+  device: cpu
+  # Most source video is 4K; the Ultralytics default (640) would shrink a
+  # 40x80px person to ~7x13px before the model ever sees it. Raised to
+  # 1280 — a further fix (SAHI tiling) is a separate, deliberate
+  # experiment on YOLO26s (Tier 1 item 1), not built into this tool.
+  imgsz: 1920
