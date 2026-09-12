@@ -659,3 +659,15 @@ long-running GPU loop — persisting progress incrementally (this
 idempotent skip-if-done check) and not letting notebook cells hold GPU
 objects alive longer than needed are both worth doing by default for
 later long-running steps (YOLO26s/RT-DETR training, Day 4-5).
+
+**Follow-up — cell 8 (push results) fixed to be self-sufficient:** the
+first real run of cell 8 needed manual intervention it didn't originally
+account for: a 403 (token lacked `repo` scope — resolved by generating a
+new classic token with that scope) followed by a rejected push (this
+repo was also being pushed to directly from the local machine while the
+Colab run was in progress, so `origin/main` had moved on — resolved with
+`git pull origin main --no-edit --no-rebase` before pushing). Cell 8 now
+includes that pull step by default, so a future run doesn't need the
+same manual fix — merge (not rebase) is safe here because this cell only
+ever touches files under `results/`, which nothing else in the project
+touches, so there's never a real conflict to resolve.
