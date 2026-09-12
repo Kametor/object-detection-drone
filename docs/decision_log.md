@@ -525,3 +525,22 @@ YOLO26s and before RT-DETR anyway. Confirmed execution order: 1 -> 1b -> 2
 
 **Affected files:** `CLAUDE.md` (Section 6 — item 1b added, item 5
 repurposed, execution order note added).
+
+## 2026-09-12 — Reviewer self-testing: no separate demo notebook needed
+
+**Decision:** considered building a second, minimal "reviewer demo"
+notebook (public repo, defaulting to YOLO-World instead of SAM3, a
+Colab file-upload widget instead of Drive) so a reviewer could test the
+pipeline end-to-end without needing our credentials. Decided against it
+as unnecessary scope for now.
+
+**Rationale:** the concerns motivating it turned out to be low-risk in
+practice — the user's own SAM3 access approval came back in minutes (the
+16-day cases found earlier appear to be outliers, not the norm), the
+source footage is a public Kaggle dataset so there's no sensitivity in
+sharing it, and repo access can be granted on request (add the reviewer
+as a GitHub collaborator) rather than needing to be public by default.
+`scripts/04_label_video.py` is already generic (`--video --prompt --fps`)
+regardless — a reviewer with repo access just needs to point
+`DRIVE_VIDEO_DIR` at their own video. Revisit only if a reviewer actually
+asks and hits friction.
