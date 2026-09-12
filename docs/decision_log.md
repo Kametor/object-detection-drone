@@ -671,3 +671,30 @@ includes that pull step by default, so a future run doesn't need the
 same manual fix — merge (not rebase) is safe here because this cell only
 ever touches files under `results/`, which nothing else in the project
 touches, so there's never a real conflict to resolve.
+
+## 2026-09-12 — Gold test set complete: 151 frames, 541 `person` boxes
+
+**Milestone:** the user manually labeled all 151 gold test frames in
+CVAT (Track mode, per-frame boxes) and exported as COCO. Per-video
+counts: Bluemlisalphutte 42, DJI_0501 50, DJI_0596 93, DJI_0862 356 —
+541 total. Saved to `data/gold_test/annotations.json`. This set was
+never touched by SAM3 or YOLO-World at any point (Non-negotiable rule 2)
+— it's the independent ground truth every method (YOLO26s, RT-DETR, SAM3
+zero-shot, ConvNeXt+CenterNet, etc.) will be scored against.
+
+**`.gitignore` correction:** while tracking this file, discovered the
+`!/data/splits/` negation pattern added 2026-09-12 never actually
+worked — `git check-ignore` confirmed a *new* untracked file under
+`data/splits/` still matches the blanket `/data/` rule; the earlier test
+that seemed to show it working was checking an *already-tracked* file,
+and git simply stops applying `.gitignore` to paths already in the
+index (a different mechanism, misread as the negation succeeding). Fixed
+the comment to describe the real mechanism (`git add -f`) and used it
+for `data/gold_test/annotations.json` too.
+
+**Day 2's remaining task list is now fully done.** Next SAM3-related
+step (Tier 1, item 3 — zero-shot benchmark on this same test set) is
+blocked on free-tier Colab GPU quota resetting (see the environment
+correction entry above); non-GPU work continues in the meantime
+(pseudo-label quality filtering, noise-rate audit on the SAM3 train/val
+output).

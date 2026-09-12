@@ -56,8 +56,9 @@ is built on; if it's wrong, all of Saturday is wasted.
 - [x] `scripts/02_sample_frames.py`: temporal-diversity-aware frame
       sampling (near-duplicates dropped), **video-level** train/val/test
       split (never frame-level — see README → Project rules)
-- [ ] Gold test set: manually label ~100-200 frames (CVAT/Roboflow/LabelImg).
-      This set never enters any pseudo-labeling pipeline
+- [x] Gold test set: manually label ~100-200 frames (CVAT). Done —
+      151 frames, 541 `person` boxes, `data/gold_test/annotations.json`.
+      Never touched by SAM3/YOLO-World.
 - [ ] YOLO26s zero-shot COCO-pretrained sanity check: run on the gold test
       set to measure the domain gap (nadir view, small objects), as a
       measuring stick, not a contender
