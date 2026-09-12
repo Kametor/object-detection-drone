@@ -1,0 +1,13 @@
+seed: 42
+
+gt_path: data/gold_test/annotations.json
+# Operating point for precision/recall/F1 — distinct from mAP, which
+# sweeps confidence internally. NOT used to compare methods against each
+# other at a fixed score (motion energy / class confidence / text-image
+# similarity aren't on the same scale — CLAUDE.md Section 7) — only to
+# describe one method's own deployment behavior.
+operating_point_confidence: 0.25
+iou_threshold: 0.5
+
+output_dir: results/eval
+manifest_dir: results/manifests

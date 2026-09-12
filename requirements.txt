@@ -1,7 +1,8 @@
 opencv-python>=4.9
 numpy>=1.26
 pyyaml>=6.0
+pycocotools>=2.0
 
-# Colab-only (GPU): SAM3 / YOLO-World labeling and zero-shot detection,
-# YOLO26s training. Not needed for local (M1) data-prep/labeling work.
+# ultralytics runs both locally (CPU: YOLO26n zero-shot, small/nano
+# inference) and on Colab (GPU: SAM3/YOLO-World labeling, model training).
 ultralytics>=8.3.237

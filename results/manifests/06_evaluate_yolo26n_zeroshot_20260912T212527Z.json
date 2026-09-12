@@ -1,0 +1,11 @@
+{
+  "script": "06_evaluate.py",
+  "method_name": "yolo26n_zeroshot",
+  "predictions_path": "results/yolo26_zeroshot/predictions.json",
+  "gt_path": "data/gold_test/annotations.json",
+  "config_path": "configs/06_evaluate.yaml",
+  "config_hash": "ebc5d27dd103",
+  "seed": 42,
+  "git_sha": "67b4a116852c6d330e417498ffdcce872b44a5a2",
+  "timestamp": "2026-09-12T21:25:27.158771+00:00"
+}

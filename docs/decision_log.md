@@ -698,3 +698,85 @@ blocked on free-tier Colab GPU quota resetting (see the environment
 correction entry above); non-GPU work continues in the meantime
 (pseudo-label quality filtering, noise-rate audit on the SAM3 train/val
 output).
+
+## 2026-09-13 — YOLO26n zero-shot baseline: first complete method, run entirely on CPU
+
+**Decision:** started Tier 1 item 1 with the simplest possible version
+first — the zero-shot COCO-pretrained sanity check already planned as
+its first sub-step — rather than jumping straight to pseudo-label
+training. User's specific choices, each with a stated reason:
+- **`imgsz=1920`** (long side; ~1920x1080 given our 16:9 test videos) —
+  people are very small in nadir/aerial frames; the Ultralytics default
+  (640) would shrink them far below what any backbone can represent.
+- **YOLO26-nano specifically** — a larger `imgsz` costs more compute
+  per image, so the smallest/fastest variant was chosen to keep total
+  inference time reasonable.
+- **Zero-shot first, no training** — COCO already includes "person";
+  measure the out-of-the-box domain gap before spending any effort on
+  pseudo-label training.
+
+**Why this ran locally on the M1, not Colab:** unlike SAM3 (ViT-based,
+quadratic attention memory), YOLO is a CNN — memory/compute scale far
+more gently with resolution, and the nano variant is CPU-optimized by
+design (confirmed via Ultralytics' own docs: "43% faster CPU inference
+than YOLO11n"). This is genuine CPU-only inference, not a GPU workaround
+— consistent with `CLAUDE.md` Section 3's "lightweight, non-GPU steps
+only" scope for local work, and useful right now since Colab's free-tier
+GPU quota is exhausted for the day (see the environment entry above).
+Confirmed in practice: 151 frames, 52.6s total (0.35s/frame) on the M1
+CPU.
+
+**Built `src/eval/metrics.py`** using `pycocotools` (the standard tool)
+rather than a hand-rolled mAP implementation — `evaluate()` for overall
+mAP + COCO's built-in small/medium/large size breakdown,
+`evaluate_per_video()` for the video/condition breakdown Section 7
+requires (reusing the same file_name convention
+`<video>__frame_XXXXXX.jpg` established for the pseudo-labels), and a
+custom `precision_recall_f1()` for a single stated operating point
+(mAP itself sweeps confidence internally, so a separate greedy
+IoU-matching function was needed for this). `scripts/06_evaluate.py` is
+built to be reused for every future method (SAM3 zero-shot, trained
+YOLO26s, RT-DETR, ...) against the same gold set — it appends a row to
+`results/eval/comparison.csv` per method, so the cross-method table
+builds up automatically rather than being written by hand (Rule 5).
+
+**Result — the domain gap, now with numbers, not just visual
+impression:**
+
+| Metric | Value |
+|---|---|
+| mAP@0.5 (overall) | 0.546 |
+| mAP@[.5:.95] (overall) | 0.364 |
+| **mAP@0.5, small objects** | **0.007** |
+| mAP@0.5, medium objects | 0.316 |
+| mAP@0.5, large objects | 0.669 |
+| Precision @ conf=0.25 | 0.799 |
+| Recall @ conf=0.25 | 0.580 |
+
+Per-video mAP@0.5: Bluemlisalphutte 0.0, DJI_0596 0.052, DJI_0501 0.226,
+DJI_0862 0.8.
+
+**Qualitative confirmation, inspected directly in the review images:**
+- **DJI_0862** performs well (0.8 mAP@0.5) because this particular
+  frame/segment turns out to be a **ground-level shot** (a person's shoe
+  fills the foreground), not a nadir aerial angle — an ordinary COCO-like
+  viewing angle, which is exactly where a COCO-pretrained detector is
+  expected to do well. This nuances the earlier target-selection note
+  that called DJI_0862 "good size despite low-contrast terrain" — the
+  size is fine partly *because* this isn't a hard aerial angle.
+- **Bluemlisalphutte** (mAP@0.5 = 0.0): zero true detections, and one
+  confident (0.61) false positive on a **patch of snow**, mistaken for a
+  person from altitude.
+- **DJI_0596** (mAP@0.5 = 0.052): zero detections of the real people
+  visible on the ship's deck — too few pixels for the nano backbone to
+  represent at all, regardless of confidence threshold.
+
+Both failure cases were predicted in `docs/00_target_selection.md`
+("expected small-object failure case") before any model was run — this
+is now measured, not just anticipated, and gives concrete
+failure-case material for the presentation's error-analysis section.
+
+**Status:** Tier 1 item 1's zero-shot sub-step is complete with full
+metrics. Next for this item: SAM3 zero-shot benchmark (same eval script,
+once Colab GPU quota returns), then pseudo-label quality filtering +
+noise audit, then actually training YOLO26s on the pseudo-labels.

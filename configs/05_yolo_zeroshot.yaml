@@ -1,0 +1,13 @@
+seed: 42
+
+frames_dir: data/processed/frames/test
+checkpoint: yolo26n.pt
+conf: 0.25
+# Source video is 16:9; imgsz=1920 (long side) gives ~1920x1080 content.
+# CNN-based (unlike SAM3's ViT), so this is much cheaper memory-wise —
+# still confirm actual CPU inference time is reasonable on first run.
+imgsz: 1920
+
+output_dir: results/yolo26_zeroshot
+manifest_dir: results/manifests
+jpeg_quality: 90

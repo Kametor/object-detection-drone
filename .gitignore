@@ -37,8 +37,8 @@ venv/
 results/**/*.mp4
 results/**/*.avi
 
-# regenerable image dumps from the auto-labeling pipeline (bulky; the COCO
-# annotations + manifests are the tracked deliverable, not the images —
-# regenerate with scripts/04_label_video.py)
+# regenerable review-image dumps from any method's eval/labeling run
+# (bulky; the JSON predictions/annotations + manifests are the tracked
+# deliverable, not the images — regenerate by rerunning the method)
 results/pseudo_labels/frames/
-results/pseudo_labels/review/
+results/**/review/
