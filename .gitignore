@@ -1,5 +1,10 @@
 # data (large, not committed — see README for how to reconstruct)
 /data/
+# ...except the split lists themselves: small text files, not "data" in
+# the large/regenerable sense — they ARE a reproducibility artifact
+# (which videos are train/val/test/background) and must be tracked.
+!/data/splits/
+!/data/splits/*.txt
 *.mp4
 *.avi
 *.mov
