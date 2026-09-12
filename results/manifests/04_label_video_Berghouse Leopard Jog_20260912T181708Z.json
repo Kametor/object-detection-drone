@@ -1,0 +1,13 @@
+{
+  "script": "04_label_video.py",
+  "video": "data/raw/drone_videos/Berghouse Leopard Jog.mp4",
+  "prompt": "person",
+  "fps": 3.0,
+  "config_path": "configs/04_label_video.yaml",
+  "config_hash": "e15e621ff60a",
+  "seed": 42,
+  "git_sha": "b7553739729ddc17aa5d25e91a31082da0446dbd",
+  "timestamp": "2026-09-12T18:17:08.372671+00:00",
+  "num_frames": 113,
+  "num_boxes": 220
+}
