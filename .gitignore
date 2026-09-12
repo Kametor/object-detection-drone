@@ -1,10 +1,17 @@
 # data (large, not committed — see README for how to reconstruct)
 /data/
-# ...except the split lists themselves: small text files, not "data" in
-# the large/regenerable sense — they ARE a reproducibility artifact
-# (which videos are train/val/test/background) and must be tracked.
-!/data/splits/
-!/data/splits/*.txt
+# Two exceptions live under /data/ despite the rule above:
+#   data/splits/*.txt        — which videos are train/val/test/background
+#   data/gold_test/annotations.json — the human-labeled gold ground truth
+# Both are small, essential reproducibility artifacts, not "data" in the
+# large/regenerable sense this rule is for. NOTE (corrected 2026-09-12):
+# `!` negation patterns do NOT un-ignore a path under an already-ignored
+# parent directory in this git version — confirmed by testing, despite
+# looking like it worked once a file was already tracked (git stops
+# applying .gitignore to a path the moment it's tracked, which is a
+# different mechanism and misled the first version of this comment).
+# The actual fix is `git add -f` when adding these two file patterns —
+# there is no way to make plain .gitignore rules do this cleanly here.
 *.mp4
 *.avi
 *.mov
