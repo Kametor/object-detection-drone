@@ -780,3 +780,91 @@ failure-case material for the presentation's error-analysis section.
 metrics. Next for this item: SAM3 zero-shot benchmark (same eval script,
 once Colab GPU quota returns), then pseudo-label quality filtering +
 noise audit, then actually training YOLO26s on the pseudo-labels.
+
+## 2026-09-13 — ⚠️ Size-diversity swap (Berghouse ↔ Bluemlisalphutte), with a KNOWN Rule 2 deviation on Berghouse's test labels
+
+**Decision:** the user noticed train had no small/hard-scale `person`
+instances — both Berghouse Leopard Jog and Surenen Pass Trail Running
+(the only two train videos with clearly-visible, large runners) meant
+train was entirely "easy" scale, while test carried all the size
+diversity. Swapped one video each way:
+
+- **Berghouse Leopard Jog: train → test**
+- **Bluemlisalphutte Flyover: test → train**
+
+(Surenen stays in train as its one remaining "easy" example; DJI_0596
+stays in test as its one remaining "hard/small" example — chosen
+specifically to avoid emptying either set of that condition entirely.)
+
+**⚠️ Rule 2 deviation — flagged loudly, overridden by the user anyway:**
+Claude explicitly raised that the clean way to do this swap requires (a)
+manually labeling Berghouse in CVAT for its new test role, and (b)
+re-running SAM3 on Bluemlisalphutte for its new train role — and that
+skipping both breaks Non-negotiable Rule 2 (no model output in ground
+truth) for Berghouse specifically. The user overrode this, citing time
+pressure and having personally reviewed SAM3's output on Berghouse as
+close enough to manual labeling. **What actually happened, spelled out
+so this is never mistaken for a clean gold set later:**
+
+- **Berghouse's "test" ground truth in `data/gold_test/annotations.json`
+  is NOT human-labeled.** It's Berghouse's own SAM3 pseudo-labels
+  (previously generated when it was a train video), copied in verbatim
+  and merged into the gold set, each annotation tagged
+  `"source": "SAM3_pseudo_label_reused_as_gt"` for traceability. 113
+  images, 220 boxes.
+- **Bluemlisalphutte's train "pseudo-labels" in
+  `results/pseudo_labels/annotations/Bluemlisalphutte Flyover.json` are
+  NOT from SAM3.** They're Bluemlisalphutte's actual human/CVAT labels
+  (previously its gold-test ground truth), copied verbatim and reused as
+  if SAM3 had produced them, tagged
+  `"source": "human_CVAT_label_reused_as_pseudo_label"` per annotation.
+  68 images, 42 boxes.
+
+**Why this matters (restated for whoever writes the final report):** any
+method whose output resembles SAM3 — SAM3 itself if benchmarked
+zero-shot, and any pseudo-label-trained student (YOLO26s, RT-DETR,
+ConvNeXt+CenterNet) — will score artificially well on Berghouse
+specifically, because its "ground truth" is close to a copy of what
+those methods are expected to produce. **The Berghouse row of the
+per-video breakdown table must be reported with this caveat, not as a
+clean result**, or presented alongside the other three test videos
+without qualification. Conversely, Bluemlisalphutte no longer tests
+whether pseudo-label self-training actually works on a hard/small case —
+its train "pseudo-labels" are secretly perfect, so if a student does
+well on Bluemlisalphutte-like frames later, that can't be credited to
+pseudo-labeling being robust on small objects.
+
+**Mitigations applied without spending real time:** frames were
+relocated to match each video's new role (`data/processed/frames/test/`
+for Berghouse, `results/pseudo_labels/frames/` for Bluemlisalphutte);
+`data/splits/{train,test}.txt` updated; the stale Bluemlisalphutte test
+predictions/frames were removed rather than left to confuse a later run.
+YOLO26n zero-shot was re-evaluated against the corrected gold set (see
+below) so at least that result isn't stale — this doesn't fix the
+labeling shortcut, it just keeps everything else internally consistent
+with the new split.
+
+**Updated YOLO26n zero-shot result (was already correct for size,
+independent of this shortcut, but the test set composition changed):**
+
+| Metric | Before swap | After swap |
+|---|---|---|
+| mAP@0.5 (overall) | 0.546 | 0.694 |
+| mAP@0.5, small | 0.007 | 0.018 |
+| mAP@0.5, large | 0.669 | 0.680 |
+| Precision @ conf=0.25 | 0.799 | 0.855 |
+| Recall @ conf=0.25 | 0.580 | 0.727 |
+
+Per-video mAP@0.5 now: Berghouse 0.935 (independent result — YOLO26n is
+not SAM3-derived, so this particular number is NOT compromised by the
+labeling shortcut above), DJI_0862 0.8, DJI_0501 0.226, DJI_0596 0.052.
+Overall numbers rose mainly because an easy video (Berghouse) replaced a
+near-impossible one (Bluemlisalphutte) in the test pool — a reminder that
+this is a small (4-video) test set where swapping one video visibly
+moves the aggregate; the per-video breakdown remains the more meaningful
+read than the overall average.
+
+**If time remains (explicit user statement, recorded verbatim intent):**
+label Berghouse manually in CVAT and re-run SAM3 on Bluemlisalphutte to
+retire this deviation properly. Until then, every table/slide using
+Berghouse's test numbers must carry this caveat.

@@ -1,0 +1,11 @@
+{
+  "script": "05_yolo_zeroshot_eval.py",
+  "config_path": "configs/05_yolo_zeroshot.yaml",
+  "config_hash": "33494921a128",
+  "seed": 42,
+  "git_sha": "c2f49bfab03ee954688d7828ba91278468029602",
+  "timestamp": "2026-09-12T21:50:29.947603+00:00",
+  "num_frames": 196,
+  "num_boxes": 612,
+  "elapsed_seconds": 62.2
+}

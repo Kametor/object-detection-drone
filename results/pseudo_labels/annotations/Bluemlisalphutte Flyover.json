@@ -1,0 +1,1186 @@
+{
+  "images": [
+    {
+      "id": 1,
+      "file_name": "Bluemlisalphutte Flyover/frame_000000.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 0
+    },
+    {
+      "id": 2,
+      "file_name": "Bluemlisalphutte Flyover/frame_000060.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 60
+    },
+    {
+      "id": 3,
+      "file_name": "Bluemlisalphutte Flyover/frame_000080.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 80
+    },
+    {
+      "id": 4,
+      "file_name": "Bluemlisalphutte Flyover/frame_000090.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 90
+    },
+    {
+      "id": 5,
+      "file_name": "Bluemlisalphutte Flyover/frame_000100.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 100
+    },
+    {
+      "id": 6,
+      "file_name": "Bluemlisalphutte Flyover/frame_000110.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 110
+    },
+    {
+      "id": 7,
+      "file_name": "Bluemlisalphutte Flyover/frame_000120.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 120
+    },
+    {
+      "id": 8,
+      "file_name": "Bluemlisalphutte Flyover/frame_000130.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 130
+    },
+    {
+      "id": 9,
+      "file_name": "Bluemlisalphutte Flyover/frame_000140.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 140
+    },
+    {
+      "id": 10,
+      "file_name": "Bluemlisalphutte Flyover/frame_000150.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 150
+    },
+    {
+      "id": 11,
+      "file_name": "Bluemlisalphutte Flyover/frame_000160.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 160
+    },
+    {
+      "id": 12,
+      "file_name": "Bluemlisalphutte Flyover/frame_000170.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 170
+    },
+    {
+      "id": 13,
+      "file_name": "Bluemlisalphutte Flyover/frame_000180.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 180
+    },
+    {
+      "id": 14,
+      "file_name": "Bluemlisalphutte Flyover/frame_000190.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 190
+    },
+    {
+      "id": 15,
+      "file_name": "Bluemlisalphutte Flyover/frame_000200.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 200
+    },
+    {
+      "id": 16,
+      "file_name": "Bluemlisalphutte Flyover/frame_000210.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 210
+    },
+    {
+      "id": 17,
+      "file_name": "Bluemlisalphutte Flyover/frame_000220.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 220
+    },
+    {
+      "id": 18,
+      "file_name": "Bluemlisalphutte Flyover/frame_000240.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 240
+    },
+    {
+      "id": 19,
+      "file_name": "Bluemlisalphutte Flyover/frame_000260.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 260
+    },
+    {
+      "id": 20,
+      "file_name": "Bluemlisalphutte Flyover/frame_000290.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 290
+    },
+    {
+      "id": 21,
+      "file_name": "Bluemlisalphutte Flyover/frame_000310.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 310
+    },
+    {
+      "id": 22,
+      "file_name": "Bluemlisalphutte Flyover/frame_000330.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 330
+    },
+    {
+      "id": 23,
+      "file_name": "Bluemlisalphutte Flyover/frame_000360.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 360
+    },
+    {
+      "id": 24,
+      "file_name": "Bluemlisalphutte Flyover/frame_000400.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 400
+    },
+    {
+      "id": 25,
+      "file_name": "Bluemlisalphutte Flyover/frame_000430.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 430
+    },
+    {
+      "id": 26,
+      "file_name": "Bluemlisalphutte Flyover/frame_000490.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 490
+    },
+    {
+      "id": 27,
+      "file_name": "Bluemlisalphutte Flyover/frame_000510.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 510
+    },
+    {
+      "id": 28,
+      "file_name": "Bluemlisalphutte Flyover/frame_000520.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 520
+    },
+    {
+      "id": 29,
+      "file_name": "Bluemlisalphutte Flyover/frame_000530.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 530
+    },
+    {
+      "id": 30,
+      "file_name": "Bluemlisalphutte Flyover/frame_000540.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 540
+    },
+    {
+      "id": 31,
+      "file_name": "Bluemlisalphutte Flyover/frame_000550.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 550
+    },
+    {
+      "id": 32,
+      "file_name": "Bluemlisalphutte Flyover/frame_000560.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 560
+    },
+    {
+      "id": 33,
+      "file_name": "Bluemlisalphutte Flyover/frame_000570.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 570
+    },
+    {
+      "id": 34,
+      "file_name": "Bluemlisalphutte Flyover/frame_000580.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 580
+    },
+    {
+      "id": 35,
+      "file_name": "Bluemlisalphutte Flyover/frame_000600.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 600
+    },
+    {
+      "id": 36,
+      "file_name": "Bluemlisalphutte Flyover/frame_000610.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 610
+    },
+    {
+      "id": 37,
+      "file_name": "Bluemlisalphutte Flyover/frame_000620.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 620
+    },
+    {
+      "id": 38,
+      "file_name": "Bluemlisalphutte Flyover/frame_000630.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 630
+    },
+    {
+      "id": 39,
+      "file_name": "Bluemlisalphutte Flyover/frame_000640.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 640
+    },
+    {
+      "id": 40,
+      "file_name": "Bluemlisalphutte Flyover/frame_000650.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 650
+    },
+    {
+      "id": 41,
+      "file_name": "Bluemlisalphutte Flyover/frame_000660.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 660
+    },
+    {
+      "id": 42,
+      "file_name": "Bluemlisalphutte Flyover/frame_000670.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 670
+    },
+    {
+      "id": 43,
+      "file_name": "Bluemlisalphutte Flyover/frame_000680.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 680
+    },
+    {
+      "id": 44,
+      "file_name": "Bluemlisalphutte Flyover/frame_000690.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 690
+    },
+    {
+      "id": 45,
+      "file_name": "Bluemlisalphutte Flyover/frame_000700.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 700
+    },
+    {
+      "id": 46,
+      "file_name": "Bluemlisalphutte Flyover/frame_000710.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 710
+    },
+    {
+      "id": 47,
+      "file_name": "Bluemlisalphutte Flyover/frame_000720.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 720
+    },
+    {
+      "id": 48,
+      "file_name": "Bluemlisalphutte Flyover/frame_000730.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 730
+    },
+    {
+      "id": 49,
+      "file_name": "Bluemlisalphutte Flyover/frame_000740.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 740
+    },
+    {
+      "id": 50,
+      "file_name": "Bluemlisalphutte Flyover/frame_000750.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 750
+    },
+    {
+      "id": 51,
+      "file_name": "Bluemlisalphutte Flyover/frame_000760.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 760
+    },
+    {
+      "id": 52,
+      "file_name": "Bluemlisalphutte Flyover/frame_000770.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 770
+    },
+    {
+      "id": 53,
+      "file_name": "Bluemlisalphutte Flyover/frame_000780.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 780
+    },
+    {
+      "id": 54,
+      "file_name": "Bluemlisalphutte Flyover/frame_000800.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 800
+    },
+    {
+      "id": 55,
+      "file_name": "Bluemlisalphutte Flyover/frame_000810.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 810
+    },
+    {
+      "id": 56,
+      "file_name": "Bluemlisalphutte Flyover/frame_000830.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 830
+    },
+    {
+      "id": 57,
+      "file_name": "Bluemlisalphutte Flyover/frame_000840.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 840
+    },
+    {
+      "id": 58,
+      "file_name": "Bluemlisalphutte Flyover/frame_000850.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 850
+    },
+    {
+      "id": 59,
+      "file_name": "Bluemlisalphutte Flyover/frame_000860.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 860
+    },
+    {
+      "id": 60,
+      "file_name": "Bluemlisalphutte Flyover/frame_000880.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 880
+    },
+    {
+      "id": 61,
+      "file_name": "Bluemlisalphutte Flyover/frame_000890.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 890
+    },
+    {
+      "id": 62,
+      "file_name": "Bluemlisalphutte Flyover/frame_000900.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 900
+    },
+    {
+      "id": 63,
+      "file_name": "Bluemlisalphutte Flyover/frame_000910.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 910
+    },
+    {
+      "id": 64,
+      "file_name": "Bluemlisalphutte Flyover/frame_000920.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 920
+    },
+    {
+      "id": 65,
+      "file_name": "Bluemlisalphutte Flyover/frame_000940.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 940
+    },
+    {
+      "id": 66,
+      "file_name": "Bluemlisalphutte Flyover/frame_000960.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 960
+    },
+    {
+      "id": 67,
+      "file_name": "Bluemlisalphutte Flyover/frame_000980.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 980
+    },
+    {
+      "id": 68,
+      "file_name": "Bluemlisalphutte Flyover/frame_000990.jpg",
+      "width": 1280,
+      "height": 720,
+      "video": "Bluemlisalphutte Flyover.mp4",
+      "frame_idx": 990
+    }
+  ],
+  "annotations": [
+    {
+      "id": 1,
+      "image_id": 4,
+      "category_id": 1,
+      "bbox": [
+        445.36,
+        41.17,
+        6.5,
+        9.25
+      ],
+      "score": 1.0,
+      "area": 60.125,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 2,
+      "image_id": 4,
+      "category_id": 1,
+      "bbox": [
+        587.33,
+        29.92,
+        8.75,
+        11.5
+      ],
+      "score": 1.0,
+      "area": 100.625,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 3,
+      "image_id": 5,
+      "category_id": 1,
+      "bbox": [
+        446.05,
+        76.34,
+        5.99,
+        11.09
+      ],
+      "score": 1.0,
+      "area": 66.42910000000012,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 4,
+      "image_id": 5,
+      "category_id": 1,
+      "bbox": [
+        587.47,
+        67.54,
+        8.16,
+        10.69
+      ],
+      "score": 1.0,
+      "area": 87.23039999999965,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 5,
+      "image_id": 6,
+      "category_id": 1,
+      "bbox": [
+        445.75,
+        122.04,
+        5.98,
+        11.09
+      ],
+      "score": 1.0,
+      "area": 66.31820000000013,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 6,
+      "image_id": 6,
+      "category_id": 1,
+      "bbox": [
+        587.17,
+        117.47,
+        8.16,
+        10.69
+      ],
+      "score": 1.0,
+      "area": 87.23040000000086,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 7,
+      "image_id": 7,
+      "category_id": 1,
+      "bbox": [
+        445.3,
+        172.68,
+        5.98,
+        8.66
+      ],
+      "score": 1.0,
+      "area": 51.786799999999644,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 8,
+      "image_id": 7,
+      "category_id": 1,
+      "bbox": [
+        586.94,
+        170.15,
+        8.16,
+        10.69
+      ],
+      "score": 1.0,
+      "area": 87.23039999999965,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 9,
+      "image_id": 8,
+      "category_id": 1,
+      "bbox": [
+        444.85,
+        221.74,
+        5.98,
+        8.66
+      ],
+      "score": 1.0,
+      "area": 51.786799999999644,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 10,
+      "image_id": 8,
+      "category_id": 1,
+      "bbox": [
+        587.4,
+        221.92,
+        8.16,
+        10.69
+      ],
+      "score": 1.0,
+      "area": 87.23039999999988,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 11,
+      "image_id": 9,
+      "category_id": 1,
+      "bbox": [
+        443.72,
+        270.13,
+        6.86,
+        10.66
+      ],
+      "score": 1.0,
+      "area": 73.12759999999972,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 12,
+      "image_id": 9,
+      "category_id": 1,
+      "bbox": [
+        585.99,
+        274.81,
+        8.16,
+        10.7
+      ],
+      "score": 1.0,
+      "area": 87.31199999999957,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 13,
+      "image_id": 10,
+      "category_id": 1,
+      "bbox": [
+        441.19,
+        318.81,
+        6.85,
+        10.66
+      ],
+      "score": 1.0,
+      "area": 73.02100000000041,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 14,
+      "image_id": 10,
+      "category_id": 1,
+      "bbox": [
+        586.27,
+        323.8,
+        8.16,
+        12.91
+      ],
+      "score": 1.0,
+      "area": 105.34559999999932,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 15,
+      "image_id": 11,
+      "category_id": 1,
+      "bbox": [
+        439.78,
+        369.45,
+        6.86,
+        10.67
+      ],
+      "score": 1.0,
+      "area": 73.19620000000026,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 16,
+      "image_id": 11,
+      "category_id": 1,
+      "bbox": [
+        587.11,
+        375.57,
+        8.16,
+        14.63
+      ],
+      "score": 1.0,
+      "area": 119.3807999999995,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 17,
+      "image_id": 12,
+      "category_id": 1,
+      "bbox": [
+        436.45,
+        420.3,
+        6.86,
+        10.66
+      ],
+      "score": 1.0,
+      "area": 73.12759999999993,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 18,
+      "image_id": 12,
+      "category_id": 1,
+      "bbox": [
+        586.51,
+        430.35,
+        8.16,
+        14.63
+      ],
+      "score": 1.0,
+      "area": 119.3807999999995,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 19,
+      "image_id": 13,
+      "category_id": 1,
+      "bbox": [
+        433.12,
+        475.08,
+        6.86,
+        10.66
+      ],
+      "score": 1.0,
+      "area": 73.12760000000031,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 20,
+      "image_id": 13,
+      "category_id": 1,
+      "bbox": [
+        586.81,
+        486.04,
+        8.16,
+        14.63
+      ],
+      "score": 1.0,
+      "area": 119.38080000000116,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 21,
+      "image_id": 14,
+      "category_id": 1,
+      "bbox": [
+        427.68,
+        530.46,
+        6.85,
+        10.67
+      ],
+      "score": 1.0,
+      "area": 73.08949999999936,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 22,
+      "image_id": 14,
+      "category_id": 1,
+      "bbox": [
+        586.51,
+        544.15,
+        8.16,
+        14.63
+      ],
+      "score": 1.0,
+      "area": 119.3807999999995,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 23,
+      "image_id": 15,
+      "category_id": 1,
+      "bbox": [
+        423.14,
+        587.67,
+        6.85,
+        12.13
+      ],
+      "score": 1.0,
+      "area": 83.09050000000025,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 24,
+      "image_id": 15,
+      "category_id": 1,
+      "bbox": [
+        585.6,
+        605.89,
+        8.16,
+        14.63
+      ],
+      "score": 1.0,
+      "area": 119.3807999999995,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 25,
+      "image_id": 16,
+      "category_id": 1,
+      "bbox": [
+        417.69,
+        637.0,
+        6.85,
+        12.13
+      ],
+      "score": 1.0,
+      "area": 83.09050000000025,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 26,
+      "image_id": 16,
+      "category_id": 1,
+      "bbox": [
+        584.09,
+        660.06,
+        8.16,
+        14.63
+      ],
+      "score": 1.0,
+      "area": 119.38080000000042,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 27,
+      "image_id": 17,
+      "category_id": 1,
+      "bbox": [
+        413.15,
+        665.45,
+        6.85,
+        12.13
+      ],
+      "score": 1.0,
+      "area": 83.09050000000025,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 28,
+      "image_id": 17,
+      "category_id": 1,
+      "bbox": [
+        585.0,
+        693.66,
+        8.16,
+        14.63
+      ],
+      "score": 1.0,
+      "area": 119.3807999999995,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 29,
+      "image_id": 46,
+      "category_id": 1,
+      "bbox": [
+        101.4,
+        661.64,
+        15.3,
+        17.58
+      ],
+      "score": 1.0,
+      "area": 268.97400000000056,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 30,
+      "image_id": 47,
+      "category_id": 1,
+      "bbox": [
+        203.3,
+        612.81,
+        13.38,
+        17.58
+      ],
+      "score": 1.0,
+      "area": 235.22040000000047,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 31,
+      "image_id": 48,
+      "category_id": 1,
+      "bbox": [
+        298.68,
+        577.32,
+        13.38,
+        17.58
+      ],
+      "score": 1.0,
+      "area": 235.22039999999896,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 32,
+      "image_id": 49,
+      "category_id": 1,
+      "bbox": [
+        391.79,
+        555.19,
+        13.38,
+        17.58
+      ],
+      "score": 1.0,
+      "area": 235.22039999999896,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 33,
+      "image_id": 50,
+      "category_id": 1,
+      "bbox": [
+        483.6,
+        543.79,
+        11.4,
+        17.58
+      ],
+      "score": 1.0,
+      "area": 200.41200000000006,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 34,
+      "image_id": 51,
+      "category_id": 1,
+      "bbox": [
+        571.5,
+        540.21,
+        11.4,
+        17.58
+      ],
+      "score": 1.0,
+      "area": 200.41199999999878,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 35,
+      "image_id": 52,
+      "category_id": 1,
+      "bbox": [
+        657.44,
+        547.05,
+        11.4,
+        17.58
+      ],
+      "score": 1.0,
+      "area": 200.41200000000006,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 36,
+      "image_id": 53,
+      "category_id": 1,
+      "bbox": [
+        699.44,
+        557.47,
+        11.4,
+        17.58
+      ],
+      "score": 1.0,
+      "area": 200.41199999999878,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 37,
+      "image_id": 54,
+      "category_id": 1,
+      "bbox": [
+        768.46,
+        591.32,
+        11.4,
+        17.58
+      ],
+      "score": 1.0,
+      "area": 200.41199999999878,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 38,
+      "image_id": 55,
+      "category_id": 1,
+      "bbox": [
+        828.36,
+        619.32,
+        11.4,
+        17.58
+      ],
+      "score": 1.0,
+      "area": 200.41199999999878,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 39,
+      "image_id": 56,
+      "category_id": 1,
+      "bbox": [
+        622.45,
+        625.27,
+        11.4,
+        17.58
+      ],
+      "score": 1.0,
+      "area": 200.41200000000006,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 40,
+      "image_id": 57,
+      "category_id": 1,
+      "bbox": [
+        569.92,
+        644.53,
+        11.4,
+        17.58
+      ],
+      "score": 1.0,
+      "area": 200.41200000000205,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 41,
+      "image_id": 58,
+      "category_id": 1,
+      "bbox": [
+        537.35,
+        668.35,
+        11.41,
+        17.58
+      ],
+      "score": 1.0,
+      "area": 200.58779999999862,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    },
+    {
+      "id": 42,
+      "image_id": 59,
+      "category_id": 1,
+      "bbox": [
+        467.67,
+        703.01,
+        11.4,
+        16.99
+      ],
+      "score": 1.0,
+      "area": 193.68599999999972,
+      "iscrowd": 0,
+      "source": "human_CVAT_label_reused_as_pseudo_label"
+    }
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "person"
+    }
+  ]
+}

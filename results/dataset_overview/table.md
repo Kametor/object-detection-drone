@@ -2,11 +2,11 @@
 |---|---|---|---|---|---|---|---|---|---|---|
 | Creux du Van Flight.mp4 | background | 52.6 | 1280x720 | 23.98 | no | - | house | rocky forested ridge | - | genuinely person-free; background/hard-negative source |
 | Isles of Glencoe.mp4 | background | 31.3 | 1280x720 | 29.97 | no | - | house; car; boat | loch / village / moored boats | - | genuinely person-free; background/hard-negative source |
-| Bluemlisalphutte Flyover.mp4 | test | 33.6 | 1280x720 | 29.97 | yes | very_small | birds (extremely small) | snow mountain ridge | none | extreme altitude; ant-sized figures; expected small-object failure case |
+| Berghouse Leopard Jog.mp4 | test | 37.7 | 1280x720 | 29.97 | yes | medium | none | grass/shrub trail | vegetation (partial) | 2 runners; easy case, good visibility |
 | DJI_0501.MP4 | test | 8.2 | 3840x2160 | 29.97 | yes | mixed (statue large / real people very_small) | statue | grassy hilltop with monument | none | human statue is a false-positive trap; real tiny people nearby; short clip (8.2s); ambiguous/qualitative case |
 | DJI_0596.MP4 | test | 35.7 | 3840x2160 | 29.97 | yes | very_small | house; ship; boat | open water / ship deck | none | tiny people on ship deck; candidate for SAHI small-object discussion |
 | DJI_0862.MOV | test | 50.8 | 3840x2160 | 29.97 | yes | medium-large | another drone (in-frame aircraft); crashed plane/helicopter wreckage | dark volcanic terrain / helicopter wreck | none | good size despite low-contrast terrain; headline achievable test case |
-| Berghouse Leopard Jog.mp4 | train | 37.7 | 1280x720 | 29.97 | yes | medium | none | grass/shrub trail | vegetation (partial) | 2 runners; easy case, good visibility |
+| Bluemlisalphutte Flyover.mp4 | train | 33.6 | 1280x720 | 29.97 | yes | very_small | birds (extremely small) | snow mountain ridge | none | extreme altitude; ant-sized figures; expected small-object failure case |
 | DJI_0574.MP4 | train | 32.3 | 3840x2160 | 29.97 | yes | medium | bicycles; houses | vineyard / lake shoreline | bicycle (occlusion) | cyclists; bicycle occludes person-defining features |
 | DJI_0790.MOV | train | 66.3 | 3840x2160 | 29.97 | yes | medium | sled; sled dogs; houses | snow field / village | none | a musher plus a crowd at the end; good volume |
 | DJI_0876.MOV | train | 42.0 | 3840x2160 | 29.97 | yes | medium | house | glacial lagoon / house | none | single brief appearance near the start; low volume |

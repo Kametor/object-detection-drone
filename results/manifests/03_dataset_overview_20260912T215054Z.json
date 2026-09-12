@@ -1,0 +1,9 @@
+{
+  "script": "03_dataset_overview.py",
+  "config_path": "configs/03_dataset_overview.yaml",
+  "config_hash": "df7b144569ba",
+  "seed": 42,
+  "git_sha": "c2f49bfab03ee954688d7828ba91278468029602",
+  "timestamp": "2026-09-12T21:50:54.921744+00:00",
+  "num_videos": 13
+}
