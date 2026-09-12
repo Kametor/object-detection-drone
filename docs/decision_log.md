@@ -578,3 +578,14 @@ untested assumption inside them (1920 is a safe default) turned out
 wrong on the very first real run. Worth remembering before raising
 resolution/batch-size defaults on other GPU-bound methods (RT-DETR,
 ConvNeXt+CenterNet) later without an equivalent real check.
+
+**Follow-up — smoke test passed after the fix (same day):** re-ran on
+"Berghouse Leopard Jog.mp4" frame 0 at `imgsz=1024` (rounded to 1036).
+Found 3 detections: the 2 real runners at high confidence (0.91, 0.88),
+plus one lower-confidence (0.47) box overlapping the second runner's
+lower body — most likely a duplicate/fragment detection rather than a
+third person, going by the visual. Not treated as a bug: this is exactly
+what the Day 4 quality pipeline's NMS step exists to clean up. Inference
+took ~750ms/frame on the T4, which is acceptable for a one-time labeling
+pass over ~500 frames. Cleared to proceed to labeling all train+val
+videos.
