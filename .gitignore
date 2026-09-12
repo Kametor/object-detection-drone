@@ -24,3 +24,9 @@ venv/
 # large generated results (plots/tables/logs stay tracked, videos/checkpoints don't)
 results/**/*.mp4
 results/**/*.avi
+
+# regenerable image dumps from the auto-labeling pipeline (bulky; the COCO
+# annotations + manifests are the tracked deliverable, not the images —
+# regenerate with scripts/04_label_video.py)
+results/pseudo_labels/frames/
+results/pseudo_labels/review/
