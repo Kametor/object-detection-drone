@@ -612,3 +612,18 @@ hard/small instances (Bluemlisalphutte, DJI_0596) scoring similarly low
 get excluded too. Revisit after the manual review if this turns out to
 have cut too much real recall, or if shadow-type noise still shows up
 despite the higher bar.
+
+**Bug found — smoke test wasn't previewing the real threshold:** after
+raising `confidence_threshold` to 0.5 and re-running the smoke-test cell,
+the user still saw the 0.47 shadow box. Cause: the notebook's smoke-test
+cell instantiated `Sam3Detector` directly and called `.detect()` without
+ever reading `configs/04_label_video.yaml` — it was using
+`Sam3Detector`'s own default `conf=0.25` (a separate parameter, passed to
+the underlying Ultralytics predictor) instead of the config's
+`confidence_threshold`, which is only actually applied inside
+`src/methods/sam3_zeroshot/pipeline.py::label_video()` — the path cell 6
+uses via `scripts/04_label_video.py`, but which the smoke-test cell
+bypassed entirely. So cell 6 was already going to apply 0.5 correctly;
+only the smoke test was misleading. Fixed by having the smoke-test cell
+load the same config and filter with it, so it previews production
+behavior instead of an unrelated default.
