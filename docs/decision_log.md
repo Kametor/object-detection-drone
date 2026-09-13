@@ -1675,3 +1675,36 @@ overhead rather than a pathological frame, but not confirmed against
 the actual per-frame timing log (only aggregate min/mean/max reached
 the manifest). Worth a note in the presentation as an open question,
 not a claimed explanation.
+
+## SAM3 qualitative error analysis: concrete success and failure examples (2026-09-13)
+
+Inspected `results/eval/sam3_zeroshot_T4/comparison/` directly (per the
+project's "look at the actual files, not just the aggregate metric"
+habit) — two frames worth recording as the presentation's concrete
+success/failure examples (task's "successful and failed result
+examples" requirement).
+
+**`Berghouse_Leopard_Jog__frame_000000.jpg` (success):** two trail
+runners, both correctly boxed at high confidence (0.88 and ~0.9),
+matching ground truth exactly — the visual confirmation behind this
+video's 1.000 mAP@.5.
+
+**`DJI_0596__frame_000000.jpg` (mixed — the presentation's clearest failure
+example):** this video is not a snow/mountain scene as initially assumed
+from its "ant-sized instances" label — it's a **lake steamer boat**
+(Swiss flag visible, consistent with `CLAUDE.md`'s "Lake Geneva clips"
+note about the dataset). Three distinct, visually confirmed patterns in
+one frame:
+1. **Correct:** a cluster of people on the boat's rear deck, correctly
+   boxed.
+2. **Missed:** two people standing on the boat's raised bridge/wheelhouse
+   (ground truth boxes present, no matching prediction nearby at all).
+3. **False positive:** 2-3 "person" boxes on open water where nothing is
+   present — plausibly wave/glare patterns at a distance resembling a
+   person from SAM3's perspective, though this specific cause isn't
+   confirmed, just visually plausible.
+
+This single frame demonstrates all three of the assignment's requested
+error categories (correct detection, missed detection, false positive)
+in one concrete, presentable example — more useful for the "hata analizi"
+section than the aggregate per-video numbers alone.
