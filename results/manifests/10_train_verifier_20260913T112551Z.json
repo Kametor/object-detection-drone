@@ -1,0 +1,13 @@
+{
+  "script": "10_train_verifier.py",
+  "config_path": "configs/10_train_verifier.yaml",
+  "config_hash": "cbe2f243c1ad",
+  "seed": 42,
+  "git_sha": "730011dfd22084fbac5b6a357c73605977823c7b",
+  "timestamp": "2026-09-13T11:25:51.580521+00:00",
+  "best_val_person_f1": 0.988950276243094,
+  "class_counts": [
+    3507,
+    1398
+  ]
+}
