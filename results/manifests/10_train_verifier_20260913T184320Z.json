@@ -1,0 +1,13 @@
+{
+  "script": "10_train_verifier.py",
+  "config_path": "configs/26_train_verifier_efficientnet_b0.yaml",
+  "config_hash": "85350c56b854",
+  "seed": 42,
+  "git_sha": "ec317cc2c531f88a3a8e7217ba5b29161c303623",
+  "timestamp": "2026-09-13T18:43:20.015941+00:00",
+  "best_val_person_f1": 0.9835164835164836,
+  "class_counts": [
+    3507,
+    1398
+  ]
+}
