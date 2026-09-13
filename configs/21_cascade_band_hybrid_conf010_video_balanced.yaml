@@ -1,0 +1,22 @@
+seed: 42
+
+frames_dir: data/processed/frames/test
+
+checkpoint: yolo26n.pt
+# Narrower band than configs/19 (0.01-0.25): stage 1's floor is raised to
+# 0.10, so the verifier only adjudicates [0.10, 0.25) instead of
+# [0.01, 0.25) -- the user's diagnosis that the very-low-confidence tail
+# is too hard a task for a small ResNet18 to usefully judge, not just
+# noisy the way FP-heavy candidates near 0.25 are.
+conf: 0.10
+imgsz: 1920
+high_conf_threshold: 0.25
+
+verifier_checkpoint: results/cascade_verifier/resnet18_verifier_video_balanced.pt
+crop_size: 64
+padding_ratio: 0.4
+device: cpu
+
+output_dir: results/cascade_hybrid_band_conf010_video_balanced
+manifest_dir: results/manifests
+jpeg_quality: 90

@@ -1152,3 +1152,34 @@ more/more-diverse train crops (more train videos have very few person
 crops: Bluemlisalphutte contributed only 5), not just resampling the
 crops that already exist. Time-boxing this here and moving to Tier 1 item
 2 (RT-DETR-R18) per the plan's degradation order.
+
+## Narrowing the verifier's band to [0.10, 0.25) (2026-09-13) — counter to hypothesis
+
+User's hypothesis: the verifier's job gets harder as YOLO's floor drops
+toward 0.01 — near-noise-floor candidates are a genuinely harder
+classification task than the FP-heavy-but-plausible candidates near 0.25,
+so raising the floor to 0.10 (an already-swept value, not a new search;
+`scripts/20`/`scripts/21`) should let the verifier do a cleaner job on an
+easier band.
+
+**Result: mAP@.5 went down, not up** (band-gated hybrid: 0.760 -> 0.734).
+Root cause is arithmetic, not the verifier: at any evaluation cut >= 0.10,
+the narrow-band and wide-band hybrid predictions are *identical* — a box
+originally scored by YOLO below 0.10 can never pass a >=0.10 cut regardless
+of which band it was mined from, so the two variants can only differ below
+conf=0.10. The wide band's advantage lived entirely in that
+[0.01, 0.10) region: the verifier was in fact contributing net-positive
+signal there too, not just noise as hypothesized — removing that region
+outright removes real ranking value along with the noise.
+
+**The single-operating-point F1 is completely unchanged** (0.7822 @
+conf=0.15 either way) — expected, since that optimum sits above 0.10 and
+both variants share that region byte-for-byte. Still short of method 1's
+0.7859 by 0.0037.
+
+**Conclusion:** don't narrow the band — revert to the 0.01 floor
+(`configs/19`, mAP@.5 0.760) as the best cascade configuration found this
+cycle. This closes out item 1b's iteration for now: mAP is
+unambiguously better than plain YOLO's; the best single deployed
+threshold is not, by a small and now well-characterized margin (0.0037
+F1). Moving to Tier 1 item 2 (RT-DETR-R18).

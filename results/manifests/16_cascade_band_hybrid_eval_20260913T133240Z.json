@@ -1,0 +1,14 @@
+{
+  "script": "16_cascade_band_hybrid_eval.py",
+  "config_path": "configs/21_cascade_band_hybrid_conf010_video_balanced.yaml",
+  "config_hash": "bbcedd865842",
+  "seed": 42,
+  "git_sha": "468805d028466486d94866cdbcece86dbf70cf76",
+  "timestamp": "2026-09-13T13:32:40.177377+00:00",
+  "num_frames": 196,
+  "auto_accepted": 612,
+  "band_checked": 221,
+  "band_kept": 111,
+  "total_kept": 723,
+  "elapsed_seconds": 92.4
+}

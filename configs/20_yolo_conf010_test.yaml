@@ -1,0 +1,16 @@
+seed: 42
+
+frames_dir: data/processed/frames/test
+checkpoint: yolo26n.pt
+# A moderate floor between method 1's 0.25 and the cascade's original 0.01
+# — reused from the existing threshold sweep grid (configs/08), not a new
+# search. Plain-YOLO reference point for the narrower-band cascade in
+# configs/21: at this floor precision is still reasonable (P=0.775 per the
+# val sweep) so the verifier is only asked to adjudicate a genuinely
+# ambiguous band, not YOLO's near-noise-floor candidates.
+conf: 0.10
+imgsz: 1920
+
+output_dir: results/yolo26_conf010
+manifest_dir: results/manifests
+jpeg_quality: 90
