@@ -1,0 +1,13 @@
+{
+  "script": "25_cascade_score_fusion_eval.py",
+  "config_path": "configs/27_T4.yaml",
+  "config_hash": "16753d7711e6",
+  "seed": 42,
+  "git_sha": "695f8dad5fdc6375d9d81f71ce5afdffbeed0b30",
+  "timestamp": "2026-09-13T19:36:12.134088+00:00",
+  "num_frames": 196,
+  "auto_accepted": 612,
+  "fused": 2330,
+  "total_kept": 2942,
+  "elapsed_seconds": 26.4
+}

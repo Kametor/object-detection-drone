@@ -1,0 +1,11 @@
+{
+  "script": "06_evaluate.py",
+  "method_name": "yolo26n_score_fusion_standard_stem_T4",
+  "predictions_path": "results/cascade_score_fusion_standard_stem_T4/predictions.json",
+  "gt_path": "data/gold_test/annotations.json",
+  "config_path": "configs/06_evaluate.yaml",
+  "config_hash": "ebc5d27dd103",
+  "seed": 42,
+  "git_sha": "695f8dad5fdc6375d9d81f71ce5afdffbeed0b30",
+  "timestamp": "2026-09-13T19:32:50.863498+00:00"
+}
