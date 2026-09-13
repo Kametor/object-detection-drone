@@ -76,6 +76,26 @@ is a large relative improvement over YOLO's 0.052 and RT-DETR's
 0.029–0.041, consistent with a foundation model's stronger generalization
 even where every method still struggles in absolute terms.
 
+## Concrete success/failure examples (from visual inspection)
+
+**Success — `Berghouse_Leopard_Jog__frame_000000.jpg`:** two trail runners,
+both correctly boxed at high confidence (0.88 and ~0.9), exactly matching
+ground truth — the visual confirmation behind this video's perfect 1.000
+mAP@.5.
+
+**Mixed — `DJI_0596__frame_000000.jpg`, the clearest failure example in
+this project:** this video turns out to be a lake steamer boat (Swiss
+flag visible — consistent with `CLAUDE.md`'s "Lake Geneva clips" note),
+not a snow/mountain scene as its "ant-sized instances" label had
+suggested. One frame shows all three error categories at once:
+1. **Correct:** a cluster of people on the boat's rear deck, boxed
+   correctly.
+2. **Missed:** two people on the boat's raised bridge/wheelhouse — no
+   prediction anywhere near their ground-truth boxes.
+3. **False positive:** 2-3 "person" boxes over open water where nothing
+   is present — plausibly wave/glare patterns misread as a distant person
+   (not confirmed, just visually plausible).
+
 ## Open question, honestly flagged
 
 The 44.26s single-frame maximum (against a 2.22s minimum and 2.72s mean)
