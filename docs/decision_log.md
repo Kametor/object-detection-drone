@@ -1254,3 +1254,35 @@ this idea; adding size as an independent gate did not.
 conf=0.15, plus the documented small-object win on DJI_0501/DJI_0596
 (10/44 previously-invisible small people recovered). Closing this item's
 iteration here.
+
+## Narrowing the size gate to 24x24 (2026-09-13) — fixes the harm, adds no gain
+
+Diagnosed the previous size-gate regression precisely before changing
+anything: all 4 lost true positives were high-confidence (>=0.25)
+detections sized 926-1011px^2 — just under the 32x32 (1024px^2) cutoff,
+not genuinely tiny — that the verifier wrongly rejected on re-check.
+Confirmed zero high-confidence true positives exist below 24x24
+(576px^2) in the current best predictions, so that threshold can't
+reproduce the same failure. Re-ran `scripts/22_cascade_size_gated_hybrid_eval.py`
+with `small_area_threshold: 576` (`configs/23`).
+
+**Result: bit-for-bit identical to the confidence-band-only baseline**
+(mAP@.5 0.760, mAP_small 0.0632, operating point 523/89/196, all four
+per-video mAP@.5 values unchanged). At this threshold, no candidate in
+the test set is both small (<576px^2) and high-confidence (>=0.25) to
+begin with, so the "always verify small" rule never actually overrides
+what confidence-band gating alone would have done — it neither helps
+nor hurts on this test set.
+
+**Conclusion:** 24x24 is a safe choice (recovers the 32x32 run's damage
+completely) but the size-gate idea itself adds no measurable value beyond
+plain confidence-band gating (`configs/19`) once tuned to be harmless —
+its two implementations (32x32, 24x24) bracket the finding: too high a
+cutoff second-guesses YOLO's rare-but-reliable confident small
+detections (net loss); low enough to avoid that, and it has nothing left
+to act on beyond what the confidence band already covers (net zero).
+Closing item 1b's iteration here for real: `configs/19` (confidence-band,
+[0.01, 0.25), video-balanced verifier) is the final configuration —
+mAP@.5 0.760, best F1 0.7822 @ conf=0.15, plus the documented
+small-object recovery on DJI_0501/DJI_0596 (10/44 previously-invisible
+small people).

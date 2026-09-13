@@ -1,0 +1,27 @@
+seed: 42
+
+frames_dir: data/processed/frames/test
+
+checkpoint: yolo26n.pt
+conf: 0.01
+imgsz: 1920
+
+high_conf_threshold: 0.25
+# Lowered from configs/22's 1024 (32x32, COCO's small/medium boundary)
+# after diagnosing exactly why that run underperformed: all 4 lost true
+# positives were high-confidence detections sized 926-1011px^2 -- just
+# under 32x32, not genuinely tiny -- that the verifier wrongly
+# second-guessed. Confirmed before changing this: zero high-confidence
+# (score>=0.25) true positives exist below 576px^2 (24x24) in the current
+# best predictions, so this threshold can't reproduce that failure mode.
+# See docs/decision_log.md 2026-09-13.
+small_area_threshold: 576  # 24*24
+
+verifier_checkpoint: results/cascade_verifier/resnet18_verifier_video_balanced.pt
+crop_size: 64
+padding_ratio: 0.4
+device: cpu
+
+output_dir: results/cascade_hybrid_size_gated_24px
+manifest_dir: results/manifests
+jpeg_quality: 90
