@@ -1,0 +1,15 @@
+{
+  "script": "34_sam3_zeroshot_eval.py",
+  "config_path": "configs/34_T4.yaml",
+  "config_hash": "e8e791d94aad",
+  "seed": 42,
+  "git_sha": "b5978505e075098af31ed8b450668a078d1f9c57",
+  "timestamp": "2026-09-13T20:21:02.333531+00:00",
+  "num_frames": 196,
+  "num_boxes": 1292,
+  "total_wall_seconds": 545.2,
+  "mean_inference_seconds_per_frame": 2.7239,
+  "fps": 0.37,
+  "min_frame_seconds": 2.2205,
+  "max_frame_seconds": 44.2555
+}

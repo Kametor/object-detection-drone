@@ -1,0 +1,11 @@
+{
+  "script": "06_evaluate.py",
+  "method_name": "sam3_zeroshot_T4",
+  "predictions_path": "results/sam3_zeroshot/predictions.json",
+  "gt_path": "data/gold_test/annotations.json",
+  "config_path": "configs/06_evaluate.yaml",
+  "config_hash": "ebc5d27dd103",
+  "seed": 42,
+  "git_sha": "b5978505e075098af31ed8b450668a078d1f9c57",
+  "timestamp": "2026-09-13T20:53:50.276558+00:00"
+}
