@@ -94,7 +94,9 @@ def main() -> None:
             f"epoch {epoch:>2} | train loss {train_metrics.loss:.4f} acc {train_metrics.accuracy:.3f}"
             f" | val loss {val_metrics.loss:.4f} acc {val_metrics.accuracy:.3f}"
             f" P {val_metrics.person_precision:.3f} R {val_metrics.person_recall:.3f}"
-            f" F1 {val_metrics.person_f1:.3f}{marker}"
+            f" F1 {val_metrics.person_f1:.3f}{marker}",
+            flush=True,  # stdout is fully buffered when redirected to a file;
+            # without this, per-epoch progress never reaches the log until exit
         )
 
     results_dir = Path(config["output_dir"])
