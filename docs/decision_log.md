@@ -1183,3 +1183,34 @@ cycle. This closes out item 1b's iteration for now: mAP is
 unambiguously better than plain YOLO's; the best single deployed
 threshold is not, by a small and now well-characterized margin (0.0037
 F1). Moving to Tier 1 item 2 (RT-DETR-R18).
+
+## Where the cascade actually earns its keep: small objects on the hardest videos
+
+The aggregate F1 story above (cascade doesn't quite beat plain YOLO's
+0.7859) is pooled by box count, and DJI_0862 + Berghouse — the two easy,
+box-rich videos — make up 81% of the test set's 719 GT boxes. That pooling
+was hiding a real, targeted win on the two hard videos (DJI_0501, DJI_0596)
+the user specifically expected the cascade to help on:
+
+| video | small GT boxes | matched by method 1 (any conf) | matched by band-gated hybrid |
+|---|---|---|---|
+| DJI_0501 | 5 | 0 | 1 |
+| DJI_0596 | 39 | 0 | **9** |
+
+Plain YOLO catches **zero** of these 44 small people at any confidence
+level — the feature map genuinely can't represent them, matching the
+Section 6 "ant-sized instances" note. The cascade's lower floor (0.01)
+plus verifier cleanup recovers 10 of them (23%), confirmed by direct
+IoU-matched detection counts (`_iou_xywh` >= 0.5), not just an AP-curve
+artifact. mAP_small/AR_small for both videos moved from exactly 0.0 to
+nonzero (DJI_0596: AR_small 0.0 -> 0.123).
+
+**This is the honest, complete picture for the presentation:** the
+cascade doesn't win on the aggregate, box-count-weighted F1 headline, but
+it does exactly what it was designed to do — trade some precision for
+recall specifically in the small/hard-instance regime plain YOLO
+structurally cannot address — and this shows up cleanly once the
+breakdown is by video and object size (Section 7's requirement) rather
+than looked at only in aggregate. Both framings are true and both belong
+in the writeup: "not a net win on the headline metric" and "a real,
+targeted capability gain on exactly the cases it was built for."
