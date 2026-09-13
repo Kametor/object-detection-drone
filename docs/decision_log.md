@@ -1062,3 +1062,47 @@ verified against the actual review crops.
 boxes) and `results/eval/yolo26n_lowconf_verifier_hybrid/comparison/`
 (GT vs. prediction) before writing this up as a final conclusion — this
 entry records the measured numbers, not yet the confirmed root cause.
+
+## Band-gated cascade variant (2026-09-13), following the user's diagnosis
+
+Manually reviewing `results/cascade_hybrid/review/lost_true_positives/`
+confirmed the leading hypothesis above was wrong in one important way: many
+of the 247+ lost true positives are **clearly, easily visible people**, not
+just ambiguous edge cases — the verifier isn't only failing on genuinely
+hard crops, it's misclassifying some it should get right. The user's own
+diagnosis: sending YOLO's *already-confident* boxes (>=0.25, where plain
+YOLO alone already scores P=0.855 R=0.727) through the verifier puts them
+at needless risk for no reason to expect a gain there. Proposed fix: trust
+YOLO outright at/above 0.25, and only let the verifier adjudicate the
+ambiguous [0.01, 0.25) band where precision was being sacrificed for recall.
+
+Implemented as `scripts/16_cascade_band_hybrid_eval.py`. Kept boxes always
+carry YOLO's own score (never the verifier's), which also fixes the
+operating-point scale-mismatch flagged in the first hybrid entry above —
+this predictions.json is directly comparable to the plain-YOLO runs.
+
+| method | mAP@.5 | mAP@[.5:.95] | best F1 (@conf) |
+|---|---|---|---|
+| yolo26n_zeroshot (0.25) | 0.694 | 0.482 | 0.786 (@0.25) |
+| yolo26n_lowconf (0.01, full pool) | 0.801 | 0.533 | 0.353 (@0.01) |
+| lowconf + full verifier hybrid | 0.368 | 0.202 | 0.514 |
+| **lowconf + band-gated verifier (0.01-0.25 only)** | **0.733** | **0.503** | 0.781 (@0.15) |
+
+Band-gating recovers most of the full hybrid's damage (DJI_0862 mAP@.5:
+0.272 -> 0.817; Berghouse: 0.658 -> 0.975) and **beats method 1 on mAP@.5**
+(0.694 -> 0.733) — a genuine ranking-quality improvement. It does **not**
+beat method 1 at any single operating point: swept 0.01-0.25, the closest
+is conf=0.15 (F1=0.781 vs. method 1's 0.786; TP 523->539, FP 89->123 — 16
+more people found at the cost of 34 more false alarms, a close to break-even
+trade depending on which error type the use case weighs more).
+
+**Conclusion for the presentation:** the verifier genuinely helps — it
+recovers a meaningful fraction of the low-confidence band's extra true
+positives while suppressing most of its false positives — but it is not
+accurate enough on this training-set size (~5k crops) to net-beat simply
+picking a good confidence threshold on plain YOLO. This is an honest
+negative-ish result for item 1b specifically, not a pipeline failure: it's
+exactly the kind of "does a second method genuinely add value" question
+Section 1 asks us to answer, and the honest answer here is "not yet, and
+here's the measured gap and the likely reason (verifier training set size /
+domain coverage)."

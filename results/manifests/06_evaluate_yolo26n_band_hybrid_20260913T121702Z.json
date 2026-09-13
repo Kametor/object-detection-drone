@@ -1,0 +1,11 @@
+{
+  "script": "06_evaluate.py",
+  "method_name": "yolo26n_band_hybrid",
+  "predictions_path": "results/cascade_hybrid_band/predictions.json",
+  "gt_path": "data/gold_test/annotations.json",
+  "config_path": "configs/06_evaluate.yaml",
+  "config_hash": "ebc5d27dd103",
+  "seed": 42,
+  "git_sha": "4d86f161fd50a7c37819668ff353a0574d56c01c",
+  "timestamp": "2026-09-13T12:17:02.739443+00:00"
+}

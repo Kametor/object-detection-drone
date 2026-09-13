@@ -1,0 +1,14 @@
+{
+  "script": "16_cascade_band_hybrid_eval.py",
+  "config_path": "configs/16_cascade_band_hybrid_eval.yaml",
+  "config_hash": "cba75ac4d808",
+  "seed": 42,
+  "git_sha": "4d86f161fd50a7c37819668ff353a0574d56c01c",
+  "timestamp": "2026-09-13T12:16:49.888338+00:00",
+  "num_frames": 196,
+  "auto_accepted": 612,
+  "band_checked": 2314,
+  "band_kept": 419,
+  "total_kept": 1031,
+  "elapsed_seconds": 74.0
+}

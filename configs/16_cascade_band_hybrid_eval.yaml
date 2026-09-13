@@ -1,0 +1,24 @@
+seed: 42
+
+frames_dir: data/processed/frames/test
+
+checkpoint: yolo26n.pt
+conf: 0.01
+imgsz: 1920
+
+# Boxes at/above this score are trusted outright (this is exactly method
+# 1's own threshold, where plain YOLO already scores P=0.855 R=0.727) and
+# never sent to the verifier -- only the ambiguous [conf, high_conf_threshold)
+# band goes through stage 2. Kept boxes keep YOLO's own score throughout
+# (never the verifier's), so this predictions.json is on the same score
+# scale as configs/05/13's plain-YOLO runs and directly comparable.
+high_conf_threshold: 0.25
+
+verifier_checkpoint: results/cascade_verifier/resnet18_verifier.pt
+crop_size: 64
+padding_ratio: 0.4
+device: cpu
+
+output_dir: results/cascade_hybrid_band
+manifest_dir: results/manifests
+jpeg_quality: 90
