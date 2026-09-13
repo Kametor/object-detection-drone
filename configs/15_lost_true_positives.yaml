@@ -1,0 +1,22 @@
+seed: 42
+
+gt_path: data/gold_test/annotations.json
+# The stage-1 pool (low-conf YOLO, before the verifier) and the hybrid's
+# surviving boxes — diffing them finds exactly what stage 2 removed.
+pool_predictions: results/yolo26_lowconf/predictions.json
+kept_predictions: results/cascade_hybrid/predictions.json
+frames_dir: data/processed/frames/test
+
+tp_iou_threshold: 0.5
+# Same box surviving stage 2 will have an ~identical bbox (YOLO is
+# deterministic) — this just needs to be well above the TP threshold to
+# tell "same candidate" apart from "a different nearby detection".
+same_box_iou_threshold: 0.95
+
+# Match the verifier's own training/inference crop so what's on screen
+# is exactly what it saw — see configs/09_build_crop_dataset.yaml.
+padding_ratio: 0.4
+crop_size: 64
+
+output_dir: results/cascade_hybrid/review/lost_true_positives
+manifest_dir: results/manifests

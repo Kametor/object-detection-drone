@@ -1,0 +1,9 @@
+{
+  "script": "15_lost_true_positives.py",
+  "config_path": "configs/15_lost_true_positives.yaml",
+  "config_hash": "279745878861",
+  "seed": 42,
+  "git_sha": "949829f3d6ae45ec906199920d7a35a4fa80a6f4",
+  "timestamp": "2026-09-13T12:09:58.993958+00:00",
+  "lost_true_positives": 374
+}
