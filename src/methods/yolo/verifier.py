@@ -80,8 +80,34 @@ def crop_to_tensor(crop_bgr: np.ndarray) -> torch.Tensor:
     return TF.normalize(tensor, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 
 
+def _source_video(sample_path: str) -> str:
+    """Crop filenames are '{video}__{frame}__{index}.jpg' (09_build_crop_dataset.py)."""
+    return Path(sample_path).name.split("__", 1)[0]
+
+
+def _video_balanced_weights(samples: list[tuple[str, int]]) -> list[float]:
+    """Per-sample weight so every (video, class) group contributes equally.
+
+    Without this, one dominant video's appearance can drown out the rest of
+    the class regardless of class balance — see docs/decision_log.md
+    2026-09-13: DJI_0790 alone was 70%/81% of train's person/not_person
+    crops, and the resulting verifier generalized poorly to test videos
+    with a visibly different domain. Downweighting by group size (not just
+    class) forces every training video to matter equally per epoch.
+    """
+    group_counts: dict[tuple[str, int], int] = {}
+    groups = [(_source_video(path), label) for path, label in samples]
+    for group in groups:
+        group_counts[group] = group_counts.get(group, 0) + 1
+    return [1.0 / group_counts[group] for group in groups]
+
+
 def build_loaders(
-    crops_dir: Path, crop_size: int, batch_size: int, num_workers: int = 0
+    crops_dir: Path,
+    crop_size: int,
+    batch_size: int,
+    num_workers: int = 0,
+    video_balanced_sampling: bool = False,
 ) -> tuple[DataLoader, DataLoader, list[int]]:
     """Returns train loader, val loader, and per-class train counts."""
     train_set = datasets.ImageFolder(
@@ -93,8 +119,16 @@ def build_loaders(
     counts = [0] * len(train_set.classes)
     for _path, label in train_set.samples:
         counts[label] += 1
+
+    if video_balanced_sampling:
+        weights = _video_balanced_weights(train_set.samples)
+        sampler = torch.utils.data.WeightedRandomSampler(weights, num_samples=len(weights), replacement=True)
+        train_loader = DataLoader(train_set, batch_size=batch_size, sampler=sampler, num_workers=num_workers)
+    else:
+        train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True, num_workers=num_workers)
+
     return (
-        DataLoader(train_set, batch_size=batch_size, shuffle=True, num_workers=num_workers),
+        train_loader,
         DataLoader(val_set, batch_size=batch_size, shuffle=False, num_workers=num_workers),
         counts,
     )

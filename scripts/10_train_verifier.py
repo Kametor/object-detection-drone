@@ -49,7 +49,8 @@ def main() -> None:
     device = torch.device(config["device"])
 
     train_loader, val_loader, class_counts = build_loaders(
-        Path(config["crops_dir"]), config["crop_size"], config["batch_size"]
+        Path(config["crops_dir"]), config["crop_size"], config["batch_size"],
+        video_balanced_sampling=config.get("video_balanced_sampling", False),
     )
     print(f"train crops per class (not_person, person): {class_counts}")
     print(f"val batches: {len(val_loader)}, device: {device}")

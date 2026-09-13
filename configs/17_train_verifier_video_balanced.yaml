@@ -1,0 +1,22 @@
+seed: 42
+
+crops_dir: data/crops
+crop_size: 64
+batch_size: 64
+epochs: 15
+lr: 0.0003
+weight_decay: 0.0001
+pretrained: true
+device: cpu
+
+# The one change from configs/10_train_verifier.yaml: DJI_0790 alone was
+# 70%/81% of train's person/not_person crops (see docs/decision_log.md
+# 2026-09-13), and the resulting verifier rejected clearly-visible people
+# in test videos with a different visual domain. This resamples training
+# so every (video, class) group gets equal weight per epoch, regardless
+# of how many crops that video contributed.
+video_balanced_sampling: true
+
+checkpoint_path: results/cascade_verifier/resnet18_verifier_video_balanced.pt
+output_dir: results/cascade_verifier_video_balanced
+manifest_dir: results/manifests

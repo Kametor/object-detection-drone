@@ -1,0 +1,13 @@
+{
+  "script": "10_train_verifier.py",
+  "config_path": "configs/17_train_verifier_video_balanced.yaml",
+  "config_hash": "791b4f4b138f",
+  "seed": 42,
+  "git_sha": "bb96f5be9c568e3bb2535de5b75c484a875a6411",
+  "timestamp": "2026-09-13T13:18:20.348478+00:00",
+  "best_val_person_f1": 0.9805013927576601,
+  "class_counts": [
+    3507,
+    1398
+  ]
+}
