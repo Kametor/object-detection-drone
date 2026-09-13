@@ -1,0 +1,16 @@
+seed: 42
+
+crops_dir: data/crops
+crop_size: 64
+batch_size: 64
+epochs: 15
+lr: 0.0003
+weight_decay: 0.0001
+pretrained: true
+# CPU on purpose: ~4.6k 64x64 crops is a lightweight job, and CLAUDE.md
+# Section 3 keeps local work off the GPU. Set to "cuda" on Colab.
+device: cpu
+
+checkpoint_path: results/cascade_verifier/resnet18_verifier.pt
+output_dir: results/cascade_verifier
+manifest_dir: results/manifests

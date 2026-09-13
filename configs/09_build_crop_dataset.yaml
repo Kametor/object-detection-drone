@@ -1,0 +1,26 @@
+seed: 42
+
+splits_dir: data/splits
+frames_dir: results/pseudo_labels/frames
+annotations_dir: results/pseudo_labels/annotations
+
+checkpoint: yolo26n.pt
+imgsz: 1920
+# Chosen from results/eval/val_threshold_sweep.md — see decision_log.md
+# 2026-09-13. Fallback to 0.05 if the cascade underperforms.
+conf: 0.01
+
+# IoU against that frame's SAM3 pseudo-labels decides the crop's label.
+# Anything strictly between these two is discarded (the "ignore zone"):
+# on train/val the references are a model's output, and the ambiguous
+# middle is exactly where the teacher's own errors live.
+positive_iou: 0.5
+negative_iou: 0.0
+
+# A tight crop of a distant person is nearly featureless — grow the box
+# so the verifier sees some surrounding context too.
+padding_ratio: 0.4
+crop_size: 64
+
+output_dir: data/crops
+manifest_dir: results/manifests
