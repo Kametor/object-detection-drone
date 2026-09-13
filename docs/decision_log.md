@@ -1511,3 +1511,37 @@ worth keeping the native-resolution number as each checkpoint's valid
 zero-shot baseline for the method comparison, while noting this 1920
 result as a genuine, presentable secondary finding (not a broken
 diagnostic to discard, unlike the HF 1920 attempt).
+
+## EfficientNet-B0 verifier: best val score, not best test score (2026-09-13)
+
+Trained on Colab GPU (video-balanced sampling, same recipe as the best
+ResNet checkpoint) after the user found EfficientNet-Lite0 and asked to
+try the architecture family; used torchvision's standard `efficientnet_b0`
+(no new dependency) since edge/quantized deployment isn't a project goal.
+Best val person-F1: **0.9835** — the highest of all three verifier
+checkpoints tried this cycle.
+
+Evaluated with the same score-fusion design (`configs/33`) on the gold
+test set:
+
+| Verifier | mAP@.5 | Best F1 (@conf) | Val F1 | Relative CPU speed |
+|---|---|---|---|---|
+| ResNet18, video-balanced | 0.786 | 0.783 (@0.38) | 0.981 | 1x |
+| **ResNet18, small-input-stem (current best)** | **0.788** | **0.791 (@0.38)** | 0.945 | ~1x |
+| EfficientNet-B0, video-balanced | 0.779 | 0.782 (@0.38) | **0.984** | **~5x slower** |
+
+**Confirms the session's recurring lesson a third time:** the highest val
+score does not translate to the best test result — EfficientNet-B0 scores
+worst of the three on the actual gold test set despite scoring best on
+val. It also turned out to be roughly 5x slower per crop on this CPU
+despite having far fewer parameters (4.0M vs. ResNet18's 11.2M) — a
+practical reminder that FLOP/parameter counts don't reliably predict
+CPU wall-clock speed; EfficientNet's depthwise-separable convolutions are
+known to vectorize less efficiently on general-purpose CPU BLAS kernels
+than plain convolutions, an advantage that mainly shows up on GPU/
+accelerator hardware with dedicated grouped-conv support.
+
+**Final decision:** no change to the best configuration — score fusion +
+small-input-stem ResNet18 (`configs/24` + `configs/27`) remains item 1b's
+final result. EfficientNet-B0 is documented as a considered, tested
+alternative that did not improve on it, not a silent gap.

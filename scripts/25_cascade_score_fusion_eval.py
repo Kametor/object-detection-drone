@@ -148,7 +148,7 @@ def main() -> None:
                 [cv2.IMWRITE_JPEG_QUALITY, config["jpeg_quality"]],
             )
 
-        print(f"{video_dir.name}: done")
+        print(f"{video_dir.name}: done", flush=True)
 
     elapsed = time.time() - start
     predictions = {

@@ -1,0 +1,11 @@
+{
+  "script": "06_evaluate.py",
+  "method_name": "yolo26n_score_fusion_efficientnet_b0",
+  "predictions_path": "results/cascade_score_fusion_efficientnet_b0/predictions.json",
+  "gt_path": "data/gold_test/annotations.json",
+  "config_path": "configs/06_evaluate.yaml",
+  "config_hash": "ebc5d27dd103",
+  "seed": 42,
+  "git_sha": "cdba5ea5b2f11ecacf6db0bc0cbc0320f4f96e96",
+  "timestamp": "2026-09-13T19:01:54.385022+00:00"
+}

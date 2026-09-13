@@ -1,0 +1,13 @@
+{
+  "script": "25_cascade_score_fusion_eval.py",
+  "config_path": "configs/33_cascade_score_fusion_efficientnet_b0.yaml",
+  "config_hash": "ed88505eecab",
+  "seed": 42,
+  "git_sha": "cdba5ea5b2f11ecacf6db0bc0cbc0320f4f96e96",
+  "timestamp": "2026-09-13T19:01:41.837633+00:00",
+  "num_frames": 196,
+  "auto_accepted": 612,
+  "fused": 2314,
+  "total_kept": 2926,
+  "elapsed_seconds": 529.6
+}
