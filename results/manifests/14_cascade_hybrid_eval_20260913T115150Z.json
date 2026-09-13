@@ -1,0 +1,12 @@
+{
+  "script": "14_cascade_hybrid_eval.py",
+  "config_path": "configs/14_cascade_hybrid_eval.yaml",
+  "config_hash": "d376f2bcba52",
+  "seed": 42,
+  "git_sha": "9ca542f21de9287b5e6213fda160500e901bea6a",
+  "timestamp": "2026-09-13T11:51:50.107246+00:00",
+  "num_frames": 196,
+  "stage1_candidates": 2926,
+  "stage2_kept": 822,
+  "elapsed_seconds": 77.3
+}

@@ -1,0 +1,22 @@
+seed: 42
+
+frames_dir: data/processed/frames/test
+
+# Stage 1: same low-confidence YOLO26n as configs/13_yolo_lowconf_test.yaml
+# — high recall, low precision by design.
+checkpoint: yolo26n.pt
+conf: 0.01
+imgsz: 1920
+
+# Stage 2: the trained verifier (item 1b) re-examines every stage-1 box as
+# a crop and rejects the ones that aren't people. Must match
+# configs/09_build_crop_dataset.yaml / configs/10_train_verifier.yaml so
+# crops look the same at inference as they did at training time.
+verifier_checkpoint: results/cascade_verifier/resnet18_verifier.pt
+crop_size: 64
+padding_ratio: 0.4
+device: cpu
+
+output_dir: results/cascade_hybrid
+manifest_dir: results/manifests
+jpeg_quality: 90

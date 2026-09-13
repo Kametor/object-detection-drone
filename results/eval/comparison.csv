@@ -1,2 +1,4 @@
 method,mAP@.5,mAP@[.5:.95],mAP_small,mAP_medium,mAP_large,precision,recall,f1,tp,fp,fn
 yolo26n_zeroshot,0.6935,0.4815,0.0178,0.4735,0.6799,0.8546,0.7274,0.7859,523,89,196
+yolo26n_lowconf,0.801,0.5326,0.0641,0.531,0.7006,0.8546,0.7274,0.7859,523,89,196
+yolo26n_lowconf_verifier_hybrid,0.3678,0.202,0.0047,0.2577,0.1605,0.4818,0.5508,0.514,396,426,323

@@ -9,11 +9,14 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
+import cv2
+import numpy as np
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 from torchvision.models import ResNet18_Weights, resnet18
+from torchvision.transforms import functional as TF
 
 # ImageFolder sorts class directories alphabetically: not_person=0, person=1.
 NOT_PERSON_INDEX = 0
@@ -59,6 +62,22 @@ def build_transforms(crop_size: int, train: bool) -> transforms.Compose:
         transforms.ToTensor(),
         normalize,
     ])
+
+
+def crop_to_tensor(crop_bgr: np.ndarray) -> torch.Tensor:
+    """Preprocess one already-sized cascade crop (cv2, BGR) for inference.
+
+    Mirrors `build_transforms(..., train=False)` exactly: at training time
+    crops are written to disk with cv2 (BGR) and read back by
+    `ImageFolder` (which decodes to RGB) before that same resize/normalize
+    — cv2.imwrite/imread round-trips BGR arrays through a standard RGB
+    JPEG transparently, so the equivalent in-memory step is an explicit
+    BGR->RGB swap. Skips the Resize step: cascade crops are already
+    produced at the target size by `crop_candidate`.
+    """
+    rgb = cv2.cvtColor(crop_bgr, cv2.COLOR_BGR2RGB)
+    tensor = TF.to_tensor(rgb)
+    return TF.normalize(tensor, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 
 
 def build_loaders(

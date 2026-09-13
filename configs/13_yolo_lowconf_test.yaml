@@ -1,0 +1,16 @@
+seed: 42
+
+frames_dir: data/processed/frames/test
+checkpoint: yolo26n.pt
+# The cascade's low-confidence floor, chosen from the val threshold
+# sweep (results/eval/val_threshold_sweep.md) — see decision_log.md
+# 2026-09-13. Same YOLO26n zero-shot checkpoint as configs/05_yolo_zeroshot.yaml,
+# only the threshold differs: this is "low-confidence plain YOLO" (method
+# 2 of the 3-way comparison), i.e. what the cascade's first stage alone
+# looks like before the ResNet18 verifier is added.
+conf: 0.01
+imgsz: 1920
+
+output_dir: results/yolo26_lowconf
+manifest_dir: results/manifests
+jpeg_quality: 90

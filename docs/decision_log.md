@@ -997,3 +997,68 @@ content in a `person` folder. This is the noise-rate number for the
 presentation: **0 observed mislabels across a full manual pass**, not a
 sampled estimate. Proceeding to verifier training (item 1b,
 `scripts/10_train_verifier.py`) on this crop set.
+
+## 3-way YOLO threshold/verifier comparison on the gold test set (2026-09-13)
+
+Ran the same YOLO26n zero-shot checkpoint three ways on the gold test set
+(196 frames, 719 human-labeled boxes) — `scripts/13_yolo_lowconf_test.yaml`
+reuses `05_yolo_zeroshot_eval.py` at the cascade's low threshold,
+`14_cascade_hybrid_eval.py` adds the trained verifier on top:
+
+| method | mAP@.5 | mAP@[.5:.95] | P | R | F1 | TP/FP/FN |
+|---|---|---|---|---|---|---|
+| yolo26n_zeroshot (conf 0.25) | 0.694 | 0.482 | 0.855 | 0.727 | 0.786 | 523/89/196 |
+| yolo26n_lowconf (conf 0.01) | 0.801 | 0.533 | 0.855 | 0.727 | 0.786 | 523/89/196 |
+| yolo26n_lowconf + verifier hybrid | 0.368 | 0.202 | 0.482 | 0.551 | 0.514 | 396/426/323 |
+
+**Sanity check that passed:** the low-conf run's operating point at
+conf=0.25 is bit-for-bit identical to the high-conf run (same TP/FP/FN) —
+expected, since it's the same model/boxes, just a wider net that mAP (which
+sweeps confidence internally) can see more of. mAP@.5 rising from 0.694 to
+0.801 is exactly that effect, not a real improvement in detection quality.
+
+**Unexpected result: the verifier hybrid is worse than plain YOLO on every
+metric**, not just worse than hoped. Stage 1 proposed 2926 candidates;
+the verifier kept 822 (rejected 71.9%) — but FP actually *rose* (89 -> 426
+at the conf=0.25 cut) while TP fell (523 -> 396). Two things are going on,
+and the operating-point row above is partly misleading about which one
+dominates because of a scale mismatch this project's own eval protocol
+(Section 7) warns about: the hybrid's "confidence" at that row is the
+*verifier's* softmax probability, not YOLO's detection confidence, and the
+two are not the same scale — a small ResNet head trained to convergence on
+~5k crops tends to be overconfident near 0/1, so a 0.25 cut barely filters
+anything (396+426=822 = every kept box), unlike YOLO's confidence which is
+smoothly spread out. mAP (which sweeps each method's own score
+independently) is the fairer comparison here and it still shows the hybrid
+clearly behind, so the scale mismatch explains the operating-point number's
+literal FP figure but not the overall conclusion.
+
+Per-video mAP@.5 breaks the story down further:
+
+| video | lowconf | hybrid |
+|---|---|---|
+| Berghouse_Leopard_Jog | 0.980 | 0.658 |
+| DJI_0501 | 0.388 | 0.484 |
+| DJI_0596 | 0.256 | 0.020 |
+| DJI_0862 | 0.861 | 0.272 |
+
+The verifier only helps on one of four test videos (DJI_0501) and hurts
+badly on the other three — worst on DJI_0596, one of the two videos
+already flagged in CLAUDE.md Section 6 for ant-sized instances the YOLO
+feature map can't represent at any confidence, so the verifier is being
+asked to judge crops that were already too degraded at the source.
+
+**Leading hypothesis, not yet confirmed:** the verifier was trained and
+validated on crops mined from the *train/val* videos' own SAM3
+pseudo-labels (val F1 0.989, see the item 1b training entry above) — a
+distribution the val split shares with training. The gold *test* videos
+are the ones explicitly held out at the video level (Section 2, rule 1)
+specifically so this kind of gap would show up; a classifier this small,
+this confident, generalizing well within train/val's domain but poorly to
+genuinely unseen footage is a plausible and honest explanation, not yet
+verified against the actual review crops.
+
+**Next step:** inspect `results/cascade_hybrid/review/` (per-frame kept
+boxes) and `results/eval/yolo26n_lowconf_verifier_hybrid/comparison/`
+(GT vs. prediction) before writing this up as a final conclusion — this
+entry records the measured numbers, not yet the confirmed root cause.
