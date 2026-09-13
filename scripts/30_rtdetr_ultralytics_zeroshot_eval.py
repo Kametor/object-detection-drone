@@ -1,13 +1,15 @@
-"""RT-DETRv2-R18 zero-shot (COCO-pretrained) sanity check on the gold test set.
+"""Ultralytics RT-DETR (HGNetv2 backbone) zero-shot sanity check.
 
-Tier 1 item 2's counterpart to scripts/05_yolo_zeroshot_eval.py: same
-gold test set, same "measure the domain gap before training anything"
-purpose, same conf=0.25 operating point — only the architecture differs,
-for a fair transformer-vs-CNN zero-shot comparison. Runs on CPU locally
-(confirmed ~0.3s/frame, comparable to YOLO26n's own zero-shot timing).
+A second RT-DETR data point alongside scripts/28's HF R18 checkpoint —
+same purpose (measure the domain gap, no training), different backbone
+size. See src/methods/rtdetr/ultralytics_model.py.
+
+`frames_per_video` (optional, in the config) caps how many frames per
+video are processed — for a fast preview run before committing to the
+full test set.
 
 Usage:
-    .venv/bin/python scripts/28_rtdetr_zeroshot_eval.py --config configs/28_rtdetr_zeroshot.yaml
+    .venv/bin/python scripts/30_rtdetr_ultralytics_zeroshot_eval.py --config configs/30_rtdetr_ultralytics_zeroshot.yaml
 """
 from __future__ import annotations
 
@@ -25,7 +27,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from src.methods.rtdetr.model import RtDetrV2Detector  # noqa: E402
+from src.methods.rtdetr.ultralytics_model import RtDetrUltralyticsDetector  # noqa: E402
 from src.methods.sam3_zeroshot.pipeline import draw_detections  # noqa: E402
 
 
@@ -49,11 +51,10 @@ def main() -> None:
     args = parser.parse_args()
 
     config = yaml.safe_load(args.config.read_text())
+    frames_per_video = config.get("frames_per_video")  # None = all frames
 
-    detector = RtDetrV2Detector(
-        checkpoint=config["checkpoint"],
-        conf=config["conf"],
-        image_size=(config["image_height"], config["image_width"]),
+    detector = RtDetrUltralyticsDetector(
+        checkpoint=config["checkpoint"], conf=config["conf"], imgsz=config["imgsz"]
     )
 
     frames_dir = Path(config["frames_dir"])
@@ -74,7 +75,12 @@ def main() -> None:
         video_review_dir = review_dir / video_dir.name
         video_review_dir.mkdir(parents=True, exist_ok=True)
 
-        for frame_path in sorted(video_dir.glob("*.jpg")):
+        frame_paths = sorted(video_dir.glob("*.jpg"))
+        if frames_per_video is not None:
+            frame_paths = frame_paths[:frames_per_video]
+
+        video_start = time.time()
+        for i, frame_path in enumerate(frame_paths, start=1):
             image = cv2.imread(str(frame_path))
             h, w = image.shape[:2]
             detections = detector.detect(image)
@@ -99,7 +105,10 @@ def main() -> None:
             annotated = draw_detections(image, detections)
             cv2.imwrite(str(video_review_dir / frame_path.name), annotated, [cv2.IMWRITE_JPEG_QUALITY, config["jpeg_quality"]])
 
-        print(f"{video_dir.name}: done")
+            print(f"  {video_dir.name} [{i}/{len(frame_paths)}] {frame_path.name}: {len(detections)} boxes", flush=True)
+
+        video_elapsed = time.time() - video_start
+        print(f"{video_dir.name}: done ({len(frame_paths)} frames, {video_elapsed:.1f}s)", flush=True)
 
     elapsed = time.time() - start
     predictions = {
@@ -110,26 +119,27 @@ def main() -> None:
     predictions_path = output_dir / "predictions.json"
     predictions_path.write_text(json.dumps(predictions, indent=2))
 
-    print(f"\n{len(images)} frames, {len(annotations)} boxes, {elapsed:.1f}s total ({elapsed / max(len(images), 1):.2f}s/frame)")
-    print(f"Written: {predictions_path}")
-    print(f"Written: {review_dir}/")
+    print(f"\n{len(images)} frames, {len(annotations)} boxes, {elapsed:.1f}s total ({elapsed / max(len(images), 1):.2f}s/frame)", flush=True)
+    print(f"Written: {predictions_path}", flush=True)
+    print(f"Written: {review_dir}/", flush=True)
 
     manifest_dir = Path(config["manifest_dir"])
     manifest_dir.mkdir(parents=True, exist_ok=True)
     run_manifest = {
-        "script": "28_rtdetr_zeroshot_eval.py",
+        "script": "30_rtdetr_ultralytics_zeroshot_eval.py",
         "config_path": str(args.config),
         "config_hash": config_hash(config),
         "seed": config["seed"],
         "git_sha": git_sha(),
         "timestamp": datetime.now(timezone.utc).isoformat(),
+        "frames_per_video": frames_per_video,
         "num_frames": len(images),
         "num_boxes": len(annotations),
         "elapsed_seconds": round(elapsed, 1),
     }
-    manifest_path = manifest_dir / f"28_rtdetr_zeroshot_eval_{datetime.now(timezone.utc):%Y%m%dT%H%M%SZ}.json"
+    manifest_path = manifest_dir / f"30_rtdetr_ultralytics_zeroshot_eval_{datetime.now(timezone.utc):%Y%m%dT%H%M%SZ}.json"
     manifest_path.write_text(json.dumps(run_manifest, indent=2))
-    print(f"Written: {manifest_path}")
+    print(f"Written: {manifest_path}", flush=True)
 
 
 if __name__ == "__main__":

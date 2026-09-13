@@ -27,24 +27,32 @@ class Detection:
 class RtDetrV2Detector:
     """Zero-shot COCO-pretrained RT-DETRv2-R18, filtered to the 'person' class.
 
-    Fixed-resolution input (640x640, `RTDetrImageProcessor`'s own default)
-    — unlike YOLO26n's configurable `imgsz`, RT-DETR's own preprocessing
-    resizes every frame down to a much lower resolution than our source
-    footage (up to 3840x2160). This is expected to widen the small-object
-    domain gap relative to YOLO's zero-shot check at imgsz=1920 — exactly
-    the kind of thing the zero-shot sanity check exists to measure, not
-    something to correct before that first measurement.
-
     `PekingU/rtdetr_v2_r18vd` is RT-DETRv2's own R18-backbone checkpoint,
     COCO-only pretrained (no Objects365 variant exists for v2 on the Hub,
     consistent with v1's naming convention where the plain name means
     COCO-only) — the same pretraining corpus as `Yolo26Detector`'s
     COCO-pretrained weights, so the two zero-shot checks are a fair,
     apples-to-apples architecture comparison.
+
+    `image_size` overrides the processor's own default (640x640, far below
+    our source footage's up to 3840x2160) — unlike YOLO26n's configurable
+    `imgsz`, RT-DETR's preprocessing always resizes to one fixed
+    height/width (no aspect-ratio letterboxing), so this must be set
+    explicitly for a fair comparison. Default here (1920x1088) matches
+    YOLO's imgsz=1920 on the long side, rounded to a multiple of 32 (the
+    backbone's stride) on the short side, for our 16:9 source video.
     """
 
-    def __init__(self, checkpoint: str = "PekingU/rtdetr_v2_r18vd", conf: float = 0.25) -> None:
-        self._processor = RTDetrImageProcessor.from_pretrained(checkpoint)
+    def __init__(
+        self,
+        checkpoint: str = "PekingU/rtdetr_v2_r18vd",
+        conf: float = 0.25,
+        image_size: tuple[int, int] = (1088, 1920),  # (height, width)
+    ) -> None:
+        height, width = image_size
+        self._processor = RTDetrImageProcessor.from_pretrained(
+            checkpoint, size={"height": height, "width": width}
+        )
         self._model = RTDetrV2ForObjectDetection.from_pretrained(checkpoint)
         self._model.eval()
         self._conf = conf

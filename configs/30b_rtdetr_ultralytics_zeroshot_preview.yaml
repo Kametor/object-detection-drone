@@ -1,0 +1,15 @@
+seed: 42
+
+frames_dir: data/processed/frames/test
+checkpoint: rtdetr-l.pt
+conf: 0.25
+imgsz: 640
+
+# PREVIEW ONLY: 10 frames per video (~40 total, not the full 196) for a
+# fast first read before committing to the full test set. Separate
+# output_dir so this never collides with the full run's predictions.json.
+frames_per_video: 10
+
+output_dir: results/rtdetr_ultralytics_zeroshot_preview
+manifest_dir: results/manifests
+jpeg_quality: 90

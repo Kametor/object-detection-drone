@@ -1,0 +1,12 @@
+{
+  "script": "30_rtdetr_ultralytics_zeroshot_eval.py",
+  "config_path": "configs/30b_rtdetr_ultralytics_zeroshot_preview.yaml",
+  "config_hash": "6fb07da15913",
+  "seed": 42,
+  "git_sha": "1ee87c50e777a07b10d107f6db25a48e5067d54c",
+  "timestamp": "2026-09-13T16:56:23.392129+00:00",
+  "frames_per_video": 10,
+  "num_frames": 40,
+  "num_boxes": 145,
+  "elapsed_seconds": 27.8
+}

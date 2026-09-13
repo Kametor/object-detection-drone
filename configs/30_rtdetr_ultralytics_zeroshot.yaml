@@ -1,0 +1,15 @@
+seed: 42
+
+frames_dir: data/processed/frames/test
+checkpoint: rtdetr-l.pt
+conf: 0.25
+# Native training resolution for this checkpoint (Ultralytics' own
+# default for RT-DETR) — see docs/decision_log.md 2026-09-13: forcing a
+# different RT-DETR checkpoint (HF's R18) up to YOLO's imgsz=1920 broke
+# it catastrophically (no NMS at inference to fall back on). Kept at 640
+# here for the same reason, until/unless checked otherwise.
+imgsz: 640
+
+output_dir: results/rtdetr_ultralytics_zeroshot
+manifest_dir: results/manifests
+jpeg_quality: 90
