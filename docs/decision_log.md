@@ -1646,12 +1646,12 @@ supervised-detection architecture).
 | TP/FP/FN | 627/665/92 |
 | Inference | **0.37 FPS** (mean 2.72s/frame; min 2.22s, max 44.26s) |
 
-| Method | mAP@.5 | F1 (@0.25) |
-|---|---|---|
-| YOLO26n zero-shot | 0.694 | 0.786 |
-| RT-DETRv2-R18 zero-shot | 0.740 | 0.677 |
-| Cascade, small-input-stem (best trained result) | 0.788 | 0.766 (shared-threshold table above) |
-| **SAM3 zero-shot** | **0.847** | 0.624 |
+| Method | Hardware | mAP@.5 | F1 (@0.25) |
+|---|---|---|---|
+| YOLO26n zero-shot | T4 | 0.693 | 0.784 |
+| RT-DETRv2-R18 zero-shot | CPU (not yet re-run on T4) | 0.740 | 0.677 |
+| Cascade, small-input-stem (best trained result) | T4 | 0.786 | 0.766 (shared-threshold table above) |
+| **SAM3 zero-shot** | T4 | **0.847** | 0.624 |
 
 **The clearest paradigm contrast in the whole project:** SAM3 achieves
 the best ranking quality (mAP) and best recall of any method, with zero
