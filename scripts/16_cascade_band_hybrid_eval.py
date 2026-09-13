@@ -70,8 +70,9 @@ def main() -> None:
         checkpoint=config["checkpoint"], conf=config["conf"], imgsz=config["imgsz"]
     )
 
-    verifier = build_model(pretrained=False).to(device)
     checkpoint = torch.load(config["verifier_checkpoint"], map_location=device)
+    small_input_stem = checkpoint.get("config", {}).get("small_input_stem", False)
+    verifier = build_model(pretrained=False, small_input_stem=small_input_stem).to(device)
     verifier.load_state_dict(checkpoint["state_dict"])
     verifier.eval()
 

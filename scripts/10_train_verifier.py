@@ -55,7 +55,9 @@ def main() -> None:
     print(f"train crops per class (not_person, person): {class_counts}")
     print(f"val batches: {len(val_loader)}, device: {device}")
 
-    model = build_model(pretrained=config["pretrained"]).to(device)
+    model = build_model(
+        pretrained=config["pretrained"], small_input_stem=config.get("small_input_stem", False)
+    ).to(device)
 
     # Weight the loss inversely to class frequency so the majority class
     # (not_person) doesn't simply dominate the decision.

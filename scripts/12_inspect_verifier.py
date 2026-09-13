@@ -64,8 +64,9 @@ def main() -> None:
     )
     loader = DataLoader(val_set, batch_size=64, shuffle=False)
 
-    model = build_model(pretrained=False).to(device)
     checkpoint = torch.load(config["checkpoint_path"], map_location=device)
+    small_input_stem = checkpoint.get("config", {}).get("small_input_stem", False)
+    model = build_model(pretrained=False, small_input_stem=small_input_stem).to(device)
     model.load_state_dict(checkpoint["state_dict"])
     model.eval()
 

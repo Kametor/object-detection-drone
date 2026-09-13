@@ -1286,3 +1286,53 @@ Closing item 1b's iteration here for real: `configs/19` (confidence-band,
 mAP@.5 0.760, best F1 0.7822 @ conf=0.15, plus the documented
 small-object recovery on DJI_0501/DJI_0596 (10/44 previously-invisible
 small people).
+
+## Score fusion instead of hard gating: the best result this cycle (2026-09-13)
+
+User's next refinement: instead of the verifier making a hard accept/reject
+call on band candidates (scripts/16), combine YOLO's own confidence with
+the verifier's person-probability into one continuous score and let mAP's
+threshold sweep find the useful cutoff, rather than pre-deciding it with a
+binary gate. Implemented in `scripts/25_cascade_score_fusion_eval.py` as
+the geometric mean `sqrt(yolo_score * verifier_person_prob)` — zero unless
+both models agree, a natural way to combine two independent probability-
+like estimates. Boxes >= 0.25 stay untouched (unaffected by any of this,
+per the settled size-gate findings above); every band candidate keeps its
+fused score instead of being kept-or-dropped.
+
+| method | mAP@.5 | mAP@[.5:.95] | mAP_small | best F1 (@conf) |
+|---|---|---|---|---|
+| yolo26n_zeroshot (method 1) | 0.694 | 0.482 | 0.000 | 0.786 (@0.25) |
+| band-gated hybrid, video-balanced (prior best) | 0.760 | 0.514 | 0.063 | 0.782 (@0.15) |
+| **score fusion, video-balanced verifier** | **0.786** | **0.522** | **0.076** | 0.783 (@0.38) |
+
+**New best mAP@.5 this cycle**, beating method 1 by 0.092 and the prior
+best band-gated hybrid by 0.026 — the largest single jump of any item 1b
+experiment today. The best single-operating-point F1 (0.783 @ its own
+conf=0.38 — note this is the *fused* score's own scale, not comparable
+number-for-number to YOLO's 0.25) is the closest yet to method 1's 0.786,
+within 0.003.
+
+Per-video mAP@.5, and specifically the DJI_0596 trend across every item 1b
+refinement tried today, shows monotonic improvement:
+
+| video | method 1 | band-gated | score fusion |
+|---|---|---|---|
+| Berghouse | 0.935 | 0.975 | 0.973 |
+| DJI_0501 | 0.226 | 0.364 | 0.338 |
+| DJI_0596 | 0.052 | 0.193 | **0.244** |
+| DJI_0862 | 0.800 | 0.831 | 0.851 |
+
+**Why this likely works better than hard gating:** a binary accept/reject
+throws away graded information both models have. A YOLO score of 0.20 with
+a verifier person-probability of 0.55 and a YOLO score of 0.02 with the
+same 0.55 probability were previously treated identically (both simply
+"kept, at their own YOLO score") -- fusion correctly ranks the first well
+above the second. This matches the general lesson from the size-gate
+experiments: wherever we replaced a hard cutoff with information both
+signals actually carry, results improved; wherever we discarded
+information the models had via too coarse a rule, results got worse.
+
+Still using the video-balanced verifier (small-input-stem variant is
+training separately); worth re-running fusion with that checkpoint once
+it's ready to check whether the gains compound.

@@ -1,0 +1,21 @@
+seed: 42
+
+frames_dir: data/processed/frames/test
+
+checkpoint: yolo26n.pt
+conf: 0.01
+imgsz: 1920
+high_conf_threshold: 0.25
+
+# Using the current best checkpoint (video-balanced sampling, configs/17)
+# while the small-input-stem variant (configs/24) is still training --
+# swap this once that one finishes and is evaluated, to see if fusion
+# compounds with the architecture change.
+verifier_checkpoint: results/cascade_verifier/resnet18_verifier_video_balanced.pt
+crop_size: 64
+padding_ratio: 0.4
+device: cpu
+
+output_dir: results/cascade_score_fusion
+manifest_dir: results/manifests
+jpeg_quality: 90

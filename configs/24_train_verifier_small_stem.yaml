@@ -1,0 +1,27 @@
+seed: 42
+
+crops_dir: data/crops
+crop_size: 64
+batch_size: 64
+epochs: 15
+lr: 0.0003
+weight_decay: 0.0001
+pretrained: true
+device: cpu
+
+# Carried over from configs/17 (the current best): DJI_0790 dominance
+# means every video should still contribute equally per epoch.
+video_balanced_sampling: true
+
+# New: swap ResNet18's 7x7-stride2-conv + maxpool stem for a 3x3-stride1
+# conv with no maxpool -- the standard "CIFAR-style" adaptation for small
+# inputs. Our 64x64 crops are well below ImageNet's 224x224; the stock
+# stem downsamples to 16x16 before the first residual block even runs,
+# which is a lot of detail to throw away for a crop that's often already
+# a tiny, blurry person blown up to fill the frame. User's proposal,
+# 2026-09-13 (see docs/decision_log.md).
+small_input_stem: true
+
+checkpoint_path: results/cascade_verifier/resnet18_verifier_small_stem.pt
+output_dir: results/cascade_verifier_small_stem
+manifest_dir: results/manifests

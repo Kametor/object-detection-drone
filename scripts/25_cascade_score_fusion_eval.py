@@ -1,37 +1,36 @@
-"""Size-gated cascade: verify small objects unconditionally, large ones by band.
+"""Score-fusion cascade: blend YOLO's confidence with the verifier's, don't gate.
 
-Extends scripts/16's confidence-band gate with a second, independent gate
-on box size. The user's diagnosis: YOLO already works on large objects, so
-trusting it there at high confidence is fine (unchanged from scripts/16);
-but it structurally cannot represent small objects at all (mAP_small was
-exactly 0.0 for plain YOLO on the two hardest test videos -- see
-docs/decision_log.md), so a small candidate's YOLO confidence is not a
-trustworthy signal even when it happens to be high, and every small
-candidate should go through the verifier.
+scripts/16's band-gated hybrid makes the verifier's decision on a box in
+the ambiguous [conf, high_conf_threshold) band a hard accept/reject
+(keep iff argmax says person), discarding YOLO's own confidence for that
+decision entirely -- it's only carried through afterward as the kept
+box's reported score. The user's proposal: instead, combine both
+models' evidence into one continuous score and let every downstream
+metric (mAP's threshold sweep, a chosen operating point) work with that,
+rather than a step function that fully trusts or fully discards the
+verifier's call.
 
-Checked before building this (see decision_log.md, 2026-09-13): simply
-*dropping* large+low-confidence candidates instead of verifying them, as
-first proposed, would cost 75/719 gold GT boxes (10.4%) that are only ever
-proposed that way -- so large objects keep scripts/16's original gate
-(trust >= high_conf_threshold, verify the band below it) rather than a
-harder cutoff.
+Fusion is the geometric mean of YOLO's score and the verifier's person
+probability: sqrt(yolo_score * person_prob). Zero if either model is
+completely against it, requiring both to agree for a high combined score
+-- a natural way to combine two independent probability-like estimates
+of the same thing. Boxes >= high_conf_threshold are untouched (unchanged
+from scripts/16: that regime doesn't benefit from the verifier at all,
+per docs/decision_log.md's size-gate experiments).
 
-Routing per candidate:
-    area < small_area_threshold           -> verifier decides, always
-    area >= small_area_threshold, score >= high_conf_threshold -> auto-accept
-    area >= small_area_threshold, score <  high_conf_threshold -> verifier decides
-
-Kept boxes always carry YOLO's own score, never the verifier's -- same
-score-scale rationale as scripts/16.
+No box in the band is ever discarded outright here (unlike scripts/16) --
+every one keeps its fused score, so mAP's own PR-curve sweep decides
+what the useful cutoff is instead of us hard-gating in advance.
 
 Usage:
-    .venv/bin/python scripts/22_cascade_size_gated_hybrid_eval.py --config configs/22_cascade_size_gated_hybrid_eval.yaml
+    .venv/bin/python scripts/25_cascade_score_fusion_eval.py --config configs/25_cascade_score_fusion_eval.yaml
 """
 from __future__ import annotations
 
 import argparse
 import hashlib
 import json
+import math
 import subprocess
 import sys
 import time
@@ -76,7 +75,6 @@ def main() -> None:
     torch.manual_seed(config["seed"])
     device = torch.device(config["device"])
     high_conf = config["high_conf_threshold"]
-    small_area = config["small_area_threshold"]
 
     detector = Yolo26Detector(
         checkpoint=config["checkpoint"], conf=config["conf"], imgsz=config["imgsz"]
@@ -95,7 +93,7 @@ def main() -> None:
 
     images, annotations = [], []
     annotation_id = image_id = 1
-    auto_accepted = verified_small = verified_large_band = verifier_kept = 0
+    auto_accepted = fused = 0
     start = time.time()
 
     for video_dir in sorted(frames_dir.iterdir()):
@@ -112,18 +110,10 @@ def main() -> None:
 
             kept: list[Detection] = []
             for det in candidates:
-                area = det.bbox_xywh[2] * det.bbox_xywh[3]
-                is_small = area < small_area
-
-                if not is_small and det.score >= high_conf:
+                if det.score >= high_conf:
                     auto_accepted += 1
                     kept.append(det)
                     continue
-
-                if is_small:
-                    verified_small += 1
-                else:
-                    verified_large_band += 1
 
                 crop = crop_candidate(image, det.bbox_xywh, config["padding_ratio"], config["crop_size"])
                 if crop is None:
@@ -131,10 +121,10 @@ def main() -> None:
                 tensor = crop_to_tensor(crop).unsqueeze(0).to(device)
                 with torch.no_grad():
                     probs = torch.softmax(verifier(tensor), dim=1)[0]
-                if int(probs.argmax()) != PERSON_INDEX:
-                    continue
-                verifier_kept += 1
-                kept.append(det)  # keep YOLO's own score, not the verifier's
+                person_prob = float(probs[PERSON_INDEX])
+                fused_score = math.sqrt(det.score * person_prob)
+                fused += 1
+                kept.append(Detection(bbox_xywh=det.bbox_xywh, score=fused_score))
 
             file_name = f"{safe_name}__{frame_path.name}"
             images.append({"id": image_id, "file_name": file_name, "width": w, "height": h})
@@ -168,11 +158,9 @@ def main() -> None:
     predictions_path = output_dir / "predictions.json"
     predictions_path.write_text(json.dumps(predictions, indent=2))
 
-    print(f"\nauto-accepted (large, score >= {high_conf}): {auto_accepted}")
-    print(f"verified (small, any score): {verified_small}")
-    print(f"verified (large, band [conf, {high_conf})): {verified_large_band}")
-    print(f"verifier kept: {verifier_kept}")
-    print(f"total kept: {len(annotations)}")
+    print(f"\nauto-accepted (score >= {high_conf}): {auto_accepted}")
+    print(f"fused (band [conf, {high_conf})): {fused}")
+    print(f"total kept: {len(annotations)} (nothing discarded outright in the band)")
     print(f"{len(images)} frames, {elapsed:.1f}s total ({elapsed / max(len(images), 1):.2f}s/frame)")
     print(f"Written: {predictions_path}")
     print(f"Written: {review_dir}/")
@@ -180,7 +168,7 @@ def main() -> None:
     manifest_dir = Path(config["manifest_dir"])
     manifest_dir.mkdir(parents=True, exist_ok=True)
     run_manifest = {
-        "script": "22_cascade_size_gated_hybrid_eval.py",
+        "script": "25_cascade_score_fusion_eval.py",
         "config_path": str(args.config),
         "config_hash": config_hash(config),
         "seed": config["seed"],
@@ -188,13 +176,11 @@ def main() -> None:
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "num_frames": len(images),
         "auto_accepted": auto_accepted,
-        "verified_small": verified_small,
-        "verified_large_band": verified_large_band,
-        "verifier_kept": verifier_kept,
+        "fused": fused,
         "total_kept": len(annotations),
         "elapsed_seconds": round(elapsed, 1),
     }
-    manifest_path = manifest_dir / f"22_cascade_size_gated_hybrid_eval_{datetime.now(timezone.utc):%Y%m%dT%H%M%SZ}.json"
+    manifest_path = manifest_dir / f"25_cascade_score_fusion_eval_{datetime.now(timezone.utc):%Y%m%dT%H%M%SZ}.json"
     manifest_path.write_text(json.dumps(run_manifest, indent=2))
     print(f"Written: {manifest_path}")
 
