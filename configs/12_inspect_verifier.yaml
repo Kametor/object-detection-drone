@@ -1,0 +1,12 @@
+seed: 42
+
+crops_dir: data/crops
+crop_size: 64
+checkpoint_path: results/cascade_verifier/resnet18_verifier.pt
+device: cpu
+
+# Copies every misclassified val crop here for visual review (Quick Look),
+# split by error type — matches the pipeline's "inspect actual files, don't
+# just trust the aggregate metric" convention (see DJI_0790/0876 audits).
+review_dir: results/cascade_verifier/review
+manifest_dir: results/manifests

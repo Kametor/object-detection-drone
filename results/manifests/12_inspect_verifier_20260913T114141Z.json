@@ -1,0 +1,14 @@
+{
+  "script": "12_inspect_verifier.py",
+  "config_path": "configs/12_inspect_verifier.yaml",
+  "config_hash": "b70d90a1a2ad",
+  "seed": 42,
+  "git_sha": "0557bc73f0b89e2a9cbc7542192680aa01545c1e",
+  "timestamp": "2026-09-13T11:41:41.377721+00:00",
+  "counts": {
+    "true_positive": 179,
+    "true_negative": 38,
+    "false_positive": 2,
+    "false_negative": 2
+  }
+}
