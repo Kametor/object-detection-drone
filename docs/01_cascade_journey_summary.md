@@ -241,7 +241,14 @@ most defensible value isn't the aggregate number — it's recovering some of
 the small/distant people (10 of 44, previously zero) that plain YOLO
 structurally cannot see at all.
 
-Not yet attempted: EfficientNet-B0 as an alternative verifier backbone
-(code is ready — `configs/26_train_verifier_efficientnet_b0.yaml` — not
-yet trained or evaluated). Time-boxed out of this cycle in favor of
-starting Tier 1 item 2 (RT-DETR-R18).
+**Also tried: EfficientNet-B0 as an alternative verifier backbone**
+(`configs/26`, trained on Colab GPU). Scored highest of all three
+checkpoints on validation (F1 0.9835) but *lowest* on the actual test set
+(mAP@.5 0.779, F1 0.782 vs. the small-input-stem ResNet's 0.788/0.791) —
+a third confirmation that val score doesn't predict test generalization
+here. Also ~5x slower per crop on this CPU despite far fewer parameters
+(4.0M vs. ResNet18's 11.2M) — depthwise-separable convolutions vectorize
+less efficiently on general CPU kernels than plain convolutions, an
+efficiency gain that mainly shows up on GPU/accelerator hardware. No
+change to the final configuration: score fusion + small-input-stem
+ResNet18 remains best.
