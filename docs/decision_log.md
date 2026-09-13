@@ -987,3 +987,13 @@ YOLO candidate that no longer matches any person box is mined as
 the confusion that broke the first stage. The audit doesn't just remove
 bad data; it converts the teacher's failure mode into the verifier's
 training signal.
+
+**Manual crop audit (2026-09-13).** Per Section 6's mandatory pseudo-label
+quality check, the user manually reviewed every crop in `data/crops/{train,val}/{person,not_person}/`
+(not just the ~100-sample spot-check the plan calls for a minimum of) after
+the DJI_0790 and DJI_0876 corrections above. Result: all crops labeled
+correctly — no person visible in a `not_person` folder, no non-person
+content in a `person` folder. This is the noise-rate number for the
+presentation: **0 observed mislabels across a full manual pass**, not a
+sampled estimate. Proceeding to verifier training (item 1b,
+`scripts/10_train_verifier.py`) on this crop set.
