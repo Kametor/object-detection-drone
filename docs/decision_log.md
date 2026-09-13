@@ -1626,3 +1626,52 @@ The gap is even clearer here than in the per-variant-optimized comparison
 (0.019 vs. the earlier 0.006) — small-input-stem ResNet18 is unambiguously
 the best verifier of the three, at a fixed point with no threshold-hunting
 involved.
+
+## Tier 1 item 3: SAM3 zero-shot benchmark result (2026-09-13)
+
+Ran `notebooks/04_sam3_zeroshot_eval.ipynb` on Colab T4: SAM3 prompted
+directly with "person" (conf=0.25, imgsz=1024 — the GPU-memory-safe
+value confirmed 2026-09-12), zero training on this project's data. This
+is the assignment's required genuinely-different-paradigm alternative
+(foundation model + text prompt vs. every other method's trained
+supervised-detection architecture).
+
+| Metric | Value |
+|---|---|
+| mAP@.5 | **0.8465** — highest of any method tried this cycle |
+| mAP@[.5:.95] | 0.6256 — also highest |
+| Precision (@0.25) | 0.485 |
+| Recall (@0.25) | **0.872** — highest of any method |
+| F1 (@0.25) | 0.624 |
+| TP/FP/FN | 627/665/92 |
+| Inference | **0.37 FPS** (mean 2.72s/frame; min 2.22s, max 44.26s) |
+
+| Method | mAP@.5 | F1 (@0.25) |
+|---|---|---|
+| YOLO26n zero-shot | 0.694 | 0.786 |
+| RT-DETRv2-R18 zero-shot | 0.740 | 0.677 |
+| Cascade, small-input-stem (best trained result) | 0.788 | 0.766 (shared-threshold table above) |
+| **SAM3 zero-shot** | **0.847** | 0.624 |
+
+**The clearest paradigm contrast in the whole project:** SAM3 achieves
+the best ranking quality (mAP) and best recall of any method, with zero
+training on this data — a real demonstration of foundation-model
+generalization. The cost is precision (665 FP at conf=0.25, dragging F1
+down) and, far more severely, **speed**: 0.37 FPS is roughly an order of
+magnitude slower than every trained detector in this project (YOLO/
+RT-DETR/cascade all ran at multiple FPS or better). Not remotely
+real-time-deployable as-is; genuinely useful as exactly what it's labeled
+— a zero-shot ceiling-finder and (as already used) a pseudo-labeling
+teacher, not a deployment candidate.
+
+Per-video mAP@.5 tells an unusually sharp story: **1.000 on Berghouse**
+(perfect), 0.907 on DJI_0862, 0.606 on DJI_0501, but only 0.260 on
+DJI_0596 — still the hardest video for every method tried, but a large
+relative improvement over YOLO's 0.052 and RT-DETR's 0.029-0.041 there.
+
+**Not yet explained:** the 44.26s max single-frame time (vs. a 2.22s
+min and 2.72s mean) — plausibly first-call model compilation/caching
+overhead rather than a pathological frame, but not confirmed against
+the actual per-frame timing log (only aggregate min/mean/max reached
+the manifest). Worth a note in the presentation as an open question,
+not a claimed explanation.
