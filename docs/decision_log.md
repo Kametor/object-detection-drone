@@ -1419,3 +1419,57 @@ confirm the resolution hypothesis qualitatively, then proceed to
 fine-tuning on the SAM3 pseudo-labels (per `plan.md`'s item 2, with
 position/scale augmentation since transformer detectors are more
 augmentation-sensitive than CNN heads).
+
+## Attempted "fair" resolution match for RT-DETR broke it (2026-09-13)
+
+Tried forcing RT-DETR's input resolution up from its native 640x640 to
+1920x1088 (matching YOLO's `imgsz=1920`), reasoning that resolution parity
+would make the two zero-shot checks more comparable — YOLO's own domain-gap
+check specifically benefits from a higher `imgsz` (small objects need more
+pixels to survive downsampling), so the same should help RT-DETR.
+
+**Result: catastrophic, not an improvement.**
+
+| | RT-DETR @ 640x640 (native) | RT-DETR @ 1920x1088 (forced) |
+|---|---|---|
+| mAP@.5 | 0.740 | **0.253** |
+| FP (@conf 0.25) | 351 | **1733** |
+| Boxes on the worst single frame | — | 67, clustered on one spot |
+
+Inspected the worst-offending frame's raw boxes before concluding this
+wasn't a coordinate-scaling bug in `src/methods/rtdetr/model.py`: the 67
+boxes are well-formed (plausible size, within image bounds) and tightly
+clustered on one real region of the image — a duplicate-detection storm,
+not scattered garbage.
+
+**Root cause:** unlike YOLO (a CNN pipeline with NMS as an independent
+post-processing step, tolerant of `imgsz` changes without retraining),
+RT-DETR has **no NMS at inference** — its "one query, one object" behavior
+is a learned property of one-to-one Hungarian matching during training,
+calibrated to the token count/spatial statistics of its trained
+resolution. Push the input far outside that resolution and there's no
+fallback mechanism to suppress the resulting duplicate/spurious
+detections.
+
+**This is a documented characteristic of DETR-family detectors, not
+something unique to this run:** RT-DETRv2's own paper introduces "flexible
+size training" (randomizing input resolution during training) specifically
+to address this known brittleness in the original RT-DETR/DETR line.
+Honest caveat: we have not verified the exact resolution range
+`PekingU/rtdetr_v2_r18vd` used for that flexible-size training — 1920x1088
+(a very different aspect ratio and far larger than typical multi-scale
+training ranges like 480–800) plausibly falls outside it entirely, which
+would fully explain this result without implying v2's own mitigation
+failed on its own terms.
+
+**Correction applied:** `configs/28` reverted to RT-DETR's native 640x640
+(the only valid number for the method comparison — restored in
+`results/eval/rtdetr_v2_r18_zeroshot/`). The 1920x1088 attempt is kept as
+`configs/29` / `results/rtdetr_resolution_diagnostic/` /
+`rtdetr_v2_r18_1920_diagnostic_BROKEN` in the comparison table — clearly
+named as a diagnostic, not a candidate result — because the *lesson*
+(transformer detectors' inference resolution should match training
+resolution far more strictly than CNN detectors', due to the no-NMS
+one-to-one matching design) is itself a genuine, presentation-worthy
+finding about architecture-specific fragility, discovered by directly
+trying to violate it.

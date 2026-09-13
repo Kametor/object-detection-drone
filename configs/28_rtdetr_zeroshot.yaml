@@ -7,6 +7,18 @@ checkpoint: PekingU/rtdetr_v2_r18vd
 # out-of-the-box domain gap) — kept identical here so the two zero-shot
 # checks are comparable at the same operating point.
 conf: 0.25
+# The processor's own native resolution (RTDetrImageProcessor's default),
+# matching what the checkpoint was actually trained at. Tried forcing this
+# up to 1920x1088 to match YOLO's imgsz for a "fair" comparison — that
+# broke the model catastrophically (mAP@.5 0.740 -> 0.253, FP 351 -> 1733)
+# because RT-DETR has no NMS at inference; its one-to-one query matching
+# is calibrated for a specific token count and doesn't generalize to an
+# unseen resolution the way YOLO's NMS-based pipeline does. See
+# docs/decision_log.md 2026-09-13 and configs/29 (kept as a diagnostic,
+# not a real result). Native resolution is the only valid choice for the
+# actual method comparison.
+image_height: 640
+image_width: 640
 
 output_dir: results/rtdetr_zeroshot
 manifest_dir: results/manifests

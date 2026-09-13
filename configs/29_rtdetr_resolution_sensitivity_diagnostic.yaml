@@ -1,0 +1,24 @@
+seed: 42
+
+frames_dir: data/processed/frames/test
+checkpoint: PekingU/rtdetr_v2_r18vd
+# Same threshold as configs/05_yolo_zeroshot.yaml (Ultralytics' own
+# library default, used there without tuning to measure the raw
+# out-of-the-box domain gap) — kept identical here so the two zero-shot
+# checks are comparable at the same operating point.
+conf: 0.25
+# DIAGNOSTIC, not a real result: forced up to YOLO's imgsz=1920 (1920x1088
+# on the long side) to try to make the two zero-shot checks "fair" by
+# matching resolution. Instead it broke the model catastrophically
+# (mAP@.5 0.740 -> 0.253, FP 351 -> 1733) — RT-DETR has no NMS at
+# inference, so its one-to-one query matching (calibrated for the 640x640
+# token count it was trained at) has no fallback when fed an unseen
+# resolution, unlike YOLO's NMS-based pipeline. See docs/decision_log.md
+# 2026-09-13. The valid zero-shot number for the method comparison is
+# configs/28 at native 640x640, not this.
+image_height: 1088
+image_width: 1920
+
+output_dir: results/rtdetr_resolution_diagnostic
+manifest_dir: results/manifests
+jpeg_quality: 90
