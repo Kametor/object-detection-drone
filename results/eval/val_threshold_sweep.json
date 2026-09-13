@@ -1,0 +1,57 @@
+{
+  "reference": "SAM3 pseudo-labels on the val split",
+  "total_reference_boxes": 107,
+  "iou_threshold": 0.5,
+  "imgsz": 1920,
+  "rows": [
+    {
+      "conf": 0.01,
+      "candidates": 329,
+      "candidates_per_frame": 6.09,
+      "covered": 86,
+      "recall": 0.8037
+    },
+    {
+      "conf": 0.05,
+      "candidates": 109,
+      "candidates_per_frame": 2.02,
+      "covered": 67,
+      "recall": 0.6262
+    },
+    {
+      "conf": 0.1,
+      "candidates": 69,
+      "candidates_per_frame": 1.28,
+      "covered": 51,
+      "recall": 0.4766
+    },
+    {
+      "conf": 0.15,
+      "candidates": 52,
+      "candidates_per_frame": 0.96,
+      "covered": 44,
+      "recall": 0.4112
+    },
+    {
+      "conf": 0.2,
+      "candidates": 40,
+      "candidates_per_frame": 0.74,
+      "covered": 38,
+      "recall": 0.3551
+    },
+    {
+      "conf": 0.25,
+      "candidates": 30,
+      "candidates_per_frame": 0.56,
+      "covered": 29,
+      "recall": 0.271
+    },
+    {
+      "conf": 0.3,
+      "candidates": 28,
+      "candidates_per_frame": 0.52,
+      "covered": 27,
+      "recall": 0.2523
+    }
+  ]
+}

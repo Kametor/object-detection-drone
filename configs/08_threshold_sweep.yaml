@@ -1,0 +1,16 @@
+seed: 42
+
+splits_dir: data/splits
+# val frames + SAM3 pseudo-labels both come from the auto-labeling run
+frames_dir: results/pseudo_labels/frames
+annotations_dir: results/pseudo_labels/annotations
+
+checkpoint: yolo26n.pt
+imgsz: 1920
+# Run once at this floor, then evaluate every threshold above it by
+# filtering — one inference pass instead of one per threshold.
+floor_conf: 0.01
+thresholds: [0.01, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30]
+iou_threshold: 0.5
+
+output_dir: results/eval

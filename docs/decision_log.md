@@ -868,3 +868,82 @@ read than the overall average.
 label Berghouse manually in CVAT and re-run SAM3 on Bluemlisalphutte to
 retire this deviation properly. Until then, every table/slide using
 Berghouse's test numbers must carry this caveat.
+
+## 2026-09-13 — Cascade (item 1b) design decisions, settled before writing code
+
+Four things were pinned down before implementing the detect-then-verify
+cascade, so the implementation wouldn't bake in unexamined guesses.
+
+**1. Where the verifier's training crops come from.** The obvious source
+— the TP/FP boxes we already have — is unusable: those came from the
+test split, which the verifier must never see. So crops are mined from
+**train+val only**: run YOLO at low confidence on those frames, match
+candidates against those frames' SAM3 pseudo-labels by IoU, crop, label.
+
+The inherited-noise problem was flagged: train/val "truth" is SAM3's
+output, not human labels, so a real person SAM3 missed becomes a
+mislabeled *negative* (teaching the verifier to reject real people), and
+a SAM3 false positive that YOLO also fires on becomes a mislabeled
+*positive*. Mitigation adopted: an **ignore zone** — IoU>=0.5 is a
+positive, IoU==0 is a negative, and everything in between is **discarded
+rather than guessed at**. Standard practice in detection training, and
+it removes the most ambiguous cases rather than feeding them in as
+noise. Partial silver lining: Bluemlisalphutte (the hardest/smallest
+video) is now in train and its "pseudo-labels" are actually human CVAT
+labels from the swap above — so the small-object end of the mining set
+has genuinely correct references. The user will also eyeball the mined
+crops before training.
+
+**2. Verifier architecture: ResNet18.** Chosen over the lighter
+MobileNetV3-Small deliberately. With a small crop dataset (order 1-3k
+crops), the quality and reliability of ImageNet-pretrained features
+matters more than parameter count, and ResNet18's transfer behavior is
+the better-understood baseline. The efficiency argument for
+MobileNetV3-Small doesn't bind here: classifying ~6 crops per frame at
+64x64 is a rounding error next to YOLO at imgsz=1920, which dominates
+the budget entirely. Noted as the swap-in if this ever moves to edge
+hardware.
+
+**3. Final detection score = YOLO_confidence × verifier_probability.**
+Considered replacing YOLO's score with the verifier's outright (what
+R-CNN-family two-stage detectors do). Rejected for *this* setup: our
+verifier only ever sees a crop, so it carries no information about
+localization quality, while YOLO's confidence does — and mAP is
+sensitive to box quality through IoU. Multiplying keeps both signals:
+"well-localized AND actually a person."
+
+**4. Low confidence threshold = 0.01, chosen from measurement, not
+intuition** (`results/eval/val_threshold_sweep.{json,md}`,
+`scripts/08_threshold_sweep.py`). One YOLO pass at conf>=0.01 over the
+val split, then every threshold evaluated by filtering that same pass:
+
+| conf | candidates | per frame | covered | recall |
+|---|---|---|---|---|
+| 0.01 | 329 | 6.09 | 86 | 0.804 |
+| 0.05 | 109 | 2.02 | 67 | 0.626 |
+| 0.10 | 69 | 1.28 | 51 | 0.477 |
+| 0.20 | 40 | 0.74 | 38 | 0.355 |
+| 0.25 (current baseline) | 30 | 0.56 | 29 | 0.271 |
+
+Dropping from 0.25 to 0.01 raises the recall *ceiling* the cascade can
+possibly reach from 0.271 to 0.804 — nearly threefold — and that figure
+is already measured at IoU>=0.5, so it accounts for the worry that
+low-confidence boxes localize badly. The cost is 6.09 candidates per
+frame instead of 0.56, which is nothing for the verifier to chew
+through. Caveat stated up front: at 0.01 roughly three quarters of
+candidates are not people, so if the verifier underperforms, the cascade
+will land *worse* than the plain baseline on precision — the three-row
+ablation below is designed to show that honestly either way.
+**Agreed fallback: if the cascade underperforms at 0.01, retreat to 0.05
+rather than abandoning the approach.**
+
+Coverage above is measured against SAM3 pseudo-labels (val has no human
+ground truth by design) — a proxy for choosing a knob, not an accuracy
+claim, and labeled as such in the generated table.
+
+**5. Reporting: three rows, not two.** Comparing "YOLO@0.25" against
+"YOLO@0.01 + verifier" would change two variables at once and make the
+verifier's contribution unattributable. The comparison table will carry
+YOLO@0.25 (baseline, already measured), YOLO@0.01 without the verifier
+(isolates what lowering the threshold alone does), and YOLO@0.01 + the
+verifier (isolates what the verifier recovers).
