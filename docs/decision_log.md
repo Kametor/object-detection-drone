@@ -1606,3 +1606,23 @@ exactly ties the standard-stem ResNet on GPU (0.7824 both) — still behind
 the small-stem ResNet, confirming the CPU-based conclusion:
 EfficientNet-B0 does not outperform the best ResNet configuration inside
 this cascade, on either hardware.
+
+**Simpler, cleaner verifier comparison (user's correction):** since YOLO
+is identical across all three fusion variants (same checkpoint, same
+0.01/0.25 thresholds) — only the verifier backbone changes — hunting for
+each variant's own best F1 threshold is unnecessary complexity for this
+specific comparison (it made sense for cascade-vs-Method-1, two genuinely
+different systems, but not for verifier-vs-verifier). At the single
+shared operating point (conf=0.25, the cascade's own design boundary, no
+threshold search at all):
+
+| Verifier (score fusion, T4) | Precision | Recall | F1 | TP/FP/FN |
+|---|---|---|---|---|
+| ResNet18, standard stem | 0.714 | 0.783 | 0.747 | 563/226/156 |
+| **ResNet18, small-input stem** | **0.754** | 0.778 | **0.766** | 559/182/160 |
+| EfficientNet-B0 | 0.729 | 0.765 | 0.747 | 550/204/169 |
+
+The gap is even clearer here than in the per-variant-optimized comparison
+(0.019 vs. the earlier 0.006) — small-input-stem ResNet18 is unambiguously
+the best verifier of the three, at a fixed point with no threshold-hunting
+involved.
