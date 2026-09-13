@@ -1,0 +1,13 @@
+{
+  "script": "10_train_verifier.py",
+  "config_path": "configs/24_train_verifier_small_stem.yaml",
+  "config_hash": "4423ff1f0e71",
+  "seed": 42,
+  "git_sha": "25e71fa35d65c78d9e5afeec99a9707698a3bed9",
+  "timestamp": "2026-09-13T15:16:44.166225+00:00",
+  "best_val_person_f1": 0.9446064139941691,
+  "class_counts": [
+    3507,
+    1398
+  ]
+}
