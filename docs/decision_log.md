@@ -1366,3 +1366,56 @@ this specific configuration (small-input stem + score fusion) as the
 best-found item 1b result — a genuine, if modest, win over the baseline
 at a real deployable threshold, on top of the already-documented mAP gain
 and small-object recovery. Time-boxing further iteration here.
+
+## Tier 1 item 2 begins: RT-DETRv2-R18 zero-shot sanity check (2026-09-13)
+
+Ultralytics (already a dependency) only ships RT-DETR with HGNetv2
+backbones (`rtdetr-l.pt`, `rtdetr-x.pt`) — no R18 variant. The original
+authors' R18-backbone checkpoints live on the Hugging Face Hub via the
+`transformers` library (new dependency): `PekingU/rtdetr_r18vd` (v1,
+COCO-only) or `PekingU/rtdetr_v2_r18vd` (v2, an improved follow-up from
+the same team, same 20.2M params, no Objects365 variant exists for v2 on
+the Hub — consistent with v1's naming convention where the plain name
+means COCO-only). Chose **v2** for better reported accuracy at the same
+size and cost, while keeping the pure-COCO pretraining that makes this
+zero-shot check comparable to YOLO26n's own (`configs/05`, same
+`Yolo26Detector`-shaped interface, same conf=0.25 operating point).
+
+`src/methods/rtdetr/model.py` wraps `RTDetrV2ForObjectDetection` +
+`RTDetrImageProcessor` behind the same `Detection`/`.detect()` shape as
+`Yolo26Detector`, so `06_evaluate.py`/`07_visualize_eval.py` needed zero
+changes. Confirmed CPU timing on one frame (0.29s) before running the
+full test set (0.33s/frame average — comparable to YOLO26n's own
+zero-shot timing, ran locally per CLAUDE.md Section 3).
+
+| metric | YOLO26n zero-shot | RT-DETRv2-R18 zero-shot |
+|---|---|---|
+| mAP@.5 | 0.694 | **0.740** |
+| mAP@[.5:.95] | 0.482 | 0.485 |
+| mAP_small | 0.018 | **0.0002** |
+| Precision (@0.25) | 0.855 | 0.609 |
+| Recall (@0.25) | 0.727 | 0.761 |
+| F1 (@0.25) | **0.786** | 0.677 |
+| TP/FP/FN | 523/89/196 | 547/351/172 |
+
+**A genuinely different failure profile, not just a worse/better copy of
+YOLO's:** RT-DETR ranks detections better overall (higher mAP, higher
+recall) but produces 4x YOLO's false positives at the same 0.25 cut, and
+is *dramatically* worse on small objects — `mAP_small` is essentially
+zero (0.0002 vs. YOLO's already-poor 0.018). Leading hypothesis: RT-DETR's
+image processor resizes every frame to a **fixed 640x640**, regardless of
+source resolution (our test frames are up to 3840x2160) — far more
+aggressive downsampling than YOLO26n's configurable `imgsz=1920`, so
+small/distant people are likely destroyed before the model even sees
+them. Not yet confirmed by inspecting review images.
+
+Per-video mAP@.5 also inverts part of the YOLO story: RT-DETR does much
+better on DJI_0501 (0.559 vs. YOLO's 0.226) but even worse than YOLO on
+DJI_0596 (0.029 vs. 0.052) — the video with the smallest instances gets
+hit hardest by the resolution difference, as expected.
+
+**Next:** inspect `results/eval/rtdetr_v2_r18_zeroshot/comparison/` to
+confirm the resolution hypothesis qualitatively, then proceed to
+fine-tuning on the SAM3 pseudo-labels (per `plan.md`'s item 2, with
+position/scale augmentation since transformer detectors are more
+augmentation-sensitive than CNN heads).

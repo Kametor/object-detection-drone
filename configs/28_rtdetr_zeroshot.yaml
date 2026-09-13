@@ -1,0 +1,13 @@
+seed: 42
+
+frames_dir: data/processed/frames/test
+checkpoint: PekingU/rtdetr_v2_r18vd
+# Same threshold as configs/05_yolo_zeroshot.yaml (Ultralytics' own
+# library default, used there without tuning to measure the raw
+# out-of-the-box domain gap) — kept identical here so the two zero-shot
+# checks are comparable at the same operating point.
+conf: 0.25
+
+output_dir: results/rtdetr_zeroshot
+manifest_dir: results/manifests
+jpeg_quality: 90
