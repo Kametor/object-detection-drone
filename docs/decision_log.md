@@ -947,3 +947,43 @@ verifier's contribution unattributable. The comparison table will carry
 YOLO@0.25 (baseline, already measured), YOLO@0.01 without the verifier
 (isolates what lowering the threshold alone does), and YOLO@0.01 + the
 verifier (isolates what the verifier recovers).
+
+## 2026-09-13 — Teacher failure found in audit: SAM3 labels sled dogs as people
+
+**Finding.** Reviewing the mined verifier crops, the user spotted dogs in
+`data/crops/train/person/`. Traced back: a crop is labeled `person` only
+when a YOLO candidate overlaps a **SAM3 box** at IoU>=0.5, so dogs being
+labeled `person` means SAM3 itself boxed them as people. Confirmed
+visually in `results/pseudo_labels/review/DJI_0790/` — most of the ~8-10
+boxes per frame sit on the dog team, with only the musher(s) at the back
+being real people.
+
+**Scale.** DJI_0790 carries 867 of train's 1382 pseudo-label boxes (63%),
+at 10.1 boxes/frame across 86 frames. A sled team is 6-8 dogs plus 1-2
+humans, so roughly 70-80% of those 867 boxes are wrong — close to **half
+of all train pseudo-labels**.
+
+**Why SAM3 fails here, specifically.** From directly overhead, a dark
+elongated shape moving along a packed track on white snow has almost the
+same silhouette whether it's a dog or a person in a winter coat. The
+user's own read after inspecting the frames: the two genuinely look
+alike at this angle and resolution. This is not random noise — it's a
+*systematic* failure mode tied to viewpoint, and it's exactly the kind
+of thing the mandatory pseudo-label audit (Section 6) exists to catch.
+
+**Decision.** Rather than discard the video (which would drop train from
+1382 to 515 boxes and lose the snow domain) or relabel from scratch,
+export SAM3's boxes as CVAT pre-annotations and correct them by hand —
+`scripts/11_export_for_cvat.py`. This costs part of the "fully automatic
+labeling" story, but replaces it with a stronger one, and produces a
+number Section 7 explicitly asks for: **human-minutes of labeling**,
+spent on 1 of 6 train videos, only where the teacher demonstrably failed.
+
+**Presentation angle worth keeping (user's request).** The corrected dog
+boxes don't go to waste. Every dog box deleted from the pseudo-labels
+becomes a **hard negative** in the verifier's crop dataset — because a
+YOLO candidate that no longer matches any person box is mined as
+`not_person`. So the cascade's second stage gets trained on precisely
+the confusion that broke the first stage. The audit doesn't just remove
+bad data; it converts the teacher's failure mode into the verifier's
+training signal.
