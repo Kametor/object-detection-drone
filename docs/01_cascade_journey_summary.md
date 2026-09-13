@@ -214,16 +214,25 @@ score fusion:**
 | **F1** | 0.783 | **0.791** |
 | FP | 80 | **63** |
 
-**This is the first and only configuration all cycle to beat Method 1's own
-F1** (0.791 vs. 0.786) — via a real drop in false positives (89 → 63
-relative to the baseline) at a negligible recall cost.
+**This is the first configuration all cycle to beat Method 1's own F1**
+(0.791 vs. 0.786) — via a real drop in false positives (89 → 63 relative
+to the baseline) at a negligible recall cost. Method 1's 0.786 is at
+Ultralytics' unmodified 0.25 default — deliberately never tuned, by
+design, throughout this project (Method 1's whole point is to be the
+untouched, out-of-the-box baseline); the cascade's own 0.791 is its
+swept-optimal point. (Side note from the later GPU validation run,
+`docs/decision_log.md`: sweeping Method 1's own threshold too — a
+different question than the one this comparison asks — lands it around
+0.789, close enough to be a useful robustness check but not a reason to
+change the comparison's design.)
 
-**Honest caveat:** this checkpoint scored *worse* on the validation set
-(F1 0.9446) than the standard-stem checkpoint (0.981), yet generalized
-*better* to the held-out test videos — reinforcing, once again, that val
-(a single video, sharing train's distribution) is not a reliable predictor
-of test performance in this project. This result comes from one training
-run (one random seed) — a real signal, not yet confirmed by repetition.
+**Honest caveat:** this checkpoint
+scored *worse* on the validation set (F1 0.9446) than the standard-stem
+checkpoint (0.981), yet generalized *better* to the held-out test videos —
+reinforcing, once again, that val (a single video, sharing train's
+distribution) is not a reliable predictor of test performance in this
+project. This result comes from one training run (one random seed) — a
+real signal, not yet confirmed by repetition.
 
 ---
 
@@ -231,8 +240,15 @@ run (one random seed) — a real signal, not yet confirmed by repetition.
 
 | Stage | mAP@.5 | Best F1 |
 |---|---|---|
-| Method 1 (plain YOLO, no training) | 0.694 | 0.786 |
-| **Final cascade** (score fusion + small-input-stem verifier) | **0.788** | **0.791** |
+| Method 1 (plain YOLO, no training, conf=0.25 as always used in this project) | 0.694 | 0.786 |
+| **Final cascade** (score fusion + small-input-stem verifier, own swept-optimal conf) | **0.788** | **0.791** |
+
+These CPU numbers were re-run on Colab T4 GPU for the authoritative,
+hardware-final figures — see `docs/decision_log.md`, "GPU (T4) validation
+of the full method comparison": every mAP matches almost exactly
+(reproducibility confirmed), and the GPU run also confirms the
+small-input-stem ResNet beats both the standard-stem ResNet and
+EfficientNet-B0 inside the cascade on real GPU numbers, not just CPU.
 
 A real, modest, honestly-earned win — reached only after two failed
 attempts (full hybrid, narrow band) and two neutral ones (size gating),

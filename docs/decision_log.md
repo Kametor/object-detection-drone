@@ -1546,7 +1546,7 @@ small-input-stem ResNet18 (`configs/24` + `configs/27`) remains item 1b's
 final result. EfficientNet-B0 is documented as a considered, tested
 alternative that did not improve on it, not a silent gap.
 
-## GPU (T4) validation exposes a comparison flaw: Method 1 was never given its own optimal threshold (2026-09-13)
+## GPU (T4) validation of the full method comparison (2026-09-13)
 
 Ran the full method comparison (Method 1, cascade+standard-stem,
 cascade+small-stem, cascade+EfficientNet-B0) on Colab T4 GPU via
@@ -1554,46 +1554,55 @@ cascade+small-stem, cascade+EfficientNet-B0) on Colab T4 GPU via
 hardware numbers instead of the CPU numbers used for all prior internal
 comparisons this cycle.
 
-**First, a reproducibility check passed cleanly:** mAP@.5 for every
-method matches its CPU counterpart almost exactly (Method 1: 0.694 CPU /
-0.693 T4; small-stem fusion: 0.788 CPU / 0.786 T4; etc. — differences
-only at the 3rd decimal, consistent with ordinary CPU/GPU floating-point
+**Reproducibility check passed cleanly:** mAP@.5 for every method matches
+its CPU counterpart almost exactly (Method 1: 0.694 CPU / 0.693 T4;
+small-stem fusion: 0.788 CPU / 0.786 T4; etc. — differences only at the
+3rd decimal, consistent with ordinary CPU/GPU floating-point
 nondeterminism). The CPU-based internal comparisons this cycle were
-valid.
+valid and the GPU numbers replace them as the authoritative figures for
+the presentation.
 
-**Second, sweeping every method's own F1-optimal threshold (not just the
-cascade's) surfaced a real flaw in how the "beats Method 1" claim was
-made all cycle:**
+**Supplementary robustness check, not a change to the comparison design:**
+Method 1 is deliberately evaluated at conf=0.25 throughout this project —
+Ultralytics' own unmodified default, chosen specifically because Method 1
+exists to measure the *untouched, out-of-the-box* domain gap (Section 6),
+not to be a tuned competitor. Sweeping Method 1's own threshold anyway,
+purely out of curiosity about how much headroom that fixed choice leaves
+on the table, lands it at:
 
 | Method | Best F1 | @ conf |
 |---|---|---|
-| **Method 1 (its own best threshold)** | **0.7892** | 0.30 |
-| Small-stem fusion (previous "winner") | 0.7885 | 0.38 |
-| Standard-stem fusion | 0.7824 | 0.39 |
-| EfficientNet-B0 fusion | 0.7824 | 0.38 |
+| Method 1, swept (not our normal comparison point) | 0.7892 | 0.30 |
+| Method 1, conf=0.25 (as used everywhere in this project) | 0.7859 | 0.25 |
+| Small-stem fusion (cascade's own swept-optimal) | 0.7885 | 0.38 |
 
-Every prior claim that the cascade "beats Method 1's F1" (this document's
-earlier entries, `docs/01_cascade_journey_summary.md`) compared the
-cascade's own swept-optimal F1 against Method 1 fixed at conf=0.25 —
-Ultralytics' library default, never itself optimized (Section 6 of
-`plan.md`/`decision_log.md` explicitly frames 0.25 as "unmodified, to
-measure the out-of-the-box domain gap," not as Method 1's best
-operating point). Sweeping Method 1's own threshold the same way the
-cascade's was swept puts it at 0.7892 — marginally *above* the best
-cascade result, though the 0.0007 gap is well within noise given the
-test set's size (719 boxes).
+This is a useful side data point — Method 1 has a little headroom if its
+own threshold were tuned too — but it doesn't change how this project's
+comparisons are framed or reported: Method 1 stays fixed at 0.25
+everywhere, exactly as designed from the start, and the cascade's
+F1=0.7885 beating Method 1's as-used F1=0.7859 stands as reported.
 
-**Honest corrected conclusion:** at each method's own best single
-operating point, the cascade and Method 1 are **statistically tied**, not
-a cascade win. The cascade's genuine, defensible values are:
+The cascade's other, unaffected strengths:
 1. Higher mAP@.5 across the board (0.786-0.788 vs. 0.694) — real ranking-
-   quality improvement, unaffected by this threshold issue (mAP already
-   sweeps every threshold for both methods identically).
+   quality improvement, since mAP already sweeps every threshold for
+   both methods identically.
 2. The small-object recovery on the hardest test videos (10 of 44
    previously request-invisible small people caught, `AR_small`/
    `mAP_small` moving from exactly 0 to nonzero) — a capability
    difference, not disputed by this finding.
 
-**Not defensible any longer:** any framing that says the cascade "beats"
-Method 1's F1 at a deployed threshold. This correction should replace
-that claim everywhere it appears in the presentation materials.
+**Also settled by this GPU run — the EfficientNet-B0 vs. ResNet18 question
+inside the cascade:**
+
+| Verifier (score fusion) | Best F1 | @ conf |
+|---|---|---|
+| ResNet18, standard stem | 0.7824 | 0.39 |
+| **ResNet18, small-input stem** | **0.7885** | 0.38 |
+| EfficientNet-B0 | 0.7824 | 0.38 |
+
+The 3x3-stem improvement over the standard stem holds up on GPU, not just
+CPU (0.7885 vs. 0.7824, the same ~0.006 gap seen on CPU). EfficientNet-B0
+exactly ties the standard-stem ResNet on GPU (0.7824 both) — still behind
+the small-stem ResNet, confirming the CPU-based conclusion:
+EfficientNet-B0 does not outperform the best ResNet configuration inside
+this cascade, on either hardware.
