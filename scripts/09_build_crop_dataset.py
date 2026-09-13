@@ -59,6 +59,13 @@ def load_reference_boxes(annotations_path: Path) -> dict[str, list[list[float]]]
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=Path, required=True)
+    parser.add_argument(
+        "--only-video",
+        type=str,
+        default=None,
+        help="re-mine a single video (by stem) instead of all — used after "
+             "correcting one video's pseudo-labels",
+    )
     args = parser.parse_args()
     config = yaml.safe_load(args.config.read_text())
 
@@ -80,6 +87,8 @@ def main() -> None:
         ]
         for video in videos:
             stem = Path(video).stem
+            if args.only_video and stem != args.only_video:
+                continue
             annotations_path = annotations_root / f"{stem}.json"
             if not annotations_path.exists():
                 print(f"  [skip] no pseudo-labels for {stem}")
