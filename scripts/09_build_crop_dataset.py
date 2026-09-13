@@ -89,6 +89,13 @@ def main() -> None:
             stem = Path(video).stem
             if args.only_video and stem != args.only_video:
                 continue
+            if args.only_video:
+                # re-mining after a label correction: a candidate that used
+                # to land in one class can move to the other, but we only
+                # ever write new files, never delete — clear this video's
+                # old crops first or a stale file lingers in the wrong class.
+                for stale in output_root.glob(f"{split}/*/{stem}__*.jpg"):
+                    stale.unlink()
             annotations_path = annotations_root / f"{stem}.json"
             if not annotations_path.exists():
                 print(f"  [skip] no pseudo-labels for {stem}")

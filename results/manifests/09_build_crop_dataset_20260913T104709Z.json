@@ -1,0 +1,13 @@
+{
+  "script": "09_build_crop_dataset.py",
+  "config_path": "configs/09_build_crop_dataset.yaml",
+  "config_hash": "fcd206061421",
+  "seed": 42,
+  "git_sha": "d4b5cd924b5a6465294715f0e85cc01c8a364fae",
+  "timestamp": "2026-09-13T10:47:09.756189+00:00",
+  "counts": {
+    "train/not_person": 81,
+    "train/person": 68,
+    "train/ignored": 34
+  }
+}
