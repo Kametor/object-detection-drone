@@ -1,0 +1,20 @@
+seed: 42
+
+frames_dir: data/processed/frames/test
+checkpoint: sam3.pt
+prompt: person
+# Same convention as YOLO26n's and RT-DETR's own zero-shot checks:
+# library/model default, left unmodified, to measure the raw out-of-the-
+# box domain gap (not the 0.5 used later for pseudo-label quality
+# filtering — that's a labeling decision, not a benchmarking one).
+conf: 0.25
+# GPU-memory-safe value confirmed on a real T4 (docs/decision_log.md,
+# 2026-09-12): imgsz=1920 OOM'd (a single attention op wanted 10.81GB on
+# a 14.56GB card) because SAM3 is ViT-based and attention cost scales
+# quadratically with resolution. 1024 is the validated middle ground.
+imgsz: 1024
+device: cuda
+
+output_dir: results/sam3_zeroshot
+manifest_dir: results/manifests
+jpeg_quality: 90
