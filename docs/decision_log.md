@@ -1214,3 +1214,43 @@ breakdown is by video and object size (Section 7's requirement) rather
 than looked at only in aggregate. Both framings are true and both belong
 in the writeup: "not a net win on the headline metric" and "a real,
 targeted capability gain on exactly the cases it was built for."
+
+## Adding a size gate on top of the confidence band (2026-09-13) — also reverted
+
+User's next refinement: YOLO already works on large objects and
+structurally can't represent small ones (mAP_small was exactly 0.0 for
+plain YOLO on the two hardest videos), so route small candidates to the
+verifier unconditionally, regardless of score, while leaving large objects
+on the existing confidence-only gate.
+
+**First checked before building it:** does simply *dropping* large
+low-confidence candidates (instead of verifying them, as the current best
+config does) cost real recall? Yes — 75/719 gold GT boxes (10.4%) are only
+ever proposed as a large, low-confidence candidate, so that idea was
+dropped in favor of keeping large objects on the existing gate
+unconditionally (auto-accept >= 0.25, verify below it, same as
+`configs/19`) and only adding small objects as a new always-verify
+category. Implemented in `scripts/22_cascade_size_gated_hybrid_eval.py`.
+
+**Result: mAP@.5 dropped slightly** (0.760 -> 0.753) and the best F1
+dropped too (0.786 -> 0.783, now at conf=0.25 itself rather than 0.15).
+Operating-point TP fell 523 -> 519 at conf=0.25 — the verifier now
+second-guesses some small, high-confidence YOLO detections it previously
+never saw, and gets a few of them wrong. `mAP_small` itself went down
+(0.063 -> 0.056), the opposite of the intended effect.
+
+**Why:** plain YOLO essentially never produces a small detection at
+score >= 0.25 to begin with (confirmed on the hard videos above) — so the
+rare cases where it does are apparently reliable, and asking a verifier
+that is itself imperfect (val F1 ~0.98, worse out-of-domain per the
+lost-true-positives review) to double-check them is pure downside, not a
+safety net. "YOLO's confidence isn't trustworthy for small objects" turned
+out to only hold when YOLO *isn't* confident — confidence-band gating
+(configs/16/19) was already implicitly capturing the useful version of
+this idea; adding size as an independent gate did not.
+
+**Final configuration for item 1b:** `configs/19` (confidence-band only,
+[0.01, 0.25), video-balanced verifier) — mAP@.5 0.760, best F1 0.7822 @
+conf=0.15, plus the documented small-object win on DJI_0501/DJI_0596
+(10/44 previously-invisible small people recovered). Closing this item's
+iteration here.

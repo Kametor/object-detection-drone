@@ -1,0 +1,11 @@
+{
+  "script": "06_evaluate.py",
+  "method_name": "yolo26n_size_gated_hybrid",
+  "predictions_path": "results/cascade_hybrid_size_gated/predictions.json",
+  "gt_path": "data/gold_test/annotations.json",
+  "config_path": "configs/06_evaluate.yaml",
+  "config_hash": "ebc5d27dd103",
+  "seed": 42,
+  "git_sha": "dfedefa2a1890c6b4e66704b5445c9cfd43bb309",
+  "timestamp": "2026-09-13T13:50:07.373574+00:00"
+}

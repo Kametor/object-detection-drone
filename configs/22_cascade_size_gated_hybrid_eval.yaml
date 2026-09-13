@@ -1,0 +1,30 @@
+seed: 42
+
+frames_dir: data/processed/frames/test
+
+checkpoint: yolo26n.pt
+conf: 0.01
+imgsz: 1920
+
+# Two independent reasons a box can bypass the verifier's judgment call:
+# score alone (configs/16's original band gate) or size alone (new here).
+# Checking large-low-confidence boxes against gold GT first (see
+# docs/decision_log.md 2026-09-13) found 75/719 GT boxes (10.4%) are ONLY
+# ever proposed as a large, low-confidence candidate -- dropping that
+# bucket outright would cost real recall, so large objects keep the
+# original confidence-only gate. Small objects (COCO's own small/medium
+# boundary, already used throughout this project's mAP_small/medium/large
+# breakdown) go to the verifier regardless of score: YOLO's own confidence
+# was never trustworthy there to begin with (mAP_small was exactly 0.0 for
+# plain YOLO on the two hardest test videos).
+high_conf_threshold: 0.25
+small_area_threshold: 1024  # 32*32, COCO's small/medium boundary
+
+verifier_checkpoint: results/cascade_verifier/resnet18_verifier_video_balanced.pt
+crop_size: 64
+padding_ratio: 0.4
+device: cpu
+
+output_dir: results/cascade_hybrid_size_gated
+manifest_dir: results/manifests
+jpeg_quality: 90

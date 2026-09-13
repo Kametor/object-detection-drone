@@ -1,0 +1,15 @@
+{
+  "script": "22_cascade_size_gated_hybrid_eval.py",
+  "config_path": "configs/22_cascade_size_gated_hybrid_eval.yaml",
+  "config_hash": "c73427b6ec89",
+  "seed": 42,
+  "git_sha": "dfedefa2a1890c6b4e66704b5445c9cfd43bb309",
+  "timestamp": "2026-09-13T13:49:52.710053+00:00",
+  "num_frames": 196,
+  "auto_accepted": 606,
+  "verified_small": 696,
+  "verified_large_band": 1624,
+  "verifier_kept": 619,
+  "total_kept": 1225,
+  "elapsed_seconds": 74.2
+}
