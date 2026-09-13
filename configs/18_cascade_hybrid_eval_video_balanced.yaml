@@ -1,0 +1,18 @@
+seed: 42
+
+frames_dir: data/processed/frames/test
+
+checkpoint: yolo26n.pt
+conf: 0.01
+imgsz: 1920
+
+# Same as configs/14_cascade_hybrid_eval.yaml, only the verifier checkpoint
+# differs: this one was trained with video-balanced sampling (configs/17).
+verifier_checkpoint: results/cascade_verifier/resnet18_verifier_video_balanced.pt
+crop_size: 64
+padding_ratio: 0.4
+device: cpu
+
+output_dir: results/cascade_hybrid_video_balanced
+manifest_dir: results/manifests
+jpeg_quality: 90

@@ -1106,3 +1106,49 @@ exactly the kind of "does a second method genuinely add value" question
 Section 1 asks us to answer, and the honest answer here is "not yet, and
 here's the measured gap and the likely reason (verifier training set size /
 domain coverage)."
+
+## Video-balanced sampling result (2026-09-13)
+
+Retrained the verifier (`configs/17_train_verifier_video_balanced.yaml`)
+with a `WeightedRandomSampler` that equalizes each (video, class) group's
+contribution per epoch, addressing the DJI_0790 dominance (70%/81% of
+train's person/not_person crops) found while diagnosing the lost true
+positives above. Val person-F1 dipped slightly (0.989 -> 0.981, expected:
+val shares train's video distribution, so it can't reward better
+out-of-domain generalization, only measure a small in-domain cost of it).
+Re-ran both cascade variants against the gold test set with the new
+checkpoint:
+
+| method | mAP@.5 | mAP@[.5:.95] | best F1 (@conf) |
+|---|---|---|---|
+| yolo26n_zeroshot (method 1, plain YOLO @0.25) | 0.694 | 0.482 | 0.786 (@0.25) |
+| band-gated hybrid, original verifier | 0.733 | 0.503 | 0.781 (@0.15) |
+| **band-gated hybrid, video-balanced verifier** | **0.760** | **0.514** | 0.782 (@0.15) |
+| full hybrid, original verifier | 0.368 | 0.202 | 0.514 |
+| full hybrid, video-balanced verifier | 0.393 | 0.231 | 0.550 |
+
+Video-balanced sampling helped both cascade variants on every metric —
+mAP@.5 for the band-gated hybrid improved another 0.027 (0.733 -> 0.760),
+now 0.066 above method 1's own mAP@.5. The full (non-band-gated) hybrid
+also improved but remains far behind plain YOLO, confirming band-gating
+(not verifier quality) is what fixes that variant's core problem: sending
+already-confident boxes through the verifier for no expected gain.
+
+**The F1 gap did not close.** Best single operating point is still
+conf=0.15 (F1=0.782), 0.0037 below method 1's 0.786 (TP 544 vs. 523 — 21
+more people found — at the cost of 128 vs. 89 false alarms — 39 more).
+Video-balancing narrowed this from a 0.0049 gap to 0.0037, a real but
+small improvement, not the fix.
+
+**Conclusion for item 1b, final for this cycle:** the cascade's ranking
+quality (mAP) is now unambiguously better than plain YOLO's, and the
+verifier is demonstrably improvable (video-balancing helped, meaning the
+original bottleneck was partly a data-composition problem, not purely
+"ResNet18 crops can't do this task"). But at any single deployed
+threshold, it has not yet beaten simply running YOLO at 0.25 — the honest
+takeaway is "a second training pass on more balanced data closed part of
+the gap, not all of it," and further gains would likely need genuinely
+more/more-diverse train crops (more train videos have very few person
+crops: Bluemlisalphutte contributed only 5), not just resampling the
+crops that already exist. Time-boxing this here and moving to Tier 1 item
+2 (RT-DETR-R18) per the plan's degradation order.

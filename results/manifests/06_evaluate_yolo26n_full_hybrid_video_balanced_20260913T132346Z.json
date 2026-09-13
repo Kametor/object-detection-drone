@@ -1,0 +1,11 @@
+{
+  "script": "06_evaluate.py",
+  "method_name": "yolo26n_full_hybrid_video_balanced",
+  "predictions_path": "results/cascade_hybrid_video_balanced/predictions.json",
+  "gt_path": "data/gold_test/annotations.json",
+  "config_path": "configs/06_evaluate.yaml",
+  "config_hash": "ebc5d27dd103",
+  "seed": 42,
+  "git_sha": "404bb78064af31361453ca1b78aad6cfb72f2738",
+  "timestamp": "2026-09-13T13:23:46.738110+00:00"
+}
