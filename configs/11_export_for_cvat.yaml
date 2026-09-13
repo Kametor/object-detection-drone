@@ -1,0 +1,5 @@
+seed: 42
+
+frames_dir: results/pseudo_labels/frames
+annotations_dir: results/pseudo_labels/annotations
+output_dir: data/cvat_export
