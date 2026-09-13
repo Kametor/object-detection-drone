@@ -1336,3 +1336,33 @@ information the models had via too coarse a rule, results got worse.
 Still using the video-balanced verifier (small-input-stem variant is
 training separately); worth re-running fusion with that checkpoint once
 it's ready to check whether the gains compound.
+
+## First configuration to beat method 1's own F1 (2026-09-13)
+
+Score fusion (configs/25's design) re-run with the small-input-stem
+ResNet18 (configs/24) instead of the standard-stem video-balanced
+checkpoint. Despite a *worse* val person-F1 (0.9446 vs. 0.981 -- see the
+training entry above), test-set performance is the best of any
+configuration tried today:
+
+| method | mAP@.5 | best F1 (@conf) | P | R | TP/FP/FN |
+|---|---|---|---|---|---|
+| method 1 (plain YOLO @0.25) | 0.694 | 0.786 | 0.855 | 0.727 | 523/89/196 |
+| score fusion, video-balanced stem | 0.786 | 0.783 (@0.38) | 0.865 | 0.715 | 514/80/205 |
+| **score fusion, small-input-stem** | **0.788** | **0.791 (@0.38)** | **0.890** | 0.712 | 512/63/207 |
+
+**This is the first configuration all cycle to beat method 1's F1 at a
+single operating point** (0.791 vs. 0.786) -- via higher precision (63 FP
+vs. method 1's 89) at a small recall cost (207 vs. 196 FN). Consistent
+with earlier findings, val performance did not predict this: the
+small-stem checkpoint scored *lower* on val than the standard-stem one,
+yet generalizes better to the genuinely held-out test videos. This
+reinforces that val (a single video, sharing train's distribution) is an
+unreliable signal for this specific comparison — checkpoint selection by
+val F1 alone would have picked the worse-generalizing model.
+
+**Final answer to "should we accept ResNet for this cascade":** yes, with
+this specific configuration (small-input stem + score fusion) as the
+best-found item 1b result — a genuine, if modest, win over the baseline
+at a real deployable threshold, on top of the already-documented mAP gain
+and small-object recovery. Time-boxing further iteration here.

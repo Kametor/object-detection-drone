@@ -1,0 +1,11 @@
+{
+  "script": "06_evaluate.py",
+  "method_name": "yolo26n_score_fusion_small_stem",
+  "predictions_path": "results/cascade_score_fusion_small_stem/predictions.json",
+  "gt_path": "data/gold_test/annotations.json",
+  "config_path": "configs/06_evaluate.yaml",
+  "config_hash": "ebc5d27dd103",
+  "seed": 42,
+  "git_sha": "4e624e8a43606cefccd012459cc9e34bdd9a5e29",
+  "timestamp": "2026-09-13T15:19:37.058223+00:00"
+}

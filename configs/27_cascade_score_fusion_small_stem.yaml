@@ -1,0 +1,20 @@
+seed: 42
+
+frames_dir: data/processed/frames/test
+
+checkpoint: yolo26n.pt
+conf: 0.01
+imgsz: 1920
+high_conf_threshold: 0.25
+
+# Same as configs/25, only the verifier checkpoint differs: this one uses
+# the small-input-stem ResNet18 (configs/24) instead of the standard-stem
+# video-balanced checkpoint.
+verifier_checkpoint: results/cascade_verifier/resnet18_verifier_small_stem.pt
+crop_size: 64
+padding_ratio: 0.4
+device: cpu
+
+output_dir: results/cascade_score_fusion_small_stem
+manifest_dir: results/manifests
+jpeg_quality: 90
