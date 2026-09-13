@@ -15,7 +15,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
-from torchvision.models import ResNet18_Weights, resnet18
+from torchvision.models import EfficientNet_B0_Weights, ResNet18_Weights, efficientnet_b0, resnet18
 from torchvision.transforms import functional as TF
 
 # ImageFolder sorts class directories alphabetically: not_person=0, person=1.
@@ -32,22 +32,40 @@ class EpochMetrics:
     person_f1: float
 
 
-def build_model(num_classes: int = 2, pretrained: bool = True, small_input_stem: bool = False) -> nn.Module:
-    """ResNet18 with a fresh 2-way head.
+def build_model(
+    num_classes: int = 2,
+    pretrained: bool = True,
+    small_input_stem: bool = False,
+    architecture: str = "resnet18",
+) -> nn.Module:
+    """ResNet18 (default) or EfficientNet-B0, with a fresh classification head.
 
     ImageNet pretraining matters more than architecture choice at this
-    dataset size (a few thousand crops) — see docs/decision_log.md.
+    dataset size (a few thousand crops) — see docs/decision_log.md. Neither
+    architecture's pretrained weights know "person" specifically — ImageNet
+    classification has no such class — so both start from the same kind of
+    generic transfer learning; this is an architecture-capacity comparison,
+    not a "one already knows people" shortcut.
 
-    `small_input_stem` swaps the standard 7x7 stride-2 conv + maxpool for
-    a 3x3 stride-1 conv and no maxpool — the standard "CIFAR-style" ResNet
-    stem for small inputs (crops here are 64x64, well below ImageNet's
-    224x224). The stock stem downsamples 64x64 to 16x16 before the first
-    residual block even runs; for a crop that's already a tiny, blurry
-    person blown up to fill 64x64, that throws away most of what little
-    detail there is. Only conv1 changes shape, so it's randomly
+    `small_input_stem` (resnet18 only) swaps the standard 7x7 stride-2 conv
+    + maxpool for a 3x3 stride-1 conv and no maxpool — the standard
+    "CIFAR-style" ResNet stem for small inputs (crops here are 64x64, well
+    below ImageNet's 224x224). The stock stem downsamples 64x64 to 16x16
+    before the first residual block even runs; for a crop that's already a
+    tiny, blurry person blown up to fill 64x64, that throws away most of
+    what little detail there is. Only conv1 changes shape, so it's randomly
     initialized even when `pretrained=True` — everything past it (the vast
     majority of the network's weights) still starts from ImageNet.
+    EfficientNet-B0's stock stem is already a single 3x3 stride-2 conv (no
+    maxpool) — less aggressive to begin with — so this flag doesn't apply
+    to it.
     """
+    if architecture == "efficientnet_b0":
+        weights = EfficientNet_B0_Weights.IMAGENET1K_V1 if pretrained else None
+        model = efficientnet_b0(weights=weights)
+        model.classifier[1] = nn.Linear(model.classifier[1].in_features, num_classes)
+        return model
+
     weights = ResNet18_Weights.IMAGENET1K_V1 if pretrained else None
     model = resnet18(weights=weights)
     if small_input_stem:

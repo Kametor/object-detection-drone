@@ -70,7 +70,8 @@ def main() -> None:
 
     checkpoint = torch.load(config["verifier_checkpoint"], map_location=device)
     small_input_stem = checkpoint.get("config", {}).get("small_input_stem", False)
-    verifier = build_model(pretrained=False, small_input_stem=small_input_stem).to(device)
+    architecture = checkpoint.get("config", {}).get("architecture", "resnet18")
+    verifier = build_model(pretrained=False, small_input_stem=small_input_stem, architecture=architecture).to(device)
     verifier.load_state_dict(checkpoint["state_dict"])
     verifier.eval()
 

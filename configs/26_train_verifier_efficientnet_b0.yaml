@@ -1,0 +1,28 @@
+seed: 42
+
+crops_dir: data/crops
+crop_size: 64
+batch_size: 64
+epochs: 15
+lr: 0.0003
+weight_decay: 0.0001
+pretrained: true
+device: cpu
+
+# Carried over from configs/17 (established best practice): DJI_0790
+# dominance means every video should still contribute equally per epoch.
+video_balanced_sampling: true
+
+# EfficientNet-B0 (torchvision, no new dependency) instead of ResNet18 --
+# higher ImageNet top-1 (~77.1% vs ResNet18's ~69.8%) at a similar
+# parameter count. Not "EfficientNet-Lite0" specifically (that variant,
+# tuned for edge/quantized deployment, needs the `timm` package) -- since
+# this project isn't targeting edge deployment, the standard torchvision
+# B0 is the closer-to-free choice. Its own stem (single 3x3 stride-2 conv,
+# no maxpool) is already less aggressive than ResNet18's stock stem, so no
+# small_input_stem-style adaptation is needed here.
+architecture: efficientnet_b0
+
+checkpoint_path: results/cascade_verifier/efficientnet_b0_verifier.pt
+output_dir: results/cascade_verifier_efficientnet_b0
+manifest_dir: results/manifests

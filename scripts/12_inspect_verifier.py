@@ -66,7 +66,8 @@ def main() -> None:
 
     checkpoint = torch.load(config["checkpoint_path"], map_location=device)
     small_input_stem = checkpoint.get("config", {}).get("small_input_stem", False)
-    model = build_model(pretrained=False, small_input_stem=small_input_stem).to(device)
+    architecture = checkpoint.get("config", {}).get("architecture", "resnet18")
+    model = build_model(pretrained=False, small_input_stem=small_input_stem, architecture=architecture).to(device)
     model.load_state_dict(checkpoint["state_dict"])
     model.eval()
 
