@@ -1,0 +1,16 @@
+seed: 42
+
+frames_dir: data/processed/frames/test
+checkpoint: rtdetr-l.pt
+conf: 0.25
+# DIAGNOSTIC (small preview): forcing this checkpoint up to YOLO's
+# imgsz=1920 (1088 on the short side, 16:9), to check whether this
+# HGNetv2-backbone RT-DETR shares the HF R18 checkpoint's catastrophic
+# resolution sensitivity (docs/decision_log.md 2026-09-13) or handles it
+# differently. rectangular imgsz as [height, width].
+imgsz: [1088, 1920]
+
+frames_per_video: 10
+output_dir: results/rtdetr_ultralytics_1920_preview
+manifest_dir: results/manifests
+jpeg_quality: 90

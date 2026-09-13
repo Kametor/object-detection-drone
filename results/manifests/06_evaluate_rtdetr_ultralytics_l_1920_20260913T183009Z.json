@@ -1,0 +1,11 @@
+{
+  "script": "06_evaluate.py",
+  "method_name": "rtdetr_ultralytics_l_1920",
+  "predictions_path": "results/rtdetr_ultralytics_1920/predictions.json",
+  "gt_path": "data/gold_test/annotations.json",
+  "config_path": "configs/06_evaluate.yaml",
+  "config_hash": "ebc5d27dd103",
+  "seed": 42,
+  "git_sha": "e30da196893d1c72605710191605fda05ff431fe",
+  "timestamp": "2026-09-13T18:30:09.800421+00:00"
+}

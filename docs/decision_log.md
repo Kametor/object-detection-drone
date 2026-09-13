@@ -1473,3 +1473,41 @@ resolution far more strictly than CNN detectors', due to the no-NMS
 one-to-one matching design) is itself a genuine, presentation-worthy
 finding about architecture-specific fragility, discovered by directly
 trying to violate it.
+
+## Ultralytics RT-DETR-l at 1920x1088: graceful degradation, not collapse
+
+Tested whether the HF R18 checkpoint's catastrophic resolution
+sensitivity (mAP@.5 0.740 -> 0.253 when forced to 1920x1088, see above)
+is a general RT-DETR-family trait or specific to that checkpoint. Ran the
+same forced resolution on Ultralytics' RT-DETR-l (HGNetv2 backbone,
+32.97M params) — a 10-frames-per-video preview first (`configs/31`,
+following the flush-progress + small-sample-first workflow established
+this session), then the full test set (`configs/32`) once the preview
+looked survivable (no duplicate-detection storm, just a mild box-count
+uptick on DJI_0596's last couple of frames).
+
+| metric | 640x640 (native) | 1920x1088 (forced) |
+|---|---|---|
+| mAP@.5 | 0.731 | 0.654 |
+| mAP_small | 0.004 | **0.093** (23x) |
+| F1 (@0.25) | 0.755 | 0.610 |
+| FP (@0.25) | 168 | 442 (2.6x — vs. the HF checkpoint's 5x) |
+| DJI_0596 mAP@.5 | 0.041 | **0.373** (9x) |
+
+**A genuinely different failure mode from the HF R18 checkpoint's total
+collapse:** this checkpoint degrades *gracefully* — aggregate mAP/F1 drop
+moderately (not catastrophically) from more false positives, but small-
+object detection improves dramatically (mAP_small 23x, DJI_0596 9x) —
+the same mechanism we'd hope resolution would help with, actually showing
+up here. Likely explanation: Ultralytics' RT-DETR training recipe
+(different augmentation/multi-scale schedule from the paper authors'
+official R18 checkpoint) leaves it measurably more robust to an
+off-training-distribution resolution, though clearly not fully immune
+(FP still rose 2.6x).
+
+**Practical takeaway:** RT-DETR resolution sensitivity is real but
+checkpoint-dependent, not an absolute law of the architecture family —
+worth keeping the native-resolution number as each checkpoint's valid
+zero-shot baseline for the method comparison, while noting this 1920
+result as a genuine, presentable secondary finding (not a broken
+diagnostic to discard, unlike the HF 1920 attempt).

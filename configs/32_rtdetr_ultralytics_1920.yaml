@@ -1,0 +1,17 @@
+seed: 42
+
+frames_dir: data/processed/frames/test
+checkpoint: rtdetr-l.pt
+conf: 0.25
+# Forced up to YOLO's imgsz=1920 (1088 on the short side) despite the
+# resolution-sensitivity risk documented for the HF R18 checkpoint
+# (docs/decision_log.md 2026-09-13) — a 40-frame preview
+# (configs/31) showed this HGNetv2-backbone checkpoint is more robust
+# (no catastrophic collapse) but not fully immune (a mild detection-count
+# spike appeared on DJI_0596's last frames). Full test set run to get a
+# real number rather than judging from the preview alone.
+imgsz: [1088, 1920]
+
+output_dir: results/rtdetr_ultralytics_1920
+manifest_dir: results/manifests
+jpeg_quality: 90
