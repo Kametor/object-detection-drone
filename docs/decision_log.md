@@ -1545,3 +1545,55 @@ accelerator hardware with dedicated grouped-conv support.
 small-input-stem ResNet18 (`configs/24` + `configs/27`) remains item 1b's
 final result. EfficientNet-B0 is documented as a considered, tested
 alternative that did not improve on it, not a silent gap.
+
+## GPU (T4) validation exposes a comparison flaw: Method 1 was never given its own optimal threshold (2026-09-13)
+
+Ran the full method comparison (Method 1, cascade+standard-stem,
+cascade+small-stem, cascade+EfficientNet-B0) on Colab T4 GPU via
+`notebooks/03_gpu_method_comparison.ipynb`, to get authoritative
+hardware numbers instead of the CPU numbers used for all prior internal
+comparisons this cycle.
+
+**First, a reproducibility check passed cleanly:** mAP@.5 for every
+method matches its CPU counterpart almost exactly (Method 1: 0.694 CPU /
+0.693 T4; small-stem fusion: 0.788 CPU / 0.786 T4; etc. — differences
+only at the 3rd decimal, consistent with ordinary CPU/GPU floating-point
+nondeterminism). The CPU-based internal comparisons this cycle were
+valid.
+
+**Second, sweeping every method's own F1-optimal threshold (not just the
+cascade's) surfaced a real flaw in how the "beats Method 1" claim was
+made all cycle:**
+
+| Method | Best F1 | @ conf |
+|---|---|---|
+| **Method 1 (its own best threshold)** | **0.7892** | 0.30 |
+| Small-stem fusion (previous "winner") | 0.7885 | 0.38 |
+| Standard-stem fusion | 0.7824 | 0.39 |
+| EfficientNet-B0 fusion | 0.7824 | 0.38 |
+
+Every prior claim that the cascade "beats Method 1's F1" (this document's
+earlier entries, `docs/01_cascade_journey_summary.md`) compared the
+cascade's own swept-optimal F1 against Method 1 fixed at conf=0.25 —
+Ultralytics' library default, never itself optimized (Section 6 of
+`plan.md`/`decision_log.md` explicitly frames 0.25 as "unmodified, to
+measure the out-of-the-box domain gap," not as Method 1's best
+operating point). Sweeping Method 1's own threshold the same way the
+cascade's was swept puts it at 0.7892 — marginally *above* the best
+cascade result, though the 0.0007 gap is well within noise given the
+test set's size (719 boxes).
+
+**Honest corrected conclusion:** at each method's own best single
+operating point, the cascade and Method 1 are **statistically tied**, not
+a cascade win. The cascade's genuine, defensible values are:
+1. Higher mAP@.5 across the board (0.786-0.788 vs. 0.694) — real ranking-
+   quality improvement, unaffected by this threshold issue (mAP already
+   sweeps every threshold for both methods identically).
+2. The small-object recovery on the hardest test videos (10 of 44
+   previously request-invisible small people caught, `AR_small`/
+   `mAP_small` moving from exactly 0 to nonzero) — a capability
+   difference, not disputed by this finding.
+
+**Not defensible any longer:** any framing that says the cascade "beats"
+Method 1's F1 at a deployed threshold. This correction should replace
+that claim everywhere it appears in the presentation materials.

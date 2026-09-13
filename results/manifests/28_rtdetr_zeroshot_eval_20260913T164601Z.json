@@ -1,0 +1,11 @@
+{
+  "script": "28_rtdetr_zeroshot_eval.py",
+  "config_path": "configs/28_rtdetr_zeroshot.yaml",
+  "config_hash": "52e5c79bedfb",
+  "seed": 42,
+  "git_sha": "e4917551b08169ca53cd03f798cc0e31dc9ce71c",
+  "timestamp": "2026-09-13T16:46:01.238615+00:00",
+  "num_frames": 196,
+  "num_boxes": 2137,
+  "elapsed_seconds": 264.3
+}

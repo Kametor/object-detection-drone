@@ -1,0 +1,11 @@
+{
+  "script": "06_evaluate.py",
+  "method_name": "rtdetr_v2_r18_zeroshot",
+  "predictions_path": "results/rtdetr_zeroshot/predictions.json",
+  "gt_path": "data/gold_test/annotations.json",
+  "config_path": "configs/06_evaluate.yaml",
+  "config_hash": "ebc5d27dd103",
+  "seed": 42,
+  "git_sha": "e4917551b08169ca53cd03f798cc0e31dc9ce71c",
+  "timestamp": "2026-09-13T16:46:15.546759+00:00"
+}
