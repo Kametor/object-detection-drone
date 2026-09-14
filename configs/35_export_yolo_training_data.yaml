@@ -1,0 +1,16 @@
+seed: 42
+
+splits_dir: data/splits
+frames_dir: data/processed/frames
+annotations_dir: results/pseudo_labels/annotations
+
+# Background videos have no pseudo-labels (never run through SAM3 --
+# they're assumed-empty hard-negative material, see docs/decision_log.md).
+# Included here as train-split images with empty label files: a
+# standard, low-cost way to teach the detector "no person" on frames it
+# would otherwise never see, on top of the cascade's own use of these
+# videos for the verifier's negative crops.
+include_background_in_train: true
+
+output_dir: data/yolo_training
+manifest_dir: results/manifests
