@@ -1060,7 +1060,11 @@ accurate one, each doing the job it's actually good at.
 
 **Görsel:** basit sistem şeması — video akışı → cascade (her frame, sürekli)
 + SAM3 (~10s'de bir, paralel) → uyuşmazlık tespitinde insan incelemesine
-uyarı.
+uyarı. Şema altında/yanında, cascade'in bir test videosu üzerinde uçtan uca
+çalıştığı **kısa bir klip** — sistemi diyagram olarak değil, çalışırken
+göstermek burada tam yerine oturur (`docs/00_plan.md`'de Çarşamba akşamına
+planlanmış "result video" adımıyla aynı çıktı; henüz üretilmedi, üretilince
+buraya ve Slayt 19'a aynı klip konur).
 
 **Konuşma akışı**
 > If I had to put one thing into production, it wouldn't be a single model —
@@ -1152,6 +1156,9 @@ worked, what didn't, and what I'd build next.
 - **0 mislabels** found in the full manual pseudo-label crop audit
 - Every table in this talk traces back to a file in `results/` — nothing
   here was written by hand
+- Every training and inference step ran in the Colab notebooks in
+  `notebooks/`, and the full project runs end-to-end from the README in
+  the repository
 
 **Görsel:** kod deposu QR/link + README'ye referans; varsa birleştirilmiş
 sonuç videosu burada canlı gösterilir.
@@ -1164,9 +1171,11 @@ sonuç videosu burada canlı gösterilir.
 > for something else. None of them is a strict upgrade over the others; the
 > honest answer is "it depends what you're optimising for."
 > Every number I've shown you today comes from a file in this project's
-> results directory, not from memory or a hand-edited table. The code and
-> the full decision history are in the repository — happy to walk through
-> any of it live.
+> results directory, not from memory or a hand-edited table. Every training
+> and inference step ran in the Colab notebooks you see in the repository,
+> and the whole project runs end-to-end straight from the README. The code
+> and the full decision history are in the repository — happy to walk
+> through any of it live.
 
 ---
 
@@ -1181,6 +1190,8 @@ Evaluation → Tools/Libraries. Bu slaytı okuma, tek cümmeyle geç (bkz.
   CVPR 2024.
 - Lv, W. et al. *RT-DETRv2: Improved Baseline with Bag-of-Freebies.* 2024.
 - Meta AI. *SAM 3: Segment Anything with Concepts.* 2025.
+- Redmon, J. et al. *You Only Look Once: Unified, Real-Time Object
+  Detection (YOLO).* CVPR 2016.
 - Jocher, G. et al. *Ultralytics YOLO (YOLO26).* Ultralytics, 2024-2025.
 - He, K. et al. *Deep Residual Learning for Image Recognition (ResNet).*
   CVPR 2016.
