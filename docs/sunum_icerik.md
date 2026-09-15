@@ -70,7 +70,13 @@ Mehmet Recep Aşkar
 Computer Vision Engineer
 ```
 
-**Görsel notu:** Stok görsel kullanma. Kendi tespit çıktılarımızdan seçilmiş net kareler.
+**Görsel notu:** Stok görsel kullanma. Kendi tespit çıktılarımızdan seçilmiş
+net kareler — önerilen 3-4'lü seçim (hepsi zaten `docs/presentation/media/`
+altında): `slide06_yolo_success_berghouse.jpg` (YOLO, 2 runner),
+`slide11_13_sam3_three_outcomes_dji0596.jpg` (SAM3, gemi güvertesi),
+`slide14_statue_dji0501.jpg` (ilginç/tartışmalı bir kare, merak uyandırır),
+`slide15_heatgrid.png` yerine tercihen dördüncü bir tespit karesi —
+`slide13_sam3_success_berghouse.jpg` de kullanılabilir.
 
 **Konuşma metni**
 > Hello, my name is Mehmet Recep Aşkar. I graduated from Middle East Technical
@@ -98,7 +104,9 @@ problemi. Ve bu, sahada sürekli karşılaşılan bir durum.
 - Industry 5.0: product counting, occupational safety, quality inspection
 - Data never arrives labelled; hardware budget is limited
 
-**Görsel:** Solda drone frame, sağda kamera ağı / fabrika şeması.
+**Görsel:** Solda drone frame
+(`docs/presentation/media/slide02_drone_frame_raw.jpg`), sağda kamera ağı
+şeması (`docs/presentation/media/slide02_camera_network.png`).
 
 **Konuşma akışı**
 > The task itself is straightforward: detect an object in drone video.
@@ -135,13 +143,24 @@ karşılar. Split stratejisi buraya DEĞİL, slayt 4'e girer.
 - → more generalisable **training** set AND more generalisable **test** set
 - Scale variation across altitudes; occlusion cases present
 
-*Blok C: Key numbers (VS Code analizinden doldurulacak)*
-- Total videos / total duration: `TBD`
+*Blok C: Key numbers*
+- Total videos / total duration: **13 videos, 7 min 52 s** combined
+  (`results/inventory/video_inventory.csv`)
 - Videos containing the target: 11 / 13
-- Approx. person instances observed: `TBD`
-- Videos selected for this study: `TBD`
+- Approx. person instances observed: **~2,130 labelled boxes** across all
+  labelled frames — 1,411 from SAM3 pseudo-labels (train+val) + 719 from
+  the hand-labelled gold test set (Slide 5, Slide 6)
+- Videos selected for this study: **all 13** — 11 person-containing videos
+  split across train/val/test, plus 2 person-free videos (Creux du Van,
+  Isles of Glencoe) kept as hard-negative background sources
 
-**Görsel:** Hedefin göründüğü, **henüz bbox atılmamış** ham frame'lerden 3-4 kare.
+**Kaynak:** `results/inventory/video_inventory.csv`, `results/dataset_overview/table.md`
+
+**Görsel:** Hedefin göründüğü, **henüz bbox atılmamış** ham frame'lerden
+3 kare — `docs/presentation/media/slide03_raw_dji0862.jpg` (Iceland,
+volcanic black-sand terrain, kadrajda ayrıca ikinci bir drone var),
+`slide03_raw_surenen.jpg` (2 power-walker, dağ patikası),
+`slide03_raw_dji0790.jpg` (kızak köpek takımı + musher, kar).
 Ham kare göstermek bilinçli: "önce baktık, sonra karar verdik" anlatısını destekler.
 
 **Konuşma akışı**
@@ -163,7 +182,9 @@ seti en kıymetli varlığımız olduğu için elle etiketlendi.
 - Frames within one video are near-duplicates and share a single domain
 - A frame-level split would leak the test domain into training → inflated scores
 - **Each split draws from separate videos**
-- Train / Val / Test: `TBD` videos each, ratios `TBD`
+- Train / Val / Test: **6 / 1 / 4 videos** (of the 11 person-containing
+  videos — roughly 55% / 9% / 36%), plus **2** person-free videos held out
+  separately as hard-negative background sources (`data/splits/*.txt`)
 
 *Blok B: Why each split was sized the way it was*
 - **Test:** enough videos to evaluate methods across a genuinely general context —
@@ -180,7 +201,12 @@ seti en kıymetli varlığımız olduğu için elle etiketlendi.
 - With a small number of held-out videos, the test set is limited
 - Generalisation claims are bounded accordingly — reported later with the results
 
-**Görsel:** Video-level split şeması (13 video → 3 kutu), + CVAT arayüzünden ekran görüntüsü.
+**Görsel:** Video-level split şeması
+(`docs/presentation/media/slide04_split_scheme.png` — 13 video → 4 kutu:
+train/val/test/background) + CVAT arayüzünden ekran görüntüsü
+(`docs/presentation/media/slide04_cvat_annotation_ui.png` — glacial lagoon
+sahnesinde küçük, uzak kişilerin elle kutulandığı an, video-level split'in
+ardından test setinin nasıl etiketlendiğini gösteriyor).
 
 **Konuşma akışı**
 > One decision here is more important than it looks. I did not split frames — I split
@@ -208,7 +234,12 @@ otomatik etiketleme hattı kurduk ve **kalitesini ölçtük**.
 *Blok B: SAM 3 pipeline*
 - Prompt-driven segmentation → masks → bounding boxes
 - Applied across training videos
-- `TBD` — çalıştırma parametreleri, threshold
+- `imgsz=1024` — not Ultralytics' 640 default (source is mostly 4K, would
+  erase small people) and not 1920 either — SAM3's ViT backbone has
+  quadratic-cost self-attention, and 1920 OOM'd on a T4 (wanting 10.81GB
+  on a 14.56GB GPU); 1024 is the safe middle ground
+- `confidence_threshold=0.5` (see the shadow fix in Block D below)
+- Dedup threshold 8.0, max frame gap 2.0s between kept detections
 
 *Blok C: Validating the labeller against ground truth*
 - SAM 3 was run **on the manually labelled test videos as well**
@@ -220,38 +251,62 @@ otomatik etiketleme hattı kurduk ve **kalitesini ölçtük**.
 - Inference time per frame: not logged separately during the labelling run
   itself — the closest measured number comes from the later zero-shot
   benchmark under comparable settings: **2.72 s/frame mean** on T4 (Slide 11)
-- **Total labels produced (train + val, after quality filtering and the two
-  manual corrections below): 471 frames, 1,853 boxes**
+- **Total labels produced (train + val, after quality filtering and the
+  manual corrections below): 471 frames, 1,411 boxes**
 
 *Blok C.1: Final counts, per video*
 
 | Video | Frames | Boxes |
 |---|---|---|
 | DJI_0790 | 86 | 596 (post dog-correction, see Block D) |
-| DJI_0876 | 59 | 685 (post under-labelling correction) |
+| DJI_0876 | 59 | 243 (post under-labelling **and** tracker-drift correction — see note below) |
 | Surenen Pass Trail Running | 92 | 188 |
 | Stockflue Flyaround | 69 | 127 |
 | DJI_0574 | 43 | 108 |
 | VerticalFlyOver (val) | 54 | 107 |
 | Bluemlisalphutte Flyover | 68 | 42 |
-| **Total** | **471** | **1,853** |
+| **Total** | **471** | **1,411** |
+
+> **DJI_0876 tracker-drift correction (2026-09-15):** a second CVAT pass
+> found that interpolated tracker boxes had kept propagating a person box
+> across frames after the person had actually left the shot — a flat,
+> unchanging ~14-box cluster repeated identically from frame 760 through
+> frame 1220 (roughly the back half of the labelled range), instead of
+> dropping to zero. Corrected export: 243 boxes, down from 685. A second,
+> independent example of the same underlying lesson as the shadow fix
+> above — an automated/semi-automated labelling step needs a human to
+> actually watch it run to the end, not just check the first few frames.
 
 > **Anlatım notu:** Bu, slaytın en güçlü argümanı. Otomatik etiketleyiciye körü körüne
 > güvenmedik — elimizdeki tek güvenilir referansa karşı ölçtük, sonra kullandık.
 
 *Blok D: Failure case and the fix (bunu mutlaka anlat)*
-- **Shadows were being detected as persons**
-- Diagnosis: low confidence threshold accepting shadow regions
-- Fix: raised the threshold → `TBD` sonuç
-- Trade-off: higher precision, some recall lost
+- **Shadows were being detected as persons** — a smoke-test frame (Berghouse
+  Leopard Jog) showed a 0.47-confidence box next to, not on, a runner:
+  the runner's shadow, not a duplicate detection
+- Diagnosis: low confidence threshold (0.3) accepting shadow regions
+- Fix: threshold raised **0.3 → 0.5** (via 0.4 as an intermediate step) —
+  deliberately high enough to exclude the observed 0.47 shadow box outright
+- Trade-off, accepted explicitly: higher precision, but genuine hard/small
+  instances scoring similarly low (Bluemlisalphutte, DJI_0596) are at risk
+  of being excluded too — the manual review of the full train+val labelling
+  run (Block C.1 counts) was the actual backstop against that risk, not a
+  fully automated safeguard
 
-**Görsel:** SAM 3 çıktı örnekleri (başarılı) + **gölge hatası örneği** yan yana,
-threshold öncesi/sonrası karşılaştırma.
+**Görsel:** Before/after karşılaştırması —
+`docs/presentation/media/slide05_shadow_before_after.png` (2026-09-15,
+Colab'da tek frame yeniden koşularak üretildi: aynı Berghouse frame 0,
+solda conf=0.3 — 2 runner + gölge kutusu 0.47, sağda conf=0.5 — sadece 2
+runner, gölge dışlanmış). Ham "before" çıktısı da ayrıca duruyor:
+`docs/presentation/media/slide05_shadow_before_raw.png`.
 
 **Kaynak:** `results/pseudo_labels/annotations/*.json` (final frame/box
 counts), `results/eval/sam3_zeroshot_T4/metrics.json` (agreement vs. manual
 labels), `results/manifests/34_sam3_zeroshot_eval_20260913T202102Z.json`
-(2.72 s/frame timing)
+(2.72 s/frame timing), `configs/04_label_video.yaml` (run parameters),
+`docs/decision_log.md` ("Bug found — smoke test wasn't previewing the real
+threshold" entry chain, 2026-09-12, for the shadow-box story and the
+0.3→0.4→0.5 threshold decision)
 
 **Konuşma akışı**
 > The test set is hand-labelled, but that does not scale to training. So I built an
@@ -357,9 +412,11 @@ every later slide is a response to.
 
 **Görsel:** two side-by-side prediction-vs-ground-truth frames (red = ground
 truth, green = prediction, per the project's own visualization convention):
-- **Success** — `results/eval/yolo26n_zeroshot/comparison/Berghouse_Leopard_Jog__frame_000000.jpg`:
+- **Success** — `results/eval/yolo26n_zeroshot/comparison/Berghouse_Leopard_Jog__frame_000000.jpg`
+  (deck copy: `docs/presentation/media/slide06_yolo_success_berghouse.jpg`):
   both runners boxed tightly, high confidence (0.78, 0.74)
-- **Failure** — `results/eval/yolo26n_zeroshot/comparison/DJI_0596__frame_000000.jpg`:
+- **Failure** — `results/eval/yolo26n_zeroshot/comparison/DJI_0596__frame_000000.jpg`
+  (deck copy: `docs/presentation/media/slide06_yolo_failure_dji0596.jpg`):
   ground-truth boxes on the tiny, distant people on the ship's deck — zero
   predictions anywhere in the frame
 
@@ -439,9 +496,12 @@ slayt DEĞİL, slayt 11 (SAM3) karşılar. Bunu konuşurken netçe söyle.
   horizontal flip + colour jitter (brightness/contrast ±0.2) at train time
   only; ImageNet normalisation at both train and eval
 
-**Görsel:** system diagram (frame → YOLO low-conf boxes → crop → ResNet18 →
-accept/reject) + an example dog-vs-person crop pair from the DJI_0790
-correction.
+**Görsel:** system diagram
+(`docs/presentation/media/slide07_cascade_system_diagram.png` — frame →
+YOLO low-conf boxes → crop → ResNet18 → score fusion) +
+`docs/presentation/media/slide07_18_dog_vs_person.png` (dog-vs-person crop
+pair from the DJI_0790 correction — produced 2026-09-15 from
+`data/crops/train/{not_person,person}/DJI_0790__*`).
 
 **Kaynak:** `docs/decision_log.md` ("Teacher failure found in audit: SAM3
 labels sled dogs as people", 2026-09-13), `configs/10_train_verifier.yaml`,
@@ -506,10 +566,25 @@ got it past the baseline.
 - Replaced with a 3×3 stride-1 conv, **no maxpool** (the standard
   "CIFAR-style" adaptation for small inputs), keeping every pretrained
   weight elsewhere unchanged
-- **This is the first configuration all cycle to beat Method 1's own F1**
+- **This is the first configuration all cycle to beat Method 1 on mAP@.5
+  by the widest margin yet** (0.786 vs 0.693) — mAP is the right metric to
+  lean on here, not a single-threshold F1: a fused two-model score and
+  YOLO's raw objectness score aren't on the same scale (Slide 12), so a
+  "beats it at conf=X" F1 claim would need its own threshold search per
+  method, and (checked, see `docs/decision_log.md`, "GPU (T4) validation
+  of the full method comparison", 2026-09-13) doing that search on the
+  gold test set for *both* methods actually lands Method 1 slightly
+  **ahead** (F1 0.7892 @ its own swept conf=0.30) — an honest reminder
+  that a threshold chosen because it maximises test-set F1 is not a
+  trustworthy comparison point for either method. mAP avoids that problem
+  entirely, which is exactly why it stays the headline number throughout
+  this talk
 
-**Görsel:** journey timeline (4 steps, colour-coded win/loss) + a small
-before/after diagram of the ResNet stem (7×7+maxpool vs. 3×3, no maxpool).
+**Görsel:** journey timeline
+(`docs/presentation/media/slide08_journey_timeline.png` — 4 adım,
+kırmızı=loss/yeşil=win) + ResNet stem before/after diyagramı
+(`docs/presentation/media/slide08_resnet_stem.png` — 64×64 → 16×16 vs.
+64×64 unchanged).
 
 **Kaynak:** `docs/01_cascade_journey_summary.md` (Steps 1-8),
 `docs/decision_log.md` ("Band-gated cascade variant", "Video-balanced
@@ -530,7 +605,15 @@ sampling result", "Score fusion instead of hard gating"), `configs/17`,
 > Two more changes got it past the baseline for the first time: blending
 > both models' confidence into one continuous score instead of a hard
 > accept-or-reject, and swapping the verifier's first layer for one designed
-> for small inputs instead of full-size photos.
+> for small inputs instead of full-size photos. This is the biggest mAP
+> jump of the whole cycle — point-seven-eight-six against Method 1's
+> point-six-nine-three. I'm deliberately not quoting a single-threshold F1
+> win here: I checked, and if you let both methods search for their own
+> best threshold on the test set, Method 1 actually edges back ahead
+> slightly. That's not a real result either way — it's what happens when
+> you pick a threshold because it flatters the test set — which is exactly
+> why mAP, not a cherry-picked operating point, is the number I'm standing
+> behind.
 
 ---
 
@@ -540,13 +623,24 @@ sampling result", "Score fusion instead of hard gating"), `configs/17`,
 an alternative verifier backbone that quietly reinforces the project's
 biggest lesson about validation scores.
 
-*Blok A: Final comparison (T4, shared conf=0.25 operating point)*
+*Blok A: Verifier backbone comparison (T4, shared conf=0.25)* — the three
+fusion variants below share the same YOLO stage and the same fusion
+formula, so their scores really are on one scale; comparing them at one
+fixed point is legitimate here in a way it wouldn't be for Method 1 vs.
+Cascade (Slide 8 already made that case on mAP, not F1, for exactly that
+reason).
 
 | Config | mAP@.5 | Precision | Recall | F1 | FP |
 |---|---|---|---|---|---|
 | Method 1 (YOLO26n, conf 0.25) | 0.693 | 0.853 | 0.726 | 0.784 | 90 |
 | **Cascade — small-stem ResNet + fusion** | **0.786** | 0.754 | 0.778 | 0.766 | 182 |
 | Cascade — EfficientNet-B0 verifier | 0.777 | 0.729 | 0.765 | 0.747 | 204 |
+
+At this **shared** point the gap between verifier backbones is actually
+clearer (0.766 vs 0.747, a 0.019 F1 gap) than at each backbone's own
+optimized threshold (0.006 gap) — exactly why this table intentionally
+does *not* hunt for each row's best threshold the way Slide 8 does for
+the single cascade-vs-Method-1 claim.
 
 *Blok B: Where it actually earns its keep*
 - On DJI_0501 / DJI_0596 (the two hardest videos): small-object mAP goes
@@ -571,13 +665,23 @@ biggest lesson about validation scores.
   remains the best configuration found this cycle
 
 **Görsel:** the comparison table above, rendered as a small bar chart
-(mAP@.5, 3 bars) + a 2-panel crop montage: EfficientNet's confident val-set
-correct calls next to a test-set case it got wrong.
+(`docs/presentation/media/slide09_cascade_bar_chart.png`) + a 2-panel crop
+montage (`docs/presentation/media/slide09_efficientnet_montage.png`,
+2026-09-15, üretildi yerel CPU inference ile —
+`results/cascade_verifier/efficientnet_b0_verifier.pt` checkpoint'i
+kullanılarak): solda VerticalFlyOver val-set'ten conf=1.00 doğru `person`
+crop'u, sağda DJI_0501 test frame'inde conf=0.83 ile heykeli `person`
+işaretleyen yanlış pozitif (`results/cascade_score_fusion_efficientnet_b0/predictions.json`
++ `data/gold_test/annotations.json`, greedy IoU eşleştirme conf≥0.25 —
+toplam FP=203 sayısıyla tutarlılığı doğrulandı).
 
-**Kaynak:** `results/eval/yolo26n_score_fusion_small_stem_T4/metrics.json`,
+**Kaynak:** `results/eval/comparison.csv` (P/R/F1/FP columns — table
+values are a direct read, not hand-typed), `results/eval/yolo26n_score_fusion_small_stem_T4/metrics.json`,
 `results/eval/yolo26n_score_fusion_efficientnet_b0_T4/metrics.json`,
 `docs/decision_log.md` ("EfficientNet-B0 verifier: best val score, not best
-test score")
+test score", "Simpler, cleaner verifier comparison (user's correction)",
+2026-09-13 — explains why this table deliberately uses one shared
+threshold instead of each row's own optimum)
 
 **Konuşma akışı**
 > Final result: mAP up from point-six-nine-three to point-seven-eight-six,
@@ -678,7 +782,14 @@ DJI_0501 statue*
   directly, the hard way, with SAM3's own ViT backbone (Slide 5)
 
 **Görsel:** side-by-side — native-resolution RT-DETR prediction vs. the
-forced-1920 duplicate-box storm on the same frame.
+forced-1920 duplicate-box storm, aynı frame (Berghouse, frame 720)
+(`docs/presentation/media/slide10_rtdetr_resolution_comparison.png`,
+2026-09-15). Görsel dosya hiç kaydedilmemiş olsa da kutu koordinatları
+`results/rtdetr_zeroshot/predictions.json` (native) ve
+`results/rtdetr_resolution_diagnostic/predictions.json` (forced-1920)
+içinde zaten duruyordu — GPU'ya gerek kalmadan `src/eval/visualize.py`'nin
+`draw_comparison`'ı ile yerelde render edildi: solda 3 temiz kutu, sağda
+aynı 2 kişi üzerinde 8 çakışan kutu.
 
 **Kaynak:** `results/eval/rtdetr_v2_r18_zeroshot/metrics.json`,
 `results/eval/rtdetr_ultralytics_l_zeroshot/metrics.json`,
@@ -755,7 +866,10 @@ different alternative approach."**
 
 **Görsel:** the DJI_0596 frame showing all three outcomes at once (correct /
 missed / false-positive) — the clearest single qualitative example in the
-project (also used in Slide 13).
+project (also used in Slide 13). Confirmed and saved 2026-09-15:
+`docs/presentation/media/slide11_13_sam3_three_outcomes_dji0596.jpg` —
+correct cluster on the rear deck, missed pair near the wheelhouse, 2-3
+false-positive boxes over open water at the top-right.
 
 **Kaynak:** `results/eval/sam3_zeroshot_T4/metrics.json`,
 `results/manifests/34_sam3_zeroshot_eval_20260913T202102Z.json`,
@@ -789,7 +903,7 @@ same confidence scale.
 | Method | Hardware | mAP@.5 | mAP@[.5:.95] | Precision | Recall | F1 | FPS |
 |---|---|---|---|---|---|---|---|
 | YOLO26n (baseline) | T4 | 0.693 | 0.479 | 0.853 | 0.726 | 0.784 | not yet benchmarked |
-| Cascade (best: small-stem fusion) | T4 | **0.786** | 0.526 | 0.754 | 0.777 | 0.766 | not yet benchmarked |
+| Cascade (best: small-stem fusion) | T4 | **0.786** | 0.526 | 0.754 | 0.777 | 0.766² | not yet benchmarked |
 | RT-DETRv2-R18 | CPU¹ | 0.740 | 0.468 | 0.609 | 0.761 | 0.677 | not yet benchmarked |
 | SAM3 (zero-shot) | T4 | **0.846** | **0.626** | 0.485 | **0.872** | 0.624 | **0.37** |
 
@@ -797,13 +911,28 @@ same confidence scale.
 not yet re-run on T4 in this cycle — say this out loud, don't hide the
 hardware mismatch.
 
+² This row is at conf=0.25 for consistency with every other row in this
+machine-generated table (`results/eval/comparison.csv`, nothing here
+hand-typed) — but 0.25 is YOLO's convention, not the cascade's own fused
+score's natural point. Deliberately **not** swapped for the cascade's own
+best-F1 threshold (0.38): that number is picked by scanning thresholds
+against this same gold test set and keeping the best one, which is a form
+of test-set leakage — checked directly, doing the identical scan for
+Method 1 lands it at F1 0.7892 @ its own swept conf=0.30, *higher* than
+the cascade's 0.7885. Neither swept number is trustworthy enough to
+report as a comparison; mAP (threshold-free by construction) is, which is
+why it — not F1 — carries the "cascade is better" claim in this talk.
+
 *Blok B: Why mAP, not a fixed threshold, is the headline number*
 - Confidence isn't comparable across a CNN's objectness score, a fused
   two-model score, and a foundation model's prompt-similarity score
-- mAP sweeps every method's own threshold internally — the one number
-  here that's genuinely apples-to-apples
-- Precision / recall / F1 are still reported, but always at each method's
-  **own** stated operating point, never cross-method at one shared score
+- mAP sweeps every method's own threshold internally, as part of its
+  definition — not by trying values and keeping the best one, which is
+  exactly the difference that makes it trustworthy where a swept F1 isn't
+  (footnote 2)
+- Precision / recall / F1 above are each read at **0.25** — each method's
+  own natural default (YOLO's, SAM3's/RT-DETR's own convention) — never
+  hunted for per method, never silently mixed at different scales
 
 *Blok C: Evaluation methodology — why these tools and breakdowns*
 - COCO-style protocol via `pycocotools` (`src/eval/metrics.py`) — the
@@ -823,12 +952,16 @@ hardware mismatch.
   `precision_recall_f1()` function (greedy IoU matching at one stated
   operating point) was written specifically for that complementary view
 
-**Görsel:** bar chart, mAP@.5 across the 4 methods (accent green on the
-highest bar).
+**Görsel:** bar chart, mAP@.5 across the 4 methods, accent green on the
+highest bar (`docs/presentation/media/slide12_map_bar_chart.png`).
 
 **Kaynak:** `results/eval/comparison.csv` (every row in this table is a
 direct read from that file — nothing here is hand-typed), `src/eval/metrics.py`,
-`docs/decision_log.md` ("YOLO26n zero-shot baseline...", 2026-09-13)
+`docs/decision_log.md` ("YOLO26n zero-shot baseline...", 2026-09-13;
+footnote 2's swept F1 figures — cascade 0.7885 @ 0.38, Method 1 0.7892 @
+0.30 — from "GPU (T4) validation of the full method comparison",
+2026-09-13, a real Colab T4 run not itself saved as a separate `results/`
+file, hence a footnote rather than a table edit)
 
 **Konuşma akışı**
 > Here is every method, side by side, on the exact same gold test set. I'm
@@ -871,8 +1004,11 @@ the same time — numbers alone don't tell you that.
 - **False positive:** 2-3 "person" boxes over open water where nothing is
   present — plausibly wave/glare misread as a distant person
 
-**Görsel:** side-by-side — Berghouse success frame, and the DJI_0596 frame
-with all three outcomes annotated (green/red/amber boxes).
+**Görsel:** side-by-side — Berghouse success frame
+(`docs/presentation/media/slide13_sam3_success_berghouse.jpg`) and the
+DJI_0596 frame with all three outcomes
+(`docs/presentation/media/slide11_13_sam3_three_outcomes_dji0596.jpg`,
+shared with Slide 11).
 
 **Kaynak:** `results/eval/sam3_zeroshot_T4/comparison/` (visual inspection,
 per `docs/03_sam3_journey_summary.md`)
@@ -922,7 +1058,8 @@ this specific object.
   what this suggests about *why*.
 
 **Görsel:** `results/eval/yolo26n_zeroshot/comparison/DJI_0501__frame_000000.jpg`
-— the statue boxed green at 0.83 confidence with no red (ground-truth) box
+(deck copy: `docs/presentation/media/slide14_statue_dji0501.jpg`) — the
+statue boxed green at 0.83 confidence with no red (ground-truth) box
 anywhere near it, the cleanest single-frame illustration of the disagreement.
 
 **Kaynak:** `results/yolo26_zeroshot/predictions.json`,
@@ -974,7 +1111,8 @@ method's own best-to-worst video ranking is nearly identical.
 Small objects are the dominant failure mode of this dataset, for every
 method, without exception.
 
-**Görsel:** video × method heat-grid, coloured by mAP@.5.
+**Görsel:** video × method heat-grid, coloured by mAP@.5
+(`docs/presentation/media/slide15_heatgrid.png`).
 
 **Kaynak:** `results/eval/*/metrics.json` (per_video block, every method)
 
@@ -1058,13 +1196,15 @@ accurate one, each doing the job it's actually good at.
   the deployable student (Slides 7-9) — extended here into an ongoing
   production role instead of a one-time labelling pass
 
-**Görsel:** basit sistem şeması — video akışı → cascade (her frame, sürekli)
-+ SAM3 (~10s'de bir, paralel) → uyuşmazlık tespitinde insan incelemesine
-uyarı. Şema altında/yanında, cascade'in bir test videosu üzerinde uçtan uca
-çalıştığı **kısa bir klip** — sistemi diyagram olarak değil, çalışırken
-göstermek burada tam yerine oturur (`docs/00_plan.md`'de Çarşamba akşamına
-planlanmış "result video" adımıyla aynı çıktı; henüz üretilmedi, üretilince
-buraya ve Slayt 19'a aynı klip konur).
+**Görsel:** basit sistem şeması —
+`docs/presentation/media/slide17_production_system.png` (video akışı →
+cascade her frame + SAM3 ~10s'de bir, paralel → agreement check →
+uyuşmazlıkta insan incelemesi). Şema altında/yanında, cascade'in bir test
+videosu üzerinde uçtan uca çalıştığı **kısa bir klip** hâlâ eksik —
+sistemi diyagram olarak değil, çalışırken göstermek burada tam yerine
+oturur ama bu klip GPU/Colab'a bağlı (`kalan_isler.md`, yarınki YOLO
+eğitimi/test-video inference adımıyla aynı çıktı); üretilince buraya ve
+Slayt 19'a aynı klip konur.
 
 **Konuşma akışı**
 > If I had to put one thing into production, it wouldn't be a single model —
@@ -1092,12 +1232,6 @@ buraya ve Slayt 19'a aynı klip konur).
 - End-to-end FPS for YOLO / cascade / RT-DETR on T4: not yet benchmarked
 - Test set has only 4 videos — enough for a per-condition breakdown, but a
   small statistical sample; generalisation claims are bounded accordingly
-- Slide 14's second ambiguous-result example (SAM3 boxing sled dogs as
-  `person` on DJI_0790, corrected by hand — Slide 7) still needs its
-  before/after visual — the annotated crops live under `data/crops/` and
-  `results/pseudo_labels/review/`, both gitignored/regenerable, not
-  present in this checkout. Add once available (open item, not a hidden
-  one)
 
 *Blok B: Time-boxed out, not forgotten*
 - Fine-tuning YOLO26n on our own pseudo-labels — every YOLO result shown
@@ -1160,8 +1294,11 @@ worked, what didn't, and what I'd build next.
   `notebooks/`, and the full project runs end-to-end from the README in
   the repository
 
-**Görsel:** kod deposu QR/link + README'ye referans; varsa birleştirilmiş
-sonuç videosu burada canlı gösterilir.
+**Görsel:** kod deposu QR kodu
+(`docs/presentation/media/slide19_repo_qr.png` →
+github.com/Kametor/object-detection-drone) + README'ye referans; varsa
+birleştirilmiş sonuç videosu burada canlı gösterilir (henüz üretilmedi,
+GPU'ya bağlı — bkz. Slayt 17 notu).
 
 **Konuşma akışı**
 > A simple baseline exposed one very specific failure: small, distant
