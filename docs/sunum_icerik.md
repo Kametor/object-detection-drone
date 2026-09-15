@@ -37,18 +37,18 @@ PDF'in "Sonuçların Sunulması" ve "Değerlendirme" maddeleri. Hiçbiri açıkt
 | Alternatif yaklaşım (Method 4 — gerçek alternatif, SAM3) | 11 |
 | Nicel ve nitel karşılaştırma | 12 (nicel), 13 (nitel) |
 | Başarılı / başarısız / belirsiz sonuçlar | 13, 14 |
-| Hata analizi | 14 |
-| Güçlü ve zayıf yönler | 15 |
-| Hesaplama maliyeti | 15 |
-| Metrik seçiminin gerekçesi | 12 (Blok B) |
-| Colab notebook / kod deposu | 18 (Kapanış) + canlı göster |
-| README | 18 (Kapanış) |
+| Hata analizi | 15 |
+| Güçlü ve zayıf yönler | 16 |
+| Hesaplama maliyeti | 16 |
+| Metrik seçiminin gerekçesi | 12 (Blok B, C) |
+| Colab notebook / kod deposu | 19 (Kapanış) + canlı göster |
+| README | 19 (Kapanış) |
 | Nicel sonuç tablosu | 12 |
-| Başarılı/başarısız örnekler | 13 |
-| Kaynak listesi | 19 (References) + slayt içi inline atıflar (10, 11) |
-| Sonuç videosu | 18 (Kapanış) — varsa canlı göster |
-| Final sistem önerisi | 16 |
-| Dürüst limitasyonlar / kalan işler | 17 |
+| Başarılı/başarısız örnekler | 13, 14 |
+| Kaynak listesi | 20 (References) + slayt içi inline atıflar (10, 11) |
+| Sonuç videosu | 19 (Kapanış) — varsa canlı göster |
+| Final sistem önerisi | 17 |
+| Dürüst limitasyonlar / kalan işler | 18 |
 
 ---
 
@@ -348,7 +348,7 @@ every later slide is a response to.
 - Caveat, stated honestly: this is measured **pipeline** throughput — frame
   read + inference + drawing/writing the annotated review image — not
   isolated model-only inference. A pure-inference number would be somewhat
-  faster; not yet separated out (see Slide 17)
+  faster; not yet separated out (see Slide 18)
 
 *Blok D: The one number that defines the rest of this talk*
 - On DJI_0501 and DJI_0596 (the two hardest test videos): YOLO catches
@@ -631,11 +631,27 @@ checkpoints).
   behaviour is learned for one specific resolution. YOLO's CNN+NMS pipeline
   has no such constraint and tolerates the same change with no retraining.
 
-*Blok D: Closing take — when would this method actually win?*
+*Blok D: A concrete, measured example of RT-DETR's resistance — the
+DJI_0501 statue*
+- Slide 14 documents a human statue (Scottish hilltop monument) that both
+  YOLO26n (8 of 10 sampled frames, conf 0.81–0.89) and SAM3 (7 of 10
+  frames, conf 0.58–0.71) confidently box as `person` — ground truth
+  correctly excludes it
+- **Both RT-DETR checkpoints resist this specific trap:** RT-DETRv2-R18
+  fires on it in only 1 of 10 frames, and even then below the 0.25
+  operating threshold used everywhere else in this project (effectively a
+  non-detection); RT-DETR-l fires in 2 of 10 frames
+- This is the one point in this project where "RT-DETR generalises
+  differently" is a **directly measured** result, not just a plausible
+  story — pulled from each checkpoint's own prediction file across all 10
+  sampled frames, not eyeballed from one image
 
-> **Framing note:** this block is a reasoned hypothesis, not a measured
-> result — say so explicitly when presenting it, don't let it sound like a
-> benchmarked claim.
+*Blok E: Closing take — when would this method actually win?*
+
+> **Framing note:** Blok D's statue result above is measured. The
+> sled-team/dog-vs-person extension below is still a reasoned hypothesis,
+> not a measured result — say so explicitly when presenting it, don't let
+> it sound like a benchmarked claim.
 
 - RT-DETR's encoder uses **self-attention**: every region of the frame is
   related to every other region. Its decoder uses **cross-attention**: each
@@ -653,7 +669,7 @@ checkpoints).
   *learn* useful attention patterns from data, rather than getting locality
   "for free" as a CNN's built-in bias. This is exactly why fine-tuning
   RT-DETR was judged too risky to attempt this cycle on our modest
-  pseudo-label set (Slide 17)
+  pseudo-label set (Slide 18)
 - **Expectation, not yet measured:** with a larger, stronger training set,
   RT-DETR would plausibly pull further ahead of YOLO on exactly these
   context-dependent, ambiguous cases — likely at the cost of **even lower
@@ -684,6 +700,11 @@ forced-1920 duplicate-box storm on the same frame.
 > separate, resolution-independent step. A real, checkpoint-dependent
 > limitation of transformer detectors — not something I expected going in,
 > but exactly the kind of result an honest comparison should surface.
+> One more finding, and this one I did measure directly: there's a human
+> statue in one of our test videos. Both YOLO and SAM3 confidently box it
+> as a person in most sampled frames — it's human-shaped, after all.
+> Both RT-DETR checkpoints almost never do. That's a real, checked-against-
+> the-prediction-files difference, not a guess.
 > So when would I actually reach for this instead of YOLO? RT-DETR's
 > attention mechanism lets it reason about how one region of the frame
 > relates to every other region, not just what a local patch looks like on
@@ -784,11 +805,30 @@ hardware mismatch.
 - Precision / recall / F1 are still reported, but always at each method's
   **own** stated operating point, never cross-method at one shared score
 
+*Blok C: Evaluation methodology — why these tools and breakdowns*
+- COCO-style protocol via `pycocotools` (`src/eval/metrics.py`) — the
+  standard, reproducible tool, not a hand-rolled mAP implementation
+- Report both **mAP@.5** (a lenient bar — did you find the person at all)
+  and **mAP@[.5:.95]** (a stricter one — how tight is the box) — the gap
+  between the two tells you whether a method's boxes are loose or precise,
+  not just whether it fires
+- **Size-based breakdown (small/medium/large) built in from the start** —
+  this is what actually surfaces this project's central finding (Slide 6);
+  a single pooled mAP number would have hidden it completely
+- **Per-video breakdown** — needed to show performance across genuinely
+  different conditions, not one averaged-away number (feeds directly into
+  Slide 15's error analysis)
+- mAP itself sweeps confidence internally and never produces a single
+  precision/recall/F1 triple, so a separate, custom
+  `precision_recall_f1()` function (greedy IoU matching at one stated
+  operating point) was written specifically for that complementary view
+
 **Görsel:** bar chart, mAP@.5 across the 4 methods (accent green on the
 highest bar).
 
 **Kaynak:** `results/eval/comparison.csv` (every row in this table is a
-direct read from that file — nothing here is hand-typed)
+direct read from that file — nothing here is hand-typed), `src/eval/metrics.py`,
+`docs/decision_log.md` ("YOLO26n zero-shot baseline...", 2026-09-13)
 
 **Konuşma akışı**
 > Here is every method, side by side, on the exact same gold test set. I'm
@@ -798,6 +838,13 @@ direct read from that file — nothing here is hand-typed)
 > prompt-similarity score — none of them mean the same thing at "point two
 > five." mAP sweeps each method's own threshold internally, so it's the one
 > number here that's genuinely comparable.
+> A word on the evaluation itself: this uses the standard COCO protocol via
+> `pycocotools`, not a hand-rolled metric. I report both mAP@.5 and the
+> stricter mAP@[.5:.95] — one asks "did you find it," the other "how tight
+> is the box." And I broke everything down by object size and by video
+> from day one, because a single pooled number would have completely
+> hidden this project's central finding: the small-object gap you saw on
+> Slide 6.
 > The story: SAM 3 wins on ranking quality and recall, with zero training.
 > Among the trained, deployable detectors, the cascade is best. RT-DETR sits
 > in between — better ranking than the plain baseline, worse precision. No
@@ -842,7 +889,66 @@ per `docs/03_sam3_journey_summary.md`)
 
 ---
 
-## Slayt 14 — Error Analysis
+## Slayt 14 — Ambiguous Results: Is It Even a Person?
+
+**Tek mesaj:** Some of the hardest cases here aren't detection failures at
+all — they're genuine "is this the target class or not" questions, and
+different architectures answer them differently. This directly answers the
+assignment's "belirsiz sonuçlar" requirement: not every wrong-looking box
+is a bug, some are a real disagreement about what "person" even means for
+this specific object.
+
+*Blok A: The statue that fools two of four methods, not four (DJI_0501)*
+- A stone monument on a grassy Scottish hilltop — human-shaped, human-
+  posed, standing on a plinth — but not alive
+- Manual ground truth (CVAT): deliberately **not** labelled as `person` —
+  a real annotator judgment call, not an oversight
+- Measured directly from each method's own prediction file, across all 10
+  sampled DJI_0501 frames — not eyeballed from one image:
+
+| Method | Boxes the statue as `person` | Confidence range |
+|---|---|---|
+| YOLO26n | 8 of 10 frames | 0.81 – 0.89 |
+| SAM3 (zero-shot) | 7 of 10 frames | 0.58 – 0.71 |
+| RT-DETR-l (Ultralytics) | 2 of 10 frames | 0.27 – 0.73 |
+| RT-DETRv2-R18 | 1 of 10 frames | 0.31 (below the 0.25 op. threshold used everywhere else, so effectively a non-detection) |
+
+- **A genuine, measured architectural difference, not a training
+  artifact:** none of these four checkpoints were ever trained or
+  fine-tuned on this project's data — every one is meeting this exact
+  object zero-shot. YOLO (CNN) and SAM3 (ViT, prompted purely by visual
+  similarity to "person") both key on local shape/texture and get fooled.
+  Both RT-DETR checkpoints are markedly more resistant — see Slide 10 for
+  what this suggests about *why*.
+
+**Görsel:** `results/eval/yolo26n_zeroshot/comparison/DJI_0501__frame_000000.jpg`
+— the statue boxed green at 0.83 confidence with no red (ground-truth) box
+anywhere near it, the cleanest single-frame illustration of the disagreement.
+
+**Kaynak:** `results/yolo26_zeroshot/predictions.json`,
+`results/sam3_zeroshot/predictions.json`, `results/rtdetr_zeroshot/predictions.json`,
+`results/rtdetr_ultralytics_zeroshot/predictions.json` (statue-region box
+scores, all 10 sampled DJI_0501 frames, matched by bounding-box location),
+`data/gold_test/annotations.json` (confirms no ground-truth box at that
+location)
+
+**Konuşma akışı**
+> Not every hard case in this project is a detector making a mistake —
+> some are genuinely ambiguous questions about what counts as the target
+> class at all. Here's one that turned out to be a real dividing line
+> between architectures.
+> This is a stone statue on a Scottish hilltop. Human-shaped, human-posed
+> — but not alive, and our own ground truth correctly leaves it unlabelled.
+> YOLO boxes it as a person at over point-eight confidence in most sampled
+> frames. SAM3 does too, a bit less confidently. Both RT-DETR checkpoints
+> almost never do. I didn't guess this from looking at one picture — I
+> pulled every method's own prediction file and checked all ten sampled
+> frames. This is a real, measured difference in what these architectures
+> key on, on an object none of them were ever trained on.
+
+---
+
+## Slayt 15 — Error Analysis
 
 **Tek mesaj:** Difficulty tracks the footage, not the detector — every
 method's own best-to-worst video ranking is nearly identical.
@@ -881,23 +987,19 @@ method, without exception.
 
 ---
 
-## Slayt 15 — Strengths, Weaknesses, and Cost
+## Slayt 16 — Strengths, Weaknesses, and Cost
 
 **Tek mesaj:** No method wins on every axis — the real choice is which
 trade-off fits the deployment.
 
 *Blok A: Strengths & weaknesses*
-- **YOLO26n:** fastest, simplest, zero training cost, best precision of any
-  method tried — structurally blind to small/distant people
-- **Cascade:** only method that recovers small-object recall from zero —
-  two-stage cost, verifier is data-hungry — best mAP among trained,
-  deployable methods
-- **RT-DETR:** genuinely different architecture, competitive ranking
-  quality — more false positives, resolution-fragile, fine-tuning not
-  attempted this cycle (a time-boxed, stated cut — see Slide 17)
-- **SAM3:** best accuracy and recall of any method, zero training —
-  ~10× slower than any trained detector, not deployable as-is; ideal as a
-  labelling teacher and, per Slide 16, a periodic auditor
+
+| Method | Strengths | Weaknesses |
+|---|---|---|
+| **YOLO26n** | Fastest, simplest, zero training cost, best precision of any method tried | Structurally blind to small/distant people |
+| **Cascade** | Only method that recovers small-object recall from zero; best mAP among trained, deployable methods | Two-stage cost; verifier is data-hungry |
+| **RT-DETR** | Genuinely different architecture; competitive ranking quality; measurably more resistant to the DJI_0501 statue false-positive (Slide 10, 14) | More false positives; resolution-fragile; fine-tuning not attempted this cycle (a time-boxed, stated cut — see Slide 18) |
+| **SAM3** | Best accuracy and recall of any method, zero training | ~10× slower than any trained detector; not deployable as-is; ideal as a labelling teacher and, per Slide 17, a periodic auditor |
 
 *Blok B: Cost, honestly reported*
 - Verifier backbone: ResNet18 11.2M params vs. EfficientNet-B0 4.0M params
@@ -908,10 +1010,10 @@ trade-off fits the deployment.
 - SAM3: **0.37 FPS on T4** — the only method in this project with a
   committed, reproducible speed number so far
 - YOLO26n / cascade / RT-DETR end-to-end FPS on T4: **not yet benchmarked**
-  with a dedicated script — an open item, not a hidden one (see Slide 17)
+  with a dedicated script — an open item, not a hidden one (see Slide 18)
 
-**Görsel:** 2×2 strengths/weaknesses grid (aynı stil önceki slaytlar) +
-sade parametre/hız tablosu.
+**Görsel:** Blok A'nın kendisi tablo olarak slaytta yer alır (ayrı bir 2×2
+grid'e gerek yok) + Blok B için sade bir parametre/hız tablosu.
 
 **Kaynak:** `docs/decision_log.md` ("GPU (T4) validation..." ve
 "EfficientNet-B0 verifier..." entries), `results/manifests/34_sam3_zeroshot_eval_*.json`
@@ -931,7 +1033,7 @@ sade parametre/hız tablosu.
 
 ---
 
-## Slayt 16 — Proposed Production System
+## Slayt 17 — Proposed Production System
 
 **Tek mesaj:** Don't deploy one method — combine the fast one and the
 accurate one, each doing the job it's actually good at.
@@ -976,7 +1078,7 @@ uyarı.
 
 ---
 
-## Slayt 17 — Honest Limitations & Future Work
+## Slayt 18 — Honest Limitations & Future Work
 
 **Tek mesaj:** What didn't get done this cycle, and why, stated plainly.
 
@@ -986,6 +1088,12 @@ uyarı.
 - End-to-end FPS for YOLO / cascade / RT-DETR on T4: not yet benchmarked
 - Test set has only 4 videos — enough for a per-condition breakdown, but a
   small statistical sample; generalisation claims are bounded accordingly
+- Slide 14's second ambiguous-result example (SAM3 boxing sled dogs as
+  `person` on DJI_0790, corrected by hand — Slide 7) still needs its
+  before/after visual — the annotated crops live under `data/crops/` and
+  `results/pseudo_labels/review/`, both gitignored/regenerable, not
+  present in this checkout. Add once available (open item, not a hidden
+  one)
 
 *Blok B: Time-boxed out, not forgotten*
 - Fine-tuning YOLO26n on our own pseudo-labels — every YOLO result shown
@@ -1022,7 +1130,7 @@ uyarı.
 
 ---
 
-## Slayt 18 — Closing
+## Slayt 19 — Closing
 
 **Tek mesaj:** An honest account beats a clean one — here's what actually
 worked, what didn't, and what I'd build next.
@@ -1062,7 +1170,7 @@ sonuç videosu burada canlı gösterilir.
 
 ---
 
-## Slayt 19 — References
+## Slayt 20 — References
 
 **Layout:** Tek slayt, iki sütun, küçük punto. Sıralama: Models → Datasets →
 Evaluation → Tools/Libraries. Bu slaytı okuma, tek cümmeyle geç (bkz.
