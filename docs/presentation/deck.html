@@ -712,24 +712,22 @@
       <p class="citation-line">RT-DETR — DETRs Beat YOLOs on Real-Time Object Detection, CVPR 2024 · RT-DETRv2, 2024</p>
       <p class="thesis">Tried because it's a <b>transformer</b>, not a CNN — heavier to run, lower FPS, but a genuinely different architecture: self-attention lets it reason about the whole frame at once, not just a local patch.</p>
       <div class="body">
-        <div class="row" style="flex:0 0 auto;">
-          <div class="col table-wrap" style="flex:0 0 auto;">
-            <table style="width:auto;">
-              <tr><th>Method</th><th>HW</th><th>mAP@.5</th><th>P</th><th>R</th><th>F1</th><th>FP</th><th>Inference</th></tr>
-              <tr><td>YOLO26n (baseline)</td><td>T4</td><td>0.693</td><td>0.853</td><td>0.726</td><td>0.784</td><td>90</td><td>7.3 FPS</td></tr>
-              <tr class="hi"><td>RT-DETRv2-R18</td><td>CPU<sup>1</sup></td><td class="best">0.740</td><td>0.609</td><td>0.761</td><td>0.677</td><td class="worst">351</td><td>3.2 FPS</td></tr>
-              <tr><td>RT-DETR-l</td><td>CPU<sup>1</sup></td><td>0.731</td><td>0.762</td><td>0.748</td><td>0.755</td><td>168</td><td class="worst">1.5 FPS</td></tr>
-            </table>
-          </div>
-        </div>
-        <p class="footnote"><span class="fn-mark">1</span> Timed on CPU, not yet re-run on T4 — not directly comparable to YOLO's T4 number, included for completeness rather than a head-to-head speed claim.</p>
-        <div class="frame" style="flex:2.2;"><img src="media/slide10_rtdetr_resolution_comparison.png" alt="RT-DETR resolution comparison" style="object-fit:contain; background:var(--surface);"></div>
-        <div class="row" style="flex:0 0 auto;">
-          <div class="col">
+        <div class="row">
+          <div class="col" style="flex:0 0 46%;">
+            <div class="table-wrap">
+              <table style="width:auto;">
+                <tr><th>Method</th><th>HW</th><th>mAP@.5</th><th>P</th><th>R</th><th>F1</th><th>FP</th><th>Inference</th></tr>
+                <tr><td>YOLO26n (baseline)</td><td>T4</td><td>0.693</td><td>0.853</td><td>0.726</td><td>0.784</td><td>90</td><td>7.3 FPS</td></tr>
+                <tr class="hi"><td>RT-DETRv2-R18</td><td>CPU</td><td class="best">0.740</td><td>0.609</td><td>0.761</td><td>0.677</td><td class="worst">351</td><td>3.2 FPS</td></tr>
+                <tr><td>RT-DETR-l</td><td>CPU</td><td>0.731</td><td>0.762</td><td>0.748</td><td>0.755</td><td>168</td><td class="worst">1.5 FPS</td></tr>
+              </table>
+            </div>
             <div class="callout warn"><b>Resolution fragility:</b> forced to YOLO's 1920×1088, RT-DETRv2-R18 collapses 0.740→0.253, FP jumps to 1733 — it has <b>no NMS at inference</b>, its one-query-per-object behaviour is learned for one resolution. YOLO tolerates this fine.</div>
+            <div class="callout">Both RT-DETR checkpoints resist the DJI_0501 statue trap that fools YOLO and SAM3 (Slide 16) — a measured, architecture-specific difference: self-attention reasons over the whole frame, not just local shape.</div>
           </div>
           <div class="col">
-            <div class="callout">Both RT-DETR checkpoints resist the DJI_0501 statue trap that fools YOLO and SAM3 (Slide 16) — a measured, architecture-specific difference: self-attention reasons over the whole frame, not just local shape.</div>
+            <div class="frame" style="aspect-ratio:1312/782;"><img src="media/slide10_rtdetr_native.jpg" alt="RT-DETRv2-R18 at native resolution, clean" style="object-fit:contain; background:var(--surface);"></div>
+            <div class="frame" style="aspect-ratio:1312/782;"><img src="media/slide10_rtdetr_forced1920.jpg" alt="RT-DETRv2-R18 forced to 1920, duplicate boxes" style="object-fit:contain; background:var(--surface);"></div>
           </div>
         </div>
       </div>

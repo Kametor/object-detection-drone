@@ -946,14 +946,16 @@ frame at once, not just a local patch.
 | Method | HW | mAP@.5 | Precision | Recall | F1 | FP | Inference |
 |---|---|---|---|---|---|---|---|
 | YOLO26n (baseline) | T4 | 0.693 | 0.853 | 0.726 | 0.784 | 90 | 7.3 FPS |
-| RT-DETRv2-R18 | CPU¹ | **0.740** | 0.609 | 0.761 | 0.677 | 351 | 3.2 FPS |
-| RT-DETR-l | CPU¹ | 0.731 | 0.762 | 0.748 | 0.755 | 168 | 1.5 FPS |
+| RT-DETRv2-R18 | CPU | **0.740** | 0.609 | 0.761 | 0.677 | 351 | 3.2 FPS |
+| RT-DETR-l | CPU | 0.731 | 0.762 | 0.748 | 0.755 | 168 | 1.5 FPS |
 
 Higher mAP and recall than YOLO — but 2-4× more false positives at the same
 threshold, and dramatically worse on small objects (mAP_small ≈ 0 for both
 checkpoints).
 
-¹ **Inference numbers added 2026-09-16**, from timing already recorded in
+**Q&A backup, not on the slide** — the slide only shows "CPU" in the HW
+column with no footnote (kept deliberately terse, 2026-09-16). **Inference
+numbers added 2026-09-16**, from timing already recorded in
 `results/manifests/28_rtdetr_zeroshot_eval_20260913T165232Z.json` (196
 frames / 61.0s → 3.2 FPS, RT-DETRv2-R18) and
 `results/manifests/30_rtdetr_ultralytics_zeroshot_eval_20260913T165909Z.json`
@@ -1023,15 +1025,20 @@ DJI_0501 statue*
   processes. The same quadratic-cost lesson this project already learned
   directly, the hard way, with SAM3's own ViT backbone (Slide 6)
 
-**Görsel:** side-by-side — native-resolution RT-DETR prediction vs. the
-forced-1920 duplicate-box storm, aynı frame (Berghouse, frame 720)
+**Görsel:** native-resolution RT-DETR prediction vs. the forced-1920
+duplicate-box storm, aynı frame (Berghouse, frame 720). Aslen tek bir
+side-by-side PNG olarak üretilmişti
 (`docs/presentation/media/slide10_rtdetr_resolution_comparison.png`,
-2026-09-15). Görsel dosya hiç kaydedilmemiş olsa da kutu koordinatları
+2026-09-15) — GPU'ya gerek kalmadan `src/eval/visualize.py`'nin
+`draw_comparison`'ı ile, kutu koordinatları
 `results/rtdetr_zeroshot/predictions.json` (native) ve
 `results/rtdetr_resolution_diagnostic/predictions.json` (forced-1920)
-içinde zaten duruyordu — GPU'ya gerek kalmadan `src/eval/visualize.py`'nin
-`draw_comparison`'ı ile yerelde render edildi: solda 3 temiz kutu, sağda
-aynı 2 kişi üzerinde 8 çakışan kutu.
+içinden yerelde render edildi. **2026-09-16 düzenlemesi:** slaytta sağ
+sütunda alt alta iki ayrı görsel olarak gösterilebilmesi için o PNG,
+paylaşılan üst başlık satırı çıkarılarak iki panele bölündü
+(`slide10_rtdetr_native.jpg` — solda 3 temiz kutu; `slide10_rtdetr_forced1920.jpg`
+— aynı 2 kişi üzerinde 8 çakışan kutu), ana PNG referans olarak repoda
+kalmaya devam ediyor.
 
 **Kaynak:** `results/eval/rtdetr_v2_r18_zeroshot/metrics.json`,
 `results/eval/rtdetr_ultralytics_l_zeroshot/metrics.json`,
