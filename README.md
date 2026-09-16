@@ -494,6 +494,15 @@ production proposal) is at
 directly in a browser. Its content source is
 [`docs/sunum_icerik.md`](docs/sunum_icerik.md).
 
+**Result video:** [`results/demo_video/cascade_highlight_dji0862.mp4`](results/demo_video/cascade_highlight_dji0862.mp4)
+— a ~30s clip of the cascade's predictions on DJI_0862 (one of the 4
+held-out test videos), rendered by `scripts/36_render_result_video.py`.
+This is a trimmed highlight of the full combined result video (all 4
+test videos, ~680MB, too large for git); the full version lives on
+Drive. Boxes are only drawn at the cascade's own reported operating
+point (0.38), so what's shown matches the numbers in this README rather
+than a lower, more-populated-looking threshold.
+
 ## References
 
 **Models**
