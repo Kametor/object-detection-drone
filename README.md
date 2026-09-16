@@ -294,17 +294,19 @@ column), for a complementary single-point view.
 | Method | Hardware | conf | mAP@.5 | mAP@[.5:.95] | Precision | Recall | F1 | FP | FPS |
 |---|---|---|---|---|---|---|---|---|---|
 | YOLO26n (baseline, zero-shot) | T4 | 0.25 | 0.693 | 0.479 | 0.853 | **0.726** | 0.784 | 90 | 7.3 |
-| **Cascade — small-stem ResNet18 + score fusion** | T4 | 0.38 | **0.786** | **0.526** | **0.890** | 0.708 | **0.789** | **63** | not yet benchmarked |
-| Cascade — EfficientNet-B0 verifier (tried, not adopted) | T4 | 0.38 | 0.777 | 0.521 | 0.879 | 0.705 | 0.782 | 70 | not yet benchmarked |
-| RT-DETRv2-R18 | CPU¹ | 0.25 | 0.740 | 0.468 | 0.609 | 0.761 | 0.677 | 351 | not yet benchmarked |
-| RT-DETR-l (Ultralytics) | CPU¹ | 0.25 | 0.731 | 0.460 | 0.762 | 0.748 | 0.755 | 168 | not yet benchmarked |
+| **Cascade — small-stem ResNet18 + score fusion** | T4 | 0.38 | **0.786** | **0.526** | **0.890** | 0.708 | **0.789** | **63** | 7.4 |
+| Cascade — EfficientNet-B0 verifier (tried, not adopted) | T4 | 0.38 | 0.777 | 0.521 | 0.879 | 0.705 | 0.782 | 70 | 4.5 |
+| RT-DETRv2-R18 | T4¹ | 0.25 | 0.740 | 0.469 | 0.609 | 0.761 | 0.677 | 351 | 7.7 |
+| RT-DETR-l (Ultralytics) | T4¹ | 0.25 | 0.731 | 0.460 | 0.761 | 0.748 | 0.755 | 169 | 7.5 |
 | SAM3 (zero-shot foundation model) | T4 | 0.25 | **0.846** | **0.626** | 0.485 | **0.872** | 0.624 | 665 | **0.37** |
 
-¹ RT-DETR's own inference script uses GPU automatically when available;
-these two runs have not yet been re-executed on a T4 in this cycle, so
-their FPS is not comparable to the other rows and is intentionally left
-out rather than reported misleadingly. See
-[Honest limitations](#honest-limitations--future-work).
+¹ RT-DETR's FPS here is not a clean architecture-speed comparison against
+YOLO: RT-DETR runs at its own native 640×640, while YOLO runs at
+1920×1088 (deliberately, for this project's tiny aerial people) — roughly
+5× more pixels per frame for YOLO. Pushing RT-DETR to that same
+resolution doesn't just slow it down, it breaks it outright (see
+[Methods](#methods)), so the FPS gap is far more likely resolution than
+architecture — not evidence that transformers are faster than CNNs here.
 
 **Breakdown by object size (mAP@.5, whole test set)** — small objects are
 the dominant failure mode for every method, without exception:
@@ -388,18 +390,28 @@ count.
 
 **Cost, reported honestly:**
 - Verifier backbone: ResNet18 11.2M params vs. EfficientNet-B0 4.0M params
-  — fewer parameters is not faster on CPU here: EfficientNet ran **~5×
-  slower** per crop (depthwise-separable convolutions vectorize poorly on
-  general CPU kernels; the efficiency gain is real, but GPU-side).
+  — fewer parameters is not faster here on **either** hardware: EfficientNet
+  ran **~5× slower per crop on CPU** (depthwise-separable convolutions
+  vectorize poorly on general CPU kernels), and the full cascade using it
+  is still slower **on T4** too (4.5 FPS vs. ResNet18's 7.4 FPS) — a
+  parameter-count advantage that never actually shows up as a speed
+  advantage in this project's measurements, on either hardware.
 - RT-DETRv2-R18: 20.2M params · RT-DETR-l: 33.0M params.
-- SAM3: **0.37 FPS on T4** (2.72s/frame mean) — the only method with a
-  committed, reproducible speed number so far.
-- YOLO26n baseline: **7.3 FPS on T4**, 3.2 FPS on an M1 CPU (measured
-  end-to-end pipeline throughput — frame read + inference + drawing the
-  review image — not isolated model-only inference).
-- Cascade and RT-DETR end-to-end FPS on T4: **not yet benchmarked** with a
-  dedicated script — an open item, tracked in
-  [Honest limitations](#honest-limitations--future-work), not a hidden gap.
+- All five methods now have a measured, reproducible T4 FPS: SAM3
+  **0.37**, EfficientNet-B0 cascade **4.5**, YOLO26n **7.3**, the adopted
+  ResNet18 cascade **7.4**, RT-DETR **7.5–7.7** (own, lower native
+  resolution — see the results table's footnote). The ResNet18 cascade's
+  7.4 vs. YOLO26n's 7.3 is **not a measured speedup** — the cascade does
+  strictly more work (YOLO's own pass plus ~2,300 extra small ResNet18
+  forward passes on ambiguous-confidence crops), so it cannot really be
+  faster; the two numbers come from separate single runs 8 minutes apart
+  in the same session, and a ~1% difference over a ~26s run is within
+  normal run-to-run noise. Correct reading: the cascade is
+  statistically indistinguishable in speed from plain YOLO, not faster.
+  YOLO26n additionally measured at 3.2 FPS on an M1 CPU. All of these are
+  end-to-end pipeline throughput (frame read + inference + drawing the
+  review image), not
+  isolated model-only inference.
 - Human labeling cost: the 196-frame gold test set was fully hand-labeled
   in CVAT; the 471-frame train/val set was pseudo-labeled automatically
   and spot-checked (271 SAM3 boxes manually corrected during the

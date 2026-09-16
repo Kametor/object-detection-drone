@@ -771,7 +771,7 @@
             <table>
               <tr><th>Method</th><th>HW</th><th>conf<sup>1</sup></th><th>mAP@.5</th><th>mAP@[.5:.95]</th><th>P</th><th>R</th><th>F1</th><th>FPS</th></tr>
               <tr><td>YOLO26n</td><td>T4</td><td>0.25</td><td>0.693</td><td>0.479</td><td>0.853</td><td>0.726</td><td>0.784</td><td>7.3</td></tr>
-              <tr class="hi"><td>Cascade (small-stem fusion)</td><td>T4</td><td>0.38</td><td class="best">0.786</td><td>0.526</td><td class="best">0.890</td><td>0.708</td><td class="best">0.789</td><td>—</td></tr>
+              <tr class="hi"><td>Cascade (small-stem fusion)</td><td>T4</td><td>0.38</td><td class="best">0.786</td><td>0.526</td><td class="best">0.890</td><td>0.708</td><td class="best">0.789</td><td>7.4</td></tr>
               <tr><td>RT-DETRv2-R18</td><td>T4</td><td>0.25</td><td>0.740</td><td>0.469</td><td>0.609</td><td>0.761</td><td>0.677</td><td>7.7</td></tr>
               <tr class="hi"><td>SAM3 (zero-shot)</td><td>T4</td><td>0.25</td><td class="best">0.846</td><td class="best">0.626</td><td>0.485</td><td class="best">0.872</td><td>0.624</td><td class="best">0.37</td></tr>
             </table>
@@ -877,10 +877,10 @@
             <tr><td><b>SAM3</b></td><td>Best accuracy and recall, zero training</td><td>~10× slower than any trained detector; ideal as teacher/auditor, not deployment</td></tr>
           </table>
         </div>
-        <div class="callout">Verifier backbone: ResNet18 11.2M params vs. EfficientNet-B0 4.0M — fewer params ≠ faster on CPU, EfficientNet ran ~5× slower per crop (depthwise-separable convs vectorize poorly on CPU). On T4: SAM3 <b>0.37 FPS</b>, YOLO26n <b>7.3 FPS</b>, RT-DETR <b>7.5–7.7 FPS</b> (at its own, lower native resolution — Slide 12) — only the <b>cascade's</b> end-to-end FPS on T4 is still unmeasured (Slide 20).</div>
+        <div class="callout">Verifier backbone: ResNet18 11.2M params vs. EfficientNet-B0 4.0M — fewer params ≠ faster on CPU <i>or</i> T4: the EfficientNet-B0 cascade is slower on both (4.5 FPS vs. ResNet18's 7.4). On T4: SAM3 <b>0.37 FPS</b>, YOLO26n <b>7.3 FPS</b>, Cascade <b>7.4 FPS</b>, RT-DETR <b>7.5–7.7 FPS</b> — Cascade's ~parity with YOLO is within run-to-run measurement noise (two separate single runs, ~1% apart), not a real speedup; the verifier's extra work is real but small enough not to move the needle.</div>
       </div>
       <aside class="notes" hidden>
-        <p>Put side by side, no method wins everywhere. On cost, I want to be precise about what I've actually measured versus what I haven't — SAM3, YOLO and RT-DETR's T4 speeds are all measured and reproducible now; the cascade's end-to-end FPS on T4 is the one honest gap left, not a hidden one.</p>
+        <p>Put side by side, no method wins everywhere. On cost, I want to be precise about what I've actually measured — all four methods now have a real, reproducible T4 speed number. The cascade comes out at seven point four frames per second, statistically indistinguishable from YOLO's seven point three — and to be precise, that's not a real speedup: the verifier does add extra compute, over two thousand small ResNet18 forward passes across the test set, but that's cheap enough next to YOLO's own inference and the I/O cost that it disappears into normal run-to-run noise between two separate timed runs.</p>
       </aside>
     </section>
 
@@ -912,8 +912,8 @@
             <h3>Already surfaced in this talk</h3>
             <ul class="bullets tight">
               <li>Small-object detection: dominant failure mode for every method, none solve it fully</li>
-              <li>End-to-end FPS for the cascade on T4: not yet benchmarked (YOLO, RT-DETR and SAM3 all have real T4 numbers now)</li>
               <li>Test set: 4 videos — enough for per-condition breakdown, a small statistical sample</li>
+              <li>Result video (cascade on the 4 test videos) — script and notebook ready, not yet rendered</li>
             </ul>
           </div>
         </div>

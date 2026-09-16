@@ -1957,3 +1957,45 @@ in both the README's Setup section and
 every prior Colab notebook only ever needed pre-sampled frame zips
 already organized correctly, e.g. `test_frames.zip` — this is the first
 one to fetch the raw dataset itself inside Colab.)
+
+## 2026-09-17: Cascade's FPS filled in, then correctly challenged
+
+**Finding the number.** Slide 14/18's "cascade FPS not yet benchmarked"
+gap didn't need a new run: `results/manifests/25_cascade_score_fusion_eval_20260913T193612Z.json`
+(`config_path: configs/27_T4.yaml`, from the same 2026-09-13 GPU
+validation session as the cascade's other T4 numbers) already had
+`elapsed_seconds: 26.4` for 196 frames — confirmed as the officially
+reported run via `total_kept: 2942` matching
+`results/cascade_score_fusion_small_stem_T4/predictions.json`'s box
+count exactly. 196/26.4 = 7.4 FPS. Same discovery pattern as YOLO's and
+RT-DETR's FPS earlier this cycle — already-run data, never converted to
+a headline number.
+
+**The user immediately, correctly challenged it.** 7.4 FPS is *higher*
+than plain YOLO26n's own 7.3 FPS — and the user pointed out this
+shouldn't be possible: lowering YOLO's confidence threshold (0.25→0.01,
+the cascade's Stage 1) doesn't change the model's own inference cost,
+and the cascade does additional work on top of YOLO (2,330 extra small
+ResNet18 forward passes on ambiguous-confidence crops, per the same
+manifest's `fused` count) — so the cascade cannot legitimately be faster
+than YOLO alone.
+
+**Root cause: two separate single-run timings, not a real effect.** The
+YOLO manifest (`05_yolo_zeroshot_eval_20260913T192838Z.json`) and the
+cascade manifest are timestamped 19:28:38 and 19:36:12 — 8 minutes apart
+in the same Colab session. 26.7s vs. 26.4s is a 0.3s (~1%) difference
+over a ~26s measurement, comfortably inside normal run-to-run noise for
+a GPU pipeline that also does disk I/O and JPEG-encodes review images
+per frame. ResNet18 at 64×64 input is cheap enough that 2,330 extra
+forward passes plausibly add only a few hundred milliseconds total —
+small enough to disappear under that noise floor, not zero cost.
+
+**Corrected framing:** the cascade is **statistically indistinguishable
+in speed from YOLO** (7.4 vs. 7.3 FPS), not measurably faster. Both
+numbers are kept (they're real, not fabricated) but every mention in the
+deck, README and this doc now says "essentially tied" / "within
+measurement noise" rather than letting the raw numbers imply a
+speedup that isn't real. Same underlying lesson as the RT-DETR
+resolution-vs-architecture correction two entries up: a plausible-
+looking number still needs a mechanism check before it goes on a slide
+as a comparative claim.

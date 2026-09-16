@@ -1165,7 +1165,7 @@ same confidence scale.
 | Method | Hardware | conf | mAP@.5 | mAP@[.5:.95] | Precision | Recall | F1 | FPS |
 |---|---|---|---|---|---|---|---|---|
 | YOLO26n (baseline) | T4 | 0.25 | 0.693 | 0.479 | 0.853 | 0.726 | 0.784 | 7.3 |
-| Cascade (best: small-stem fusion) | T4 | 0.38 | **0.786** | 0.526 | **0.890** | 0.708 | **0.789** | not yet benchmarked |
+| Cascade (best: small-stem fusion) | T4 | 0.38 | **0.786** | 0.526 | **0.890** | 0.708 | **0.789** | 7.4 |
 | RT-DETRv2-R18 | T4 | 0.25 | 0.740 | 0.469 | 0.609 | 0.761 | 0.677 | 7.7 |
 | SAM3 (zero-shot) | T4 | 0.25 | **0.846** | **0.626** | 0.485 | **0.872** | 0.624 | **0.37** |
 
@@ -1176,6 +1176,30 @@ to live here is gone. See Slide 12's Block B for the full T4 numbers
 a clean architecture comparison against YOLO (native 640 vs. YOLO's
 1920). YOLO's own T4 FPS (7.3) was already measured back on Slide 7 —
 just not previously copied into this table.
+
+**Updated 2026-09-17:** Cascade FPS (7.4) filled in — no new run needed,
+it was already sitting in `results/manifests/25_cascade_score_fusion_eval_20260913T193612Z.json`
+(`config_path: configs/27_T4.yaml`, `elapsed_seconds: 26.4` for 196
+frames, matched to the officially reported cascade result via
+`total_kept: 2942` == `results/cascade_score_fusion_small_stem_T4/predictions.json`'s
+2942 boxes) from the same 2026-09-13 GPU validation session that
+produced the cascade's other T4 numbers — it just hadn't been converted
+to FPS and surfaced on a slide before. 196/26.4 = 7.42 → 7.4 FPS.
+Essentially tied with YOLO26n's 7.3 — and worth being precise about why
+it isn't reported as "faster": the user correctly challenged this
+(2026-09-17) — lowering YOLO's own confidence floor cannot make its
+inference cheaper, and the cascade does strictly more work than plain
+YOLO (the same YOLO pass, plus 2,330 extra ResNet18 forward passes on
+crops, per the `27_T4` manifest's `fused` count). The two numbers come
+from separate single runs 8 minutes apart in the same Colab session
+(YOLO: 19:28:38, cascade: 19:36:12); a 0.3s difference over a ~26s run
+(26.7s vs 26.4s, ~1%) is well within normal run-to-run noise (disk I/O,
+review-image JPEG writes, GPU scheduling jitter) — not a measured
+speedup. The verifier's extra passes are real but cheap (small ResNet18,
+64×64 input) relative to the dominant YOLO+I/O cost, so they're within
+the noise floor. Correct framing: cascade is **statistically
+indistinguishable in speed from YOLO**, not faster. All four methods now
+have a measured, reproducible T4 FPS.
 
 Each method is reported at its own operating point, not a shared one: the
 three detectors at their library default (0.25, deliberately untuned),
@@ -1420,11 +1444,11 @@ trade-off fits the deployment.
   (depthwise-separable convolutions vectorize poorly on general CPU kernels;
   the efficiency gain is real, but GPU-side)
 - RT-DETRv2-R18: 20.2M params | RT-DETR-l: 33.0M params
-- On T4: SAM3 **0.37 FPS**, YOLO26n **7.3 FPS**, RT-DETR **7.5–7.7 FPS**
-  (at its own, lower native resolution — see Slide 12's caveat, this
-  isn't a clean architecture-speed comparison against YOLO)
-- **Cascade** end-to-end FPS on T4: **not yet benchmarked** with a
-  dedicated script — the one remaining open item (see Slide 20)
+- On T4: SAM3 **0.37 FPS**, YOLO26n **7.3 FPS**, **Cascade 7.4 FPS**,
+  RT-DETR **7.5–7.7 FPS** (at its own, lower native resolution — see
+  Slide 12's caveat, this isn't a clean architecture-speed comparison
+  against YOLO) — all four methods now have a measured, reproducible T4
+  speed number
 
 **Görsel:** Blok A'nın kendisi tablo olarak slaytta yer alır (ayrı bir 2×2
 grid'e gerek yok) + Blok B için sade bir parametre/hız tablosu.
@@ -1505,10 +1529,11 @@ Slayt 21'a aynı klip konur.
 *Blok A: Limitations already surfaced in this talk*
 - Small-object detection remains the dominant failure mode for every method
   — none of the four solves it; the cascade only partially recovers it
-- End-to-end FPS for the cascade on T4: not yet benchmarked (YOLO, RT-DETR
-  and SAM3 all have real T4 numbers now)
 - Test set has only 4 videos — enough for a per-condition breakdown, but a
   small statistical sample; generalisation claims are bounded accordingly
+- Result video (cascade on the 4 test videos): script and notebook ready
+  (`scripts/36_render_result_video.py`, `notebooks/06_render_result_video.ipynb`),
+  not yet actually rendered
 
 *Blok B: Time-boxed out, not forgotten*
 - Fine-tuning YOLO26n on our own pseudo-labels — every YOLO result shown
