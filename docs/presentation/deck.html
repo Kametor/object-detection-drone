@@ -710,18 +710,20 @@
       <div class="eyebrow"><span>12 / 22</span><span class="dot"></span><span class="sec">Method 3 — Different Architecture</span></div>
       <h1 class="title">RT-DETR, a Different Architecture Family</h1>
       <p class="citation-line">RT-DETR — DETRs Beat YOLOs on Real-Time Object Detection, CVPR 2024 · RT-DETRv2, 2024</p>
+      <p class="thesis">Tried because it's a <b>transformer</b>, not a CNN — heavier to run, lower FPS, but a genuinely different architecture: self-attention lets it reason about the whole frame at once, not just a local patch.</p>
       <div class="body">
         <div class="row" style="flex:0 0 auto;">
-          <div class="col table-wrap">
-            <table>
-              <tr><th>Method</th><th>mAP@.5</th><th>P</th><th>R</th><th>F1</th><th>FP</th></tr>
-              <tr><td>YOLO26n (baseline)</td><td>0.693</td><td>0.853</td><td>0.726</td><td>0.784</td><td>90</td></tr>
-              <tr class="hi"><td>RT-DETRv2-R18</td><td class="best">0.740</td><td>0.609</td><td>0.761</td><td>0.677</td><td class="worst">351</td></tr>
-              <tr><td>RT-DETR-l</td><td>0.731</td><td>0.762</td><td>0.748</td><td>0.755</td><td>168</td></tr>
+          <div class="col table-wrap" style="flex:0 0 auto;">
+            <table style="width:auto;">
+              <tr><th>Method</th><th>HW</th><th>mAP@.5</th><th>P</th><th>R</th><th>F1</th><th>FP</th><th>Inference</th></tr>
+              <tr><td>YOLO26n (baseline)</td><td>T4</td><td>0.693</td><td>0.853</td><td>0.726</td><td>0.784</td><td>90</td><td>7.3 FPS</td></tr>
+              <tr class="hi"><td>RT-DETRv2-R18</td><td>CPU<sup>1</sup></td><td class="best">0.740</td><td>0.609</td><td>0.761</td><td>0.677</td><td class="worst">351</td><td>3.2 FPS</td></tr>
+              <tr><td>RT-DETR-l</td><td>CPU<sup>1</sup></td><td>0.731</td><td>0.762</td><td>0.748</td><td>0.755</td><td>168</td><td class="worst">1.5 FPS</td></tr>
             </table>
           </div>
         </div>
-        <div class="frame" style="flex:1;"><img src="media/slide10_rtdetr_resolution_comparison.png" alt="RT-DETR resolution comparison" style="object-fit:contain; background:var(--surface);"></div>
+        <p class="footnote"><span class="fn-mark">1</span> Timed on CPU, not yet re-run on T4 — not directly comparable to YOLO's T4 number, included for completeness rather than a head-to-head speed claim.</p>
+        <div class="frame" style="flex:2.2;"><img src="media/slide10_rtdetr_resolution_comparison.png" alt="RT-DETR resolution comparison" style="object-fit:contain; background:var(--surface);"></div>
         <div class="row" style="flex:0 0 auto;">
           <div class="col">
             <div class="callout warn"><b>Resolution fragility:</b> forced to YOLO's 1920×1088, RT-DETRv2-R18 collapses 0.740→0.253, FP jumps to 1733 — it has <b>no NMS at inference</b>, its one-query-per-object behaviour is learned for one resolution. YOLO tolerates this fine.</div>
@@ -732,7 +734,7 @@
         </div>
       </div>
       <aside class="notes" hidden>
-        <p>Zero-shot, RT-DETR actually ranks detections better than YOLO — but at a real cost: two to four times more false positives at the same threshold. The more interesting finding: forcing it to YOLO's resolution broke it completely, because RT-DETR has no non-max-suppression step at inference. YOLO doesn't have this problem, because NMS is separate and resolution-independent.</p>
+        <p>I tried this because it's a transformer, not a CNN — a different paradigm from YOLO's convolutions, even though both are still supervised object detectors. Zero-shot, RT-DETR actually ranks detections better than YOLO — but at a real cost: two to four times more false positives at the same threshold, and lower FPS on top of that. The more interesting finding: forcing it to YOLO's resolution broke it completely, because RT-DETR has no non-max-suppression step at inference. YOLO doesn't have this problem, because NMS is separate and resolution-independent.</p>
       </aside>
     </section>
 
