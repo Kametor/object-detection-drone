@@ -681,20 +681,23 @@ were built — including the most interesting failure this project surfaced.
 - Final crop counts: **train 4,905 (1,398 person / 3,507 not_person) — val
   221 (181 person / 40 not_person)**, built with `torchvision.datasets.ImageFolder`
 
-*Blok B: Training recipe*
-- ResNet18, ImageNet-pretrained, plain **PyTorch + torchvision** (no
-  Lightning/timm — deliberately kept out to avoid a new dependency)
-- Input: 64×64 crops, boxes padded 40% for context before resize
-- **Optimizer: AdamW**, lr 3e-4, weight decay 1e-4, **constant LR** (no
-  scheduler)
-- **15 epochs**, batch size 64
-- **Loss: cross-entropy with inverse-class-frequency weighting** — handles
+*Blok B: Training recipe (slide bullets — keep it to this on screen)*
+- ResNet18, ImageNet-pretrained — plain **PyTorch + torchvision**
+- Input 64×64 crops (40% context padding) · **Adam optimizer**
+- **15 epochs**, batch 64
+- Augmentation — flip + colour jitter
+
+*Full detail, for verbal answers / Q&A only — do not put back on the slide*
+- Technically **AdamW**, lr 3e-4, weight decay 1e-4, constant LR (no
+  scheduler) — "Adam" on the slide is the casual/interview-safe short
+  form; if pressed, the decoupled weight decay is the actual detail
+- Loss: cross-entropy with inverse-class-frequency weighting — handles
   the 3,507:1,398 not_person/person imbalance directly in the loss rather
   than by resampling
-- Augmentation deliberately **light** — these crops are already tiny and
-  often blurry, so aggressive augmentation would mostly add noise: random
-  horizontal flip + colour jitter (brightness/contrast ±0.2) at train time
-  only; ImageNet normalisation at both train and eval
+- No Lightning/timm — deliberately kept out to avoid a new dependency
+- Augmentation is deliberately light because these crops are already tiny
+  and blurry — aggressive augmentation would mostly add noise; ImageNet
+  normalisation at both train and eval
 - Trained on **CPU**, not GPU — a deliberate project convention (kept local
   work off the GPU) given how small this model and dataset are; exact
   wall-clock time wasn't logged, so don't quote one live

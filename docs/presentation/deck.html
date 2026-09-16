@@ -614,10 +614,10 @@
             <div class="block">
               <h3><span class="tag">B</span>Training recipe</h3>
               <ul class="bullets tight">
-                <li>ResNet18, ImageNet-pretrained — plain PyTorch + torchvision, no Lightning/timm</li>
-                <li>Input 64×64 crops (40% context padding) · AdamW, lr 3e-4, wd 1e-4, constant LR</li>
-                <li>15 epochs, batch 64 · cross-entropy weighted by inverse class frequency</li>
-                <li>Light augmentation only — flip + colour jitter · trained on CPU (project convention)</li>
+                <li>ResNet18, ImageNet-pretrained — plain PyTorch + torchvision</li>
+                <li>Input 64×64 crops (40% context padding) · Adam optimizer</li>
+                <li>15 epochs, batch 64</li>
+                <li>Augmentation — flip + colour jitter</li>
               </ul>
             </div>
           </div>
