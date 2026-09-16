@@ -1853,3 +1853,47 @@ actual T4 execution still needs a live Colab session (GPU quota,
 slides still label these two rows "CPU" (Slide 12 plainly, Slide 14 with
 its own "¹" footnote) until that run produces real T4 numbers — not
 removed pre-emptively.
+
+## 2026-09-16: RT-DETR's T4 run landed — and "faster than YOLO" would be misleading
+
+**The run happened.** `notebooks/05_rtdetr_zeroshot_T4_eval.ipynb` was
+executed on a real Colab T4 (after the device-fix above and one retried
+push — the first attempt's `git push` failed on a corrupted token
+variable in a re-run cell, the second attempt succeeded, commit
+`735cb41`). Both checkpoints reproduce their CPU-run mAP/P/R/F1 almost
+exactly (e.g. RT-DETRv2-R18 mAP@.5 0.7398→0.7401), confirming — again,
+same as YOLO's own CPU-vs-T4 check — that hardware doesn't change a
+model's output, only its speed. New results: `rtdetr_v2_r18_zeroshot_T4`
+and `rtdetr_ultralytics_l_zeroshot_T4` in `results/eval/comparison.csv`.
+
+**The FPS numbers are real, and genuinely surprising: RT-DETRv2-R18 7.7
+FPS, RT-DETR-l 7.5 FPS — both *faster* than YOLO26n's 7.3 FPS on the same
+T4.** Given RT-DETR was introduced as "heavier, lower FPS" (Slide 12's
+original framing) and the CPU numbers backed that up (3.2 / 1.5 FPS vs.
+YOLO's 3.2), this looked at first like a real "transformers beat CNNs on
+GPU" finding worth headlining.
+
+**Checked before writing that claim onto a slide — it doesn't hold.**
+RT-DETR runs at its own native 640×640 (`configs/28`/`30`'s `imgsz`);
+YOLO26n deliberately runs at 1920×1088 for this project's tiny aerial
+people (`configs/05_yolo_zeroshot.yaml`). That's a ~5.1× difference in
+pixels processed per frame ((1920×1088)/(640×640)). The FPS gap is very
+plausibly explained by that alone, not by attention parallelizing better
+than convolution+NMS on a GPU — and Slide 12 already documents, in the
+very same slide, that pushing RT-DETR to YOLO's resolution doesn't just
+slow it down, it breaks it outright (mAP@.5 0.740→0.253, no NMS at
+inference). So "RT-DETR is faster than YOLO" is not a claim this project
+can actually support; "RT-DETR reaches usable FPS at its own resolution,
+but resolution and speed can't be pulled apart from architecture in this
+comparison" is what the data supports.
+
+**What changed:** Slide 12's intro thesis dropped its now-unsupported
+"heavier to run, lower FPS" claim entirely (still true per-pixel, just
+not demonstrated by this comparison). Both tables (Slide 12, Slide 14)
+now show real T4 numbers with "T4" replacing "CPU", plus a footnote
+naming the resolution mismatch explicitly. Slide 18 and Slide 20's
+"YOLO/cascade/RT-DETR FPS not yet benchmarked" callouts were also
+corrected — YOLO's own T4 FPS (7.3) was already measured back on Slide 7
+and simply hadn't been copied into these two slides; RT-DETR's is new.
+Only the **cascade's** end-to-end FPS on T4 remains genuinely
+unmeasured now.

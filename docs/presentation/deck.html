@@ -710,18 +710,19 @@
       <div class="eyebrow"><span>12 / 22</span><span class="dot"></span><span class="sec">Method 3 — Different Architecture</span></div>
       <h1 class="title">RT-DETR, a Different Architecture Family</h1>
       <p class="citation-line">RT-DETR — DETRs Beat YOLOs on Real-Time Object Detection, CVPR 2024 · RT-DETRv2, 2024</p>
-      <p class="thesis">Tried because it's a <b>transformer</b>, not a CNN — heavier to run, lower FPS, but a genuinely different architecture: self-attention lets it reason about the whole frame at once, not just a local patch.</p>
+      <p class="thesis">Tried because it's a <b>transformer</b>, not a CNN — a genuinely different architecture: self-attention lets it reason about the whole frame at once, not just a local patch.</p>
       <div class="body">
         <div class="row">
           <div class="col" style="flex:0 0 46%;">
             <div class="table-wrap">
               <table style="width:auto;">
-                <tr><th>Method</th><th>HW</th><th>mAP@.5</th><th>P</th><th>R</th><th>F1</th><th>FP</th><th>Inference</th></tr>
+                <tr><th>Method</th><th>HW</th><th>mAP@.5</th><th>P</th><th>R</th><th>F1</th><th>FP</th><th>Inference<sup>1</sup></th></tr>
                 <tr><td>YOLO26n (baseline)</td><td>T4</td><td>0.693</td><td>0.853</td><td>0.726</td><td>0.784</td><td>90</td><td>7.3 FPS</td></tr>
-                <tr class="hi"><td>RT-DETRv2-R18</td><td>CPU</td><td class="best">0.740</td><td>0.609</td><td>0.761</td><td>0.677</td><td class="worst">351</td><td>3.2 FPS</td></tr>
-                <tr><td>RT-DETR-l</td><td>CPU</td><td>0.731</td><td>0.762</td><td>0.748</td><td>0.755</td><td>168</td><td class="worst">1.5 FPS</td></tr>
+                <tr class="hi"><td>RT-DETRv2-R18</td><td>T4</td><td class="best">0.740</td><td>0.609</td><td>0.761</td><td>0.677</td><td class="worst">351</td><td>7.7 FPS</td></tr>
+                <tr><td>RT-DETR-l</td><td>T4</td><td>0.731</td><td>0.761</td><td>0.748</td><td>0.755</td><td>169</td><td>7.5 FPS</td></tr>
               </table>
             </div>
+            <p class="footnote"><span class="fn-mark">1</span> Not a clean architecture-speed comparison: RT-DETR runs at its native 640×640, YOLO at 1920×1088 (deliberately, for small aerial objects) — ~5× more pixels/frame. Higher resolution is exactly what breaks RT-DETR (below).</p>
             <div class="callout warn"><b>Resolution fragility:</b> forced to YOLO's 1920×1088, RT-DETRv2-R18 collapses 0.740→0.253, FP jumps to 1733 — it has <b>no NMS at inference</b>, its one-query-per-object behaviour is learned for one resolution. YOLO tolerates this fine.</div>
             <div class="callout">Both RT-DETR checkpoints resist the DJI_0501 statue trap that fools YOLO and SAM3 (Slide 16) — a measured, architecture-specific difference: self-attention reasons over the whole frame, not just local shape.</div>
           </div>
@@ -732,7 +733,7 @@
         </div>
       </div>
       <aside class="notes" hidden>
-        <p>I tried this because it's a transformer, not a CNN — a different paradigm from YOLO's convolutions, even though both are still supervised object detectors. Zero-shot, RT-DETR actually ranks detections better than YOLO — but at a real cost: two to four times more false positives at the same threshold, and lower FPS on top of that. The more interesting finding: forcing it to YOLO's resolution broke it completely, because RT-DETR has no non-max-suppression step at inference. YOLO doesn't have this problem, because NMS is separate and resolution-independent.</p>
+        <p>I tried this because it's a transformer, not a CNN — a different paradigm from YOLO's convolutions, even though both are still supervised object detectors. Zero-shot, RT-DETR actually ranks detections better than YOLO — but at a real cost: two to four times more false positives at the same threshold. On speed, honestly, the T4 numbers surprised me: both RT-DETR checkpoints come out slightly faster than YOLO here — but that's not a clean architecture comparison, RT-DETR is running at its native 640 while YOLO runs at 1920 for our small aerial objects, about five times fewer pixels per frame. Push RT-DETR to that same resolution and it doesn't get slower, it breaks completely, because it has no non-max-suppression step at inference. YOLO doesn't have this problem, because NMS is separate and resolution-independent.</p>
       </aside>
     </section>
 
@@ -768,10 +769,10 @@
         <div class="row" style="flex:0 0 auto;">
           <div class="col table-wrap" style="flex:1.5;">
             <table>
-              <tr><th>Method</th><th>HW</th><th>conf<sup>2</sup></th><th>mAP@.5</th><th>mAP@[.5:.95]</th><th>P</th><th>R</th><th>F1</th><th>FPS</th></tr>
-              <tr><td>YOLO26n</td><td>T4</td><td>0.25</td><td>0.693</td><td>0.479</td><td>0.853</td><td>0.726</td><td>0.784</td><td>—</td></tr>
+              <tr><th>Method</th><th>HW</th><th>conf<sup>1</sup></th><th>mAP@.5</th><th>mAP@[.5:.95]</th><th>P</th><th>R</th><th>F1</th><th>FPS</th></tr>
+              <tr><td>YOLO26n</td><td>T4</td><td>0.25</td><td>0.693</td><td>0.479</td><td>0.853</td><td>0.726</td><td>0.784</td><td>7.3</td></tr>
               <tr class="hi"><td>Cascade (small-stem fusion)</td><td>T4</td><td>0.38</td><td class="best">0.786</td><td>0.526</td><td class="best">0.890</td><td>0.708</td><td class="best">0.789</td><td>—</td></tr>
-              <tr><td>RT-DETRv2-R18</td><td>CPU<sup>1</sup></td><td>0.25</td><td>0.740</td><td>0.468</td><td>0.609</td><td>0.761</td><td>0.677</td><td>—</td></tr>
+              <tr><td>RT-DETRv2-R18</td><td>T4</td><td>0.25</td><td>0.740</td><td>0.469</td><td>0.609</td><td>0.761</td><td>0.677</td><td>7.7</td></tr>
               <tr class="hi"><td>SAM3 (zero-shot)</td><td>T4</td><td>0.25</td><td class="best">0.846</td><td class="best">0.626</td><td>0.485</td><td class="best">0.872</td><td>0.624</td><td class="best">0.37</td></tr>
             </table>
           </div>
@@ -779,8 +780,7 @@
         </div>
         <div class="row">
           <div class="col">
-            <p class="footnote"><span class="fn-mark">1</span> RT-DETR's script runs on GPU automatically when available; not yet re-run on T4 this cycle — stated, not hidden.</p>
-            <p class="footnote"><span class="fn-mark">2</span> Each method at <b>its own operating point</b>: the three detectors at their library default 0.25 (deliberately untuned), the cascade at 0.38 — its fused score <span class="num">sqrt(yolo_conf × verifier_prob)</span> is a different scale, so 0.25 would not be the same question.</p>
+            <p class="footnote"><span class="fn-mark">1</span> Each method at <b>its own operating point</b>: the three detectors at their library default 0.25 (deliberately untuned), the cascade at 0.38 — its fused score <span class="num">sqrt(yolo_conf × verifier_prob)</span> is a different scale, so 0.25 would not be the same question.</p>
           </div>
           <div class="col">
             <div class="callout">COCO protocol via <span class="num">pycocotools</span>. Size-based and per-video breakdowns built in from day one — a single pooled number would have hidden this project's central finding entirely (Slide 7).</div>
@@ -877,10 +877,10 @@
             <tr><td><b>SAM3</b></td><td>Best accuracy and recall, zero training</td><td>~10× slower than any trained detector; ideal as teacher/auditor, not deployment</td></tr>
           </table>
         </div>
-        <div class="callout">Verifier backbone: ResNet18 11.2M params vs. EfficientNet-B0 4.0M — fewer params ≠ faster on CPU, EfficientNet ran ~5× slower per crop (depthwise-separable convs vectorize poorly on CPU). SAM3: <b>0.37 FPS on T4</b>, the only committed speed number so far — YOLO/cascade/RT-DETR end-to-end FPS on T4 not yet benchmarked (Slide 20).</div>
+        <div class="callout">Verifier backbone: ResNet18 11.2M params vs. EfficientNet-B0 4.0M — fewer params ≠ faster on CPU, EfficientNet ran ~5× slower per crop (depthwise-separable convs vectorize poorly on CPU). On T4: SAM3 <b>0.37 FPS</b>, YOLO26n <b>7.3 FPS</b>, RT-DETR <b>7.5–7.7 FPS</b> (at its own, lower native resolution — Slide 12) — only the <b>cascade's</b> end-to-end FPS on T4 is still unmeasured (Slide 20).</div>
       </div>
       <aside class="notes" hidden>
-        <p>Put side by side, no method wins everywhere. On cost, I want to be precise about what I've actually measured versus what I haven't — SAM3's speed is measured and reproducible, the other three detectors' FPS on T4 is an honest gap, not a hidden one.</p>
+        <p>Put side by side, no method wins everywhere. On cost, I want to be precise about what I've actually measured versus what I haven't — SAM3, YOLO and RT-DETR's T4 speeds are all measured and reproducible now; the cascade's end-to-end FPS on T4 is the one honest gap left, not a hidden one.</p>
       </aside>
     </section>
 
@@ -912,7 +912,7 @@
             <h3>Already surfaced in this talk</h3>
             <ul class="bullets tight">
               <li>Small-object detection: dominant failure mode for every method, none solve it fully</li>
-              <li>End-to-end FPS for YOLO/cascade/RT-DETR on T4: not yet benchmarked</li>
+              <li>End-to-end FPS for the cascade on T4: not yet benchmarked (YOLO, RT-DETR and SAM3 all have real T4 numbers now)</li>
               <li>Test set: 4 videos — enough for per-condition breakdown, a small statistical sample</li>
             </ul>
           </div>

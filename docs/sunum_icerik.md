@@ -941,32 +941,45 @@ frame at once, not just a local patch.
 - Ultralytics ships no true "R18" RT-DETR — added `transformers` as a new
   dependency to get the original authors' checkpoint
 
-*Blok B: Zero-shot result, native resolution*
+*Blok B: Zero-shot result, native resolution, all on T4 (2026-09-16 re-run)*
 
-| Method | HW | mAP@.5 | Precision | Recall | F1 | FP | Inference |
+| Method | HW | mAP@.5 | Precision | Recall | F1 | FP | Inference<sup>1</sup> |
 |---|---|---|---|---|---|---|---|
 | YOLO26n (baseline) | T4 | 0.693 | 0.853 | 0.726 | 0.784 | 90 | 7.3 FPS |
-| RT-DETRv2-R18 | CPU | **0.740** | 0.609 | 0.761 | 0.677 | 351 | 3.2 FPS |
-| RT-DETR-l | CPU | 0.731 | 0.762 | 0.748 | 0.755 | 168 | 1.5 FPS |
+| RT-DETRv2-R18 | T4 | **0.740** | 0.609 | 0.761 | 0.677 | 351 | 7.7 FPS |
+| RT-DETR-l | T4 | 0.731 | 0.761 | 0.748 | 0.755 | 169 | 7.5 FPS |
 
 Higher mAP and recall than YOLO — but 2-4× more false positives at the same
 threshold, and dramatically worse on small objects (mAP_small ≈ 0 for both
 checkpoints).
 
-**Q&A backup, not on the slide** — the slide only shows "CPU" in the HW
-column with no footnote (kept deliberately terse, 2026-09-16). **Inference
-numbers added 2026-09-16**, from timing already recorded in
-`results/manifests/28_rtdetr_zeroshot_eval_20260913T165232Z.json` (196
-frames / 61.0s → 3.2 FPS, RT-DETRv2-R18) and
-`results/manifests/30_rtdetr_ultralytics_zeroshot_eval_20260913T165909Z.json`
-(196 frames / 128.0s → 1.5 FPS, RT-DETR-l) — matched to the exact
-predictions used in this table via each manifest's `num_boxes` (898 and
-706, equal to each row's TP+FP). Both run on CPU, not yet re-run on T4 —
-not a head-to-head speed claim against YOLO's T4 number, included for
-completeness. Notably RT-DETRv2-R18's CPU FPS (3.2) happens to match
-YOLO26n's own CPU FPS from Slide 7 exactly — a coincidence worth not
-over-reading, not a claim that the two are equally fast in general
-(different hardware classes, and RT-DETR-l is clearly slower at 1.5 FPS).
+¹ **Not a clean architecture-speed comparison** — RT-DETR runs at its
+native 640×640, YOLO at 1920×1088 (deliberately, for tiny aerial people)
+— roughly 5× more pixels/frame for YOLO. This is exactly why RT-DETR
+looks *faster* than YOLO here despite being the heavier architecture per
+pixel: push it to YOLO's resolution and it doesn't get slower, it breaks
+outright (Block C). Slide wording deliberately doesn't claim "RT-DETR is
+faster than YOLO" for this reason — it states the numbers and flags the
+resolution mismatch, nothing stronger.
+
+**T4 run, 2026-09-16** (`notebooks/05_rtdetr_zeroshot_T4_eval.ipynb`):
+196 frames / 25.6s → 7.7 FPS (RT-DETRv2-R18,
+`results/manifests/28_rtdetr_zeroshot_eval_20260916T185542Z.json`); 196
+frames / 26.1s → 7.5 FPS (RT-DETR-l,
+`results/manifests/30_rtdetr_ultralytics_zeroshot_eval_20260916T185617Z.json`).
+mAP/P/R/F1 barely moved from the original CPU run (e.g. RT-DETRv2-R18
+mAP@.5 0.7398→0.7401) — hardware doesn't change the model's output, only
+its speed, same lesson already established for YOLO
+(`yolo26n_zeroshot` vs `yolo26n_zeroshot_T4`). Superseded CPU-only
+numbers (RT-DETRv2-R18 3.2 FPS, RT-DETR-l 1.5 FPS) are kept in
+`docs/decision_log.md` for the record, not repeated here.
+
+**Bug found while preparing this run:** the HF-based `RtDetrV2Detector`
+never moved its model off CPU (`src/methods/rtdetr/model.py`, no
+`.to(device)` anywhere) — running the original script unmodified on the
+T4 would have silently stayed on CPU. Fixed with a `device` parameter;
+see `docs/decision_log.md`, "RT-DETRv2-R18's HF wrapper never actually
+used the GPU" (2026-09-16).
 
 *Blok C: An unplanned finding — resolution fragility*
 - Forced both checkpoints to YOLO's 1920×1088 input, to make the comparison
@@ -1151,14 +1164,18 @@ same confidence scale.
 
 | Method | Hardware | conf | mAP@.5 | mAP@[.5:.95] | Precision | Recall | F1 | FPS |
 |---|---|---|---|---|---|---|---|---|
-| YOLO26n (baseline) | T4 | 0.25 | 0.693 | 0.479 | 0.853 | 0.726 | 0.784 | not yet benchmarked |
+| YOLO26n (baseline) | T4 | 0.25 | 0.693 | 0.479 | 0.853 | 0.726 | 0.784 | 7.3 |
 | Cascade (best: small-stem fusion) | T4 | 0.38 | **0.786** | 0.526 | **0.890** | 0.708 | **0.789** | not yet benchmarked |
-| RT-DETRv2-R18 | CPU¹ | 0.25 | 0.740 | 0.468 | 0.609 | 0.761 | 0.677 | not yet benchmarked |
+| RT-DETRv2-R18 | T4 | 0.25 | 0.740 | 0.469 | 0.609 | 0.761 | 0.677 | 7.7 |
 | SAM3 (zero-shot) | T4 | 0.25 | **0.846** | **0.626** | 0.485 | **0.872** | 0.624 | **0.37** |
 
-¹ RT-DETR's own script already runs on GPU automatically when available;
-not yet re-run on T4 in this cycle — say this out loud, don't hide the
-hardware mismatch.
+**Updated 2026-09-16:** RT-DETR re-run on T4
+(`notebooks/05_rtdetr_zeroshot_T4_eval.ipynb`) — the CPU¹ caveat that used
+to live here is gone. See Slide 12's Block B for the full T4 numbers
+(both checkpoints) and the important caveat that RT-DETR's FPS here isn't
+a clean architecture comparison against YOLO (native 640 vs. YOLO's
+1920). YOLO's own T4 FPS (7.3) was already measured back on Slide 7 —
+just not previously copied into this table.
 
 Each method is reported at its own operating point, not a shared one: the
 three detectors at their library default (0.25, deliberately untuned),
@@ -1403,10 +1420,11 @@ trade-off fits the deployment.
   (depthwise-separable convolutions vectorize poorly on general CPU kernels;
   the efficiency gain is real, but GPU-side)
 - RT-DETRv2-R18: 20.2M params | RT-DETR-l: 33.0M params
-- SAM3: **0.37 FPS on T4** — the only method in this project with a
-  committed, reproducible speed number so far
-- YOLO26n / cascade / RT-DETR end-to-end FPS on T4: **not yet benchmarked**
-  with a dedicated script — an open item, not a hidden one (see Slide 20)
+- On T4: SAM3 **0.37 FPS**, YOLO26n **7.3 FPS**, RT-DETR **7.5–7.7 FPS**
+  (at its own, lower native resolution — see Slide 12's caveat, this
+  isn't a clean architecture-speed comparison against YOLO)
+- **Cascade** end-to-end FPS on T4: **not yet benchmarked** with a
+  dedicated script — the one remaining open item (see Slide 20)
 
 **Görsel:** Blok A'nın kendisi tablo olarak slaytta yer alır (ayrı bir 2×2
 grid'e gerek yok) + Blok B için sade bir parametre/hız tablosu.
@@ -1421,10 +1439,10 @@ grid'e gerek yok) + Blok B için sade bir parametre/hız tablosu.
 > is a genuinely different architecture with its own profile. SAM 3 is the
 > most accurate and the slowest by an order of magnitude.
 > On cost, I want to be precise about what I've actually measured versus
-> what I haven't. SAM 3's speed is measured and reproducible: point-three-
-> seven frames per second on a T4. The other three detectors' end-to-end FPS
-> on T4 is not yet benchmarked with a dedicated script — that's an honest
-> gap, not a hidden one, and it's next on my list, along with a
+> what I haven't. SAM 3, YOLO and RT-DETR's T4 speeds are all measured and
+> reproducible now. The cascade's end-to-end FPS on T4 is not yet
+> benchmarked with a dedicated script — that's an honest gap, not a hidden
+> one, and it's next on my list, along with a
 > TensorRT/FP16 export that should move those numbers considerably.
 
 ---
@@ -1487,7 +1505,8 @@ Slayt 21'a aynı klip konur.
 *Blok A: Limitations already surfaced in this talk*
 - Small-object detection remains the dominant failure mode for every method
   — none of the four solves it; the cascade only partially recovers it
-- End-to-end FPS for YOLO / cascade / RT-DETR on T4: not yet benchmarked
+- End-to-end FPS for the cascade on T4: not yet benchmarked (YOLO, RT-DETR
+  and SAM3 all have real T4 numbers now)
 - Test set has only 4 videos — enough for a per-condition breakdown, but a
   small statistical sample; generalisation claims are bounded accordingly
 
