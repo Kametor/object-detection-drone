@@ -1999,3 +1999,36 @@ speedup that isn't real. Same underlying lesson as the RT-DETR
 resolution-vs-architecture correction two entries up: a plausible-
 looking number still needs a mechanism check before it goes on a slide
 as a comparative claim.
+
+## 2026-09-17: Result video rendered; a highlight clip pushed to the repo
+
+**The full render ran.** `notebooks/06_render_result_video.ipynb` was
+executed on a live Colab T4: the cascade's predictions on all 4 held-out
+test videos, every frame, combined into one ~680MB `.mp4`
+(`results/demo_video/cascade_test_videos.mp4` on Drive — too large for
+git either way, and this project's convention keeps all video output
+off git regardless of size).
+
+**Picking a highlight clip.** For embedding directly in the PowerPoint
+deliverable and for a small, git-friendly repo preview, sampled the full
+video at regular intervals (a contact-sheet grid, not spot checks) to
+find the most illustrative segment rather than guessing from the config's
+video order. DJI_0862's final ~30 seconds won clearly: a small group of
+hikers starts as tiny, low-confidence boxes (0.48-0.68) at a distance
+next to a wrecked-plane prop and grows into confident, correctly-sized
+boxes (0.77-0.91) as they approach camera — a visual demonstration of
+this project's own small-object theme, not just a clean success shot.
+Re-encoded from the source mp4v stream to H.264 (`ffmpeg -c:v libx264
+-crf 20`, via the `imageio-ffmpeg` package's bundled static binary, since
+neither `ffmpeg` nor Homebrew were available locally) for universal
+PowerPoint compatibility and a much smaller file: 39MB vs. what a
+30s slice of the raw mp4v stream would have been.
+
+**Pushed to git despite the `*.mp4` gitignore rule** — a deliberate,
+user-requested exception (`git add -f`), justified here because it's
+small enough to matter: GitHub hard-rejects any single file over 100MB
+without Git LFS (not configured in this project), so the original
+680MB video could never have been pushed regardless of preference; the
+39MB trimmed clip is comfortably under that limit. Linked from the
+README's Presentation section. The full combined video stays on Drive
+only, as originally planned.
