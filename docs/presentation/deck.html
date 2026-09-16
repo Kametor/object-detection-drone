@@ -473,7 +473,7 @@
               <h3><span class="tag">A–B</span>Why automatic, and the pipeline</h3>
               <ul class="bullets tight">
                 <li>Manual labelling doesn't scale to the training set</li>
-                <li>Prompt-driven segmentation → masks → boxes, <span class="num">imgsz=1024</span> (1920 OOM'd on T4's 14.56GB)</li>
+                <li>Prompt-driven segmentation → masks → boxes, <span class="num">imgsz=1024</span> — 1920 needed more VRAM than the T4's 14.56GB has</li>
                 <li><span class="num">confidence_threshold=0.5</span> — see the shadow fix below</li>
               </ul>
             </div>
