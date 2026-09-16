@@ -54,6 +54,7 @@ def main() -> None:
         checkpoint=config["checkpoint"],
         conf=config["conf"],
         image_size=(config["image_height"], config["image_width"]),
+        device=config.get("device", "cpu"),
     )
 
     frames_dir = Path(config["frames_dir"])

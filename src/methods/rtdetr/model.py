@@ -48,6 +48,7 @@ class RtDetrV2Detector:
         checkpoint: str = "PekingU/rtdetr_v2_r18vd",
         conf: float = 0.25,
         image_size: tuple[int, int] = (1088, 1920),  # (height, width)
+        device: str = "cpu",
     ) -> None:
         height, width = image_size
         self._processor = RTDetrImageProcessor.from_pretrained(
@@ -55,13 +56,15 @@ class RtDetrV2Detector:
         )
         self._model = RTDetrV2ForObjectDetection.from_pretrained(checkpoint)
         self._model.eval()
+        self._model.to(device)
+        self._device = device
         self._conf = conf
 
     def detect(self, image: np.ndarray) -> list[Detection]:
         """`image`: BGR, as returned by `cv2.imread` — matches Yolo26Detector."""
         rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         h, w = image.shape[:2]
-        inputs = self._processor(images=rgb, return_tensors="pt")
+        inputs = self._processor(images=rgb, return_tensors="pt").to(self._device)
         with torch.no_grad():
             outputs = self._model(**inputs)
         result = self._processor.post_process_object_detection(

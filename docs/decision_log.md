@@ -1814,3 +1814,42 @@ Method 1 hits F1 0.7892 @ 0.30, edging the cascade's 0.7885) is kept as
 Q&A backup in `sunum_icerik.md`, not as an on-slide hedge — mAP already
 carries the headline "cascade is better" claim precisely because it
 doesn't need this kind of per-method threshold justification.
+
+## 2026-09-16: RT-DETRv2-R18's HF wrapper never actually used the GPU
+
+**Finding.** While preparing a notebook to finally re-run RT-DETR on a T4
+(the top-priority open item in `kalan_isler.md` — every RT-DETR number so
+far was CPU-only, unlike every other method), `src/methods/rtdetr/model.py`'s
+`RtDetrV2Detector` (the Hugging Face `transformers`-based wrapper around
+`PekingU/rtdetr_v2_r18vd`) turned out to have no device-handling code at
+all — `.from_pretrained()` loads on CPU, and neither the model nor the
+processor's output tensors were ever moved anywhere else. Running
+`scripts/28_rtdetr_zeroshot_eval.py` unmodified on a Colab T4 would have
+silently stayed on CPU and reproduced the same CPU timing again under a
+different filename — the exact opposite of what that notebook run was
+for. This contradicts the presentation's own "RT-DETR's own script
+already runs on GPU automatically when available" framing (Slide 14's
+footnote) — that claim holds for the Ultralytics-based
+`RtDetrUltralyticsDetector` (Ultralytics auto-selects CUDA, the same
+mechanism already verified by `yolo26n_zeroshot_T4`), but not for the HF
+one; the footnote wording didn't distinguish the two checkpoints.
+
+**Fix.** Added a `device: str = "cpu"` parameter to `RtDetrV2Detector.__init__`,
+which moves the model (`self._model.to(device)`) and, per call, the
+processor's output (`inputs.to(self._device)`) to that device.
+`scripts/28_rtdetr_zeroshot_eval.py` reads it from `config.get("device", "cpu")`
+— the committed `configs/28_rtdetr_zeroshot.yaml` now states `device: cpu`
+explicitly (previously implicit/absent), so the already-recorded
+`rtdetr_v2_r18_zeroshot` CPU result is reproduced identically and stays
+valid. A new notebook, `notebooks/05_rtdetr_zeroshot_T4_eval.ipynb`,
+patches `device: cuda` in a session-local config copy and writes to a new
+`results/rtdetr_zeroshot_T4/` directory, leaving the CPU run untouched so
+both remain directly comparable afterward (same pattern as
+`yolo26n_zeroshot` vs. `yolo26n_zeroshot_T4`).
+
+**Not yet run** — this fix and notebook were prepared and pushed; the
+actual T4 execution still needs a live Colab session (GPU quota,
+`test_frames.zip` on Drive) and hasn't happened as of this entry. Both
+slides still label these two rows "CPU" (Slide 12 plainly, Slide 14 with
+its own "¹" footnote) until that run produces real T4 numbers — not
+removed pre-emptively.

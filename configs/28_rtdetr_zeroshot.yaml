@@ -23,3 +23,11 @@ image_width: 640
 output_dir: results/rtdetr_zeroshot
 manifest_dir: results/manifests
 jpeg_quality: 90
+
+# Unlike Yolo26Detector/RtDetrUltralyticsDetector (ultralytics auto-selects
+# CUDA when available), this HF transformers wrapper never moved itself
+# off CPU until this field was added -- running this config unmodified on
+# a T4 would silently still run on CPU. The T4 notebook overrides this to
+# "cuda" in a session-local copy of this config; local/CPU runs (this
+# committed default) are unaffected.
+device: cpu
