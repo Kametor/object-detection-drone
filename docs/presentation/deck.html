@@ -63,6 +63,11 @@
   @keyframes fadein{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
   @media (prefers-reduced-motion: reduce){.slide.active{animation:none;}}
 
+  .slide.signature{
+    border:4px solid var(--accent2);
+    border-radius:calc(var(--radius) + 6px);
+  }
+
   .eyebrow{
     display:flex; align-items:center; gap:10px;
     font-family:'IBM Plex Mono', monospace;
@@ -638,7 +643,7 @@
     </section>
 
     <!-- 9 -->
-    <section class="slide">
+    <section class="slide signature">
       <div class="eyebrow"><span>10 / 22</span><span class="dot"></span><span class="sec">Alternative Method 1 — Cascade · Part 3</span></div>
       <h1 class="title">Cascade: The Iteration</h1>
       <p class="thesis">The first version made things worse, not better. Three measured refinements — each kept or discarded on evidence — got it past the baseline.</p>
