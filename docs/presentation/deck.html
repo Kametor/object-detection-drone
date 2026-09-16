@@ -678,10 +678,10 @@
         <div class="row" style="flex:0 0 auto;">
           <div class="col table-wrap">
             <table>
-              <tr><th>Verifier backbone (shared conf 0.25)</th><th>mAP@.5</th><th>mAP@[.5:.95]</th><th>P</th><th>R</th><th>F1</th><th>FP</th></tr>
-              <tr><td>Method 1 (YOLO26n)</td><td>0.693</td><td>0.479</td><td>0.853</td><td>0.726</td><td>0.784</td><td>90</td></tr>
-              <tr class="hi"><td>Cascade — small-stem + fusion</td><td class="best">0.786</td><td class="best">0.526</td><td>0.754</td><td>0.778</td><td>0.766</td><td>182</td></tr>
-              <tr><td>Cascade — EfficientNet-B0 (tried, not adopted)</td><td>0.777</td><td>0.521</td><td>0.729</td><td>0.765</td><td>0.747</td><td>204</td></tr>
+              <tr><th>Config (each at its own operating point)</th><th>conf</th><th>mAP@.5</th><th>mAP@[.5:.95]</th><th>P</th><th>R</th><th>F1</th><th>FP</th></tr>
+              <tr><td>Method 1 (YOLO26n, Ultralytics default)</td><td>0.25</td><td>0.693</td><td>0.479</td><td>0.853</td><td class="best">0.726</td><td>0.784</td><td>90</td></tr>
+              <tr class="hi"><td>Cascade — small-stem + fusion</td><td>0.38</td><td class="best">0.786</td><td class="best">0.526</td><td class="best">0.890</td><td>0.708</td><td class="best">0.789</td><td class="best">63</td></tr>
+              <tr><td>Cascade — EfficientNet-B0 (tried, not adopted)</td><td>0.38</td><td>0.777</td><td>0.521</td><td>0.879</td><td>0.705</td><td>0.782</td><td>70</td></tr>
             </table>
           </div>
         </div>
@@ -689,9 +689,11 @@
           <div class="col frame" style="flex:0 0 44%;"><img src="media/slide09_cascade_bar_chart.png" alt="Cascade bar chart" style="object-fit:contain; background:var(--surface);"></div>
           <div class="col">
             <ul class="bullets tight">
+              <li><b>Why different conf values:</b> the cascade's fused score <span class="num">sqrt(yolo_conf × verifier_prob)</span> is not on YOLO's raw-confidence scale — 0.25 means different things to each. Each system is shown at its own as-designed point: Method 1 at Ultralytics' untouched default (the whole point of it as a baseline), the cascade at its own 0.38</li>
               <li>Small-object mAP on the 2 hardest videos: <b>0.000→0.081/0.070</b> — a targeted recovery of exactly Method 1's exposed failure</li>
               <li>Also tried EfficientNet-B0 as the verifier backbone — not adopted, weaker on the actual test set despite a better validation score</li>
             </ul>
+            <p class="footnote"><span class="fn-mark">*</span> Honest caveat: sweeping Method 1's threshold too — which this project deliberately does not do — lands it at F1 0.7892 @ 0.30, a hair above the cascade's 0.7885. That's why <b>mAP</b>, which sweeps both identically, carries the headline claim.</p>
           </div>
         </div>
       </div>

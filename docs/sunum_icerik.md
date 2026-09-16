@@ -841,24 +841,39 @@ sampling result", "Score fusion instead of hard gating"), `configs/17`,
 an alternative verifier backbone that quietly reinforces the project's
 biggest lesson about validation scores.
 
-*Blok A: Verifier backbone comparison (T4, shared conf=0.25)* — the three
-fusion variants below share the same YOLO stage and the same fusion
-formula, so their scores really are on one scale; comparing them at one
-fixed point is legitimate here in a way it wouldn't be for Method 1 vs.
-Cascade (Slide 10 already made that case on mAP, not F1, for exactly that
-reason).
+*Blok A: Final comparison (T4, each system at its own operating point)* —
+the cascade's fused score `sqrt(yolo_conf × verifier_prob)` is **not on
+YOLO's raw-confidence scale**, so a single shared threshold would compare
+two different things. Each row is therefore reported at its own
+as-designed point: Method 1 at Ultralytics' untouched default 0.25 (it
+exists to measure the out-of-the-box domain gap, deliberately never
+tuned), the cascade variants at their own swept-optimal 0.38.
 
-| Config | mAP@.5 | mAP@[.5:.95] | Precision | Recall | F1 | FP |
-|---|---|---|---|---|---|---|
-| Method 1 (YOLO26n, conf 0.25) | 0.693 | 0.479 | 0.853 | 0.726 | 0.784 | 90 |
-| **Cascade — small-stem ResNet + fusion** | **0.786** | **0.526** | 0.754 | 0.778 | 0.766 | 182 |
-| Cascade — EfficientNet-B0 verifier | 0.777 | 0.521 | 0.729 | 0.765 | 0.747 | 204 |
+| Config | conf | mAP@.5 | mAP@[.5:.95] | Precision | Recall | F1 | FP |
+|---|---|---|---|---|---|---|---|
+| Method 1 (YOLO26n, default) | 0.25 | 0.693 | 0.479 | 0.853 | **0.726** | 0.784 | 90 |
+| **Cascade — small-stem ResNet + fusion** | 0.38 | **0.786** | **0.526** | **0.890** | 0.708 | **0.789** | **63** |
+| Cascade — EfficientNet-B0 verifier | 0.38 | 0.777 | 0.521 | 0.879 | 0.705 | 0.782 | 70 |
 
-At this **shared** point the gap between verifier backbones is actually
-clearer (0.766 vs 0.747, a 0.019 F1 gap) than at each backbone's own
-optimized threshold (0.006 gap) — exactly why this table intentionally
-does *not* hunt for each row's best threshold the way Slide 10 does for
-the single cascade-vs-Method-1 claim.
+The cascade wins on mAP@.5, mAP@[.5:.95], precision, F1 **and** false
+positives (63 vs 90); Method 1 keeps a small recall edge (0.726 vs 0.708).
+
+**Honest caveat (say it out loud, don't hide it):** sweeping Method 1's
+own threshold too — which this project deliberately does *not* do — lands
+it at F1 0.7892 @ conf=0.30, a hair above the cascade's 0.7885. That is
+exactly why **mAP**, which sweeps every threshold for both methods
+identically, is the number that carries the headline claim, not a
+single-threshold F1.
+
+**Correction note (2026-09-16):** an earlier version of this table put all
+three rows at a "shared conf=0.25", which made the cascade look *worse*
+than Method 1 on P/R/F1 (F1 0.766 vs 0.784). That framing was wrong for a
+cascade-vs-Method-1 comparison — 0.25 on the fused-score scale is an
+arbitrary point, not the cascade's operating point. Shared-threshold
+comparison is only valid verifier-vs-verifier (identical YOLO stage). All
+values above re-verified directly from
+`results/cascade_score_fusion_*_T4/predictions.json` against
+`data/gold_test/annotations.json` via `src.eval.metrics.precision_recall_f1`.
 
 *Blok B: Where it actually earns its keep*
 - On DJI_0501 / DJI_0596 (the two hardest videos): small-object mAP goes
@@ -885,6 +900,20 @@ the single cascade-vs-Method-1 claim.
 > and — this is the part I actually care about — on the two hardest videos,
 > small-object detection goes from exactly zero to something real. Ten of
 > forty-four previously invisible people, caught.
+> One thing to read carefully in this table: the two systems are shown at
+> different confidence values, and that's deliberate. The cascade's score
+> is a fusion — the square root of YOLO's confidence times the verifier's
+> probability — so it simply isn't on the same scale as YOLO's raw
+> confidence. Method 1 sits at Ultralytics' untouched default, which is
+> the entire point of it as a baseline; the cascade sits at its own
+> swept-optimal point. At those points the cascade is ahead on precision,
+> F1, both mAP measures, and cuts false positives from ninety down to
+> sixty-three — Method 1 keeps a small recall edge.
+> And to be straight about it: if I also tuned Method 1's threshold, which
+> I deliberately don't, it would edge back ahead on F1 by four
+> ten-thousandths. That's noise, and it's exactly why mAP — which sweeps
+> both identically — is the number I stand behind, not a single-threshold
+> F1.
 > I also tried EfficientNet-B0 as a different verifier architecture — didn't
 > keep it, the actual test result was weaker despite a better validation
 > score. Stuck with ResNet.

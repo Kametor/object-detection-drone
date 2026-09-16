@@ -1750,3 +1750,53 @@ speaker notes corrected). The "10 of 44 recovered" claim on Slide 10
 itself was not re-derived here and is assumed correct (it comes from the
 official evaluated cascade predictions, not this ad-hoc IoU check) —
 worth a similar direct spot-check later if time allows.
+
+## Correction 2026-09-16: Slide 11's comparison table used an invalid shared confidence threshold
+
+**Finding.** While reviewing the final-result slide, the user pointed out
+that the table looked wrong: we had established earlier in the project
+that the cascade beats Method 1, but the slide's P/R/F1 columns showed
+the opposite (cascade F1 0.766 vs. Method 1 0.784). The user recalled
+correctly that the cascade's own operating point is conf=0.38, not 0.25.
+
+**Root cause.** The table reported all three rows at a single "shared
+conf=0.25". That design decision was recorded earlier (see "Simpler,
+cleaner verifier comparison (user's correction)", 2026-09-13) and is
+valid — but *only for verifier-vs-verifier comparison*, where the YOLO
+stage is byte-identical across rows and only the backbone changes. The
+slide then also put **Method 1** into that same shared-threshold table,
+which is exactly the comparison that entry says a shared point is *not*
+valid for: the cascade's fused score `sqrt(yolo_conf x verifier_prob)`
+lives on a different scale from YOLO's raw objectness confidence, so
+conf=0.25 is an arbitrary point for the cascade, not its operating point.
+
+**Re-verified directly** with `src.eval.metrics.precision_recall_f1`
+against `data/gold_test/annotations.json`, at each system's own
+as-designed operating point:
+
+| Config | conf | P | R | F1 | TP/FP/FN |
+|---|---|---|---|---|---|
+| Method 1 (YOLO26n, Ultralytics default) | 0.25 | 0.8529 | 0.7260 | 0.7844 | 522/90/197 |
+| **Cascade, small-input-stem + fusion** | 0.38 | **0.8899** | 0.7079 | **0.7885** | 509/**63**/210 |
+| Cascade, EfficientNet-B0 | 0.38 | 0.8787 | 0.7051 | 0.7824 | 507/70/212 |
+
+These reproduce the T4 figures already recorded in "GPU (T4) validation
+of the full method comparison" (2026-09-13) exactly.
+
+**Corrected framing:** the cascade leads on mAP@.5 (0.786 vs 0.693),
+mAP@[.5:.95] (0.526 vs 0.479), precision (0.890 vs 0.853), F1 (0.789 vs
+0.784) and false positives (63 vs 90); Method 1 retains a small recall
+edge (0.726 vs 0.708). The pre-existing honest caveat is kept visible on
+the slide: sweeping Method 1's threshold too (which the project
+deliberately does not do) lands it at F1 0.7892 @ 0.30, marginally above
+the cascade — which is why mAP carries the headline claim.
+
+**Affected files:** `docs/sunum_icerik.md` and
+`docs/presentation/deck.html` (Slide 11 table, bullets, footnote and
+speaker notes). A `conf` column was added to the table so the differing
+operating points are explicit rather than looking like cherry-picking.
+
+**Still open:** Slide 14 (Quantitative Comparison) reports all four
+methods at conf=0.25 with a footnote explaining the choice. That table
+spans genuinely different score scales too (SAM3 and RT-DETR included),
+so it deserves the same scrutiny — not changed here, flagged for review.
