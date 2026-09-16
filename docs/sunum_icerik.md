@@ -759,11 +759,12 @@ got it past the baseline.
 - Trust YOLO outright at/above 0.25, unchanged. Only the **[0.01, 0.25)**
   band — where recall was being bought at a heavy precision cost — goes
   through the verifier
-- mAP@.5 recovers to 0.733, then to **0.760** after a second fix: one
-  training video (DJI_0790) supplied 70-81% of the verifier's training
-  crops, so the verifier had mostly learned *that* video's look, not
-  "person" in general. Fix: weight every source video equally per epoch
-  (`video_balanced_sampling`)
+- One training video (DJI_0790) supplied **~75%** of the verifier's
+  training crops (70% of person crops, 81% of not_person — rounded to one
+  number for the slide), so the verifier had mostly learned *that* video's
+  look, not "person" in general. Fix: weight every source video equally
+  per epoch (`video_balanced_sampling`)
+- mAP@.5 recovers to 0.733, then to **0.760** after this fix
 
 *Blok C: Score fusion instead of a hard accept/reject*
 - Replace the verifier's binary yes/no with a **continuous blended score**:
