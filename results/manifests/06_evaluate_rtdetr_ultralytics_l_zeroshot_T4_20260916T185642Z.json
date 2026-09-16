@@ -1,0 +1,11 @@
+{
+  "script": "06_evaluate.py",
+  "method_name": "rtdetr_ultralytics_l_zeroshot_T4",
+  "predictions_path": "results/rtdetr_ultralytics_zeroshot_T4/predictions.json",
+  "gt_path": "data/gold_test/annotations.json",
+  "config_path": "configs/06_evaluate.yaml",
+  "config_hash": "ebc5d27dd103",
+  "seed": 42,
+  "git_sha": "bb160cfd9baab57135f7c3641a3282ab7bc69aeb",
+  "timestamp": "2026-09-16T18:56:42.053222+00:00"
+}
