@@ -320,7 +320,7 @@ bağlı, o yüzden tamamen elle, CVAT ile etiketlendi.
 ("Gold test set complete", 2026-09-12)
 
 **Görsel:** CVAT arayüzünden ekran görüntüsü
-(`docs/presentation/media/slide04_cvat_annotation_ui.jpg` — glacial lagoon
+(`docs/presentation/media/slide04_cvat_annotation_ui.png` — glacial lagoon
 sahnesinde küçük, uzak kişilerin elle kutulandığı an).
 
 **Konuşma akışı**
@@ -405,7 +405,7 @@ otomatik etiketleme hattı kurduk ve **kalitesini ölçtük**.
   fully automated safeguard
 
 **Görsel:** İki görsel, sağ kolonda alt alta —
-1) Before/after karşılaştırması: `docs/presentation/media/slide05_shadow_before_after.jpg`
+1) Before/after karşılaştırması: `docs/presentation/media/slide05_shadow_before_after.png`
 (2026-09-15, Colab'da tek frame yeniden koşularak üretildi: aynı Berghouse
 frame 0, solda conf=0.3 — 2 runner + gölge kutusu 0.47, sağda conf=0.5 —
 sadece 2 runner, gölge dışlanmış).
@@ -1005,7 +1005,7 @@ DJI_0501 statue*
 
 **Görsel:** side-by-side — native-resolution RT-DETR prediction vs. the
 forced-1920 duplicate-box storm, aynı frame (Berghouse, frame 720)
-(`docs/presentation/media/slide10_rtdetr_resolution_comparison.jpg`,
+(`docs/presentation/media/slide10_rtdetr_resolution_comparison.png`,
 2026-09-15). Görsel dosya hiç kaydedilmemiş olsa da kutu koordinatları
 `results/rtdetr_zeroshot/predictions.json` (native) ve
 `results/rtdetr_resolution_diagnostic/predictions.json` (forced-1920)
