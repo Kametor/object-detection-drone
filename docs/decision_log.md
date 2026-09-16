@@ -1941,3 +1941,19 @@ Kaggle API token or the raw dataset already fetched. Video output is
 gitignored (`*.mp4`) and belongs on Drive, per this project's existing
 convention for large media — only the run's manifest JSON is pushed to
 GitHub.
+
+**Correction 2026-09-16, confirmed by an actual Colab run:** the Kaggle
+`kmader/drone-videos` zip extracts **flat** into whatever `-p` path is
+given (`data/raw/DJI_0501.MP4`, ...), not into a `drone_videos/`
+subfolder as the README's `kaggle datasets download ... --unzip` command
+previously implied. Every other script/config in this repo (`01_inventory.py`,
+`configs/02_sample_frames.yaml`, `data/splits/*.txt` resolution, this
+video-render notebook) expects `data/raw/drone_videos/<filename>`. Fixed
+by adding a `find ... -exec mv ...` step right after the download/unzip,
+in both the README's Setup section and
+`notebooks/06_render_result_video.ipynb`'s Step 1 — moves every
+`.mp4`/`.mov`/`.srt` at the top level of `data/raw/` into
+`data/raw/drone_videos/`. (This had gone unnoticed until now because
+every prior Colab notebook only ever needed pre-sampled frame zips
+already organized correctly, e.g. `test_frames.zip` — this is the first
+one to fetch the raw dataset itself inside Colab.)

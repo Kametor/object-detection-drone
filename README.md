@@ -138,7 +138,11 @@ Only 13 of the dataset's clips are used; which ones and why is in
 
 ```bash
 kaggle datasets download -d kmader/drone-videos -p data/raw/ --unzip
+mkdir -p data/raw/drone_videos
+find data/raw -maxdepth 1 -type f \( -iname "*.mp4" -o -iname "*.mov" -o -iname "*.srt" \) -exec mv {} data/raw/drone_videos/ \;
 ```
+
+The dataset's zip extracts flat into `data/raw/` — the `mv` step above moves the media files into the `drone_videos/` subfolder every script/config in this repo expects.
 
 ### 3. GPU steps (Colab, free T4 tier)
 
