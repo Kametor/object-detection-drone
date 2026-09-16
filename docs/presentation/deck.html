@@ -13,44 +13,13 @@
     --accent:#3a913f;
     --accent-dark:#276b2b;
     --accent-tint:#e7f2e8;
+    --accent2:#b58150;
+    --accent2-dark:#8f6640;
+    --accent2-tint:#f5ece1;
     --danger:#a8483d;
     --danger-tint:#f6e9e7;
     --shadow:0 1px 2px rgba(29,29,27,.06), 0 8px 24px rgba(29,29,27,.08);
     --radius:14px;
-  }
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
-      --bg:#131512;
-      --surface:#1b1e19;
-      --surface-alt:#20241d;
-      --ink:#f3f4f0;
-      --ink-soft:#c6cac0;
-      --line:#33362d;
-      --muted:#9aa095;
-      --brand-grey:#a4a9ad;
-      --accent:#4fb255;
-      --accent-dark:#7fce83;
-      --accent-tint:#1d2e1e;
-      --danger:#d38b7e;
-      --danger-tint:#2e211e;
-      --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 32px rgba(0,0,0,.4);
-    }
-  }
-  :root[data-theme="dark"]{
-    --bg:#131512;
-    --surface:#1b1e19;
-    --surface-alt:#20241d;
-    --ink:#f3f4f0;
-    --ink-soft:#c6cac0;
-    --line:#33362d;
-    --muted:#9aa095;
-    --brand-grey:#a4a9ad;
-    --accent:#4fb255;
-    --accent-dark:#7fce83;
-    --accent-tint:#1d2e1e;
-    --danger:#d38b7e;
-    --danger-tint:#2e211e;
-    --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 32px rgba(0,0,0,.4);
   }
 
   *{box-sizing:border-box;}
@@ -156,6 +125,10 @@
 
   /* stat tiles */
   .stat-grid{display:grid; gap:10px;}
+  .stat-grid.dense{gap:6px;}
+  .stat-grid.dense .stat{padding:6px 10px; gap:0;}
+  .stat-grid.dense .stat-num{font-size:clamp(16px,1.5vw,22px);}
+  .stat-grid.dense .stat-label{font-size:clamp(9px,0.75vw,11px); line-height:1.15;}
   .stat{
     background:var(--surface-alt); border:1px solid var(--line); border-radius:10px;
     padding:12px 16px; display:flex; flex-direction:column; gap:3px;
@@ -169,6 +142,7 @@
   table{width:100%; border-collapse:collapse; font-size:clamp(13px,1.05vw,16.5px);}
   table.prose{font-family:'IBM Plex Sans', sans-serif;}
   th,td{padding:8px 12px; text-align:left; border-bottom:1px solid var(--line); white-space:nowrap;}
+  table.wrap-cells th, table.wrap-cells td{white-space:normal; padding:3px 7px; line-height:1.2;}
   th{background:var(--surface-alt); color:var(--muted); font-weight:600; text-transform:uppercase; font-size:.78em; letter-spacing:.03em;}
   td{color:var(--ink-soft); font-variant-numeric:tabular-nums;}
   tr:last-child td{border-bottom:none;}
@@ -207,12 +181,12 @@
   }
   .cover h1{font-size:clamp(34px,4.8vw,68px); font-weight:900; letter-spacing:-.02em; line-height:1.02; max-width:16ch;}
   .cover .sub{font-size:clamp(16px,1.55vw,22px); color:var(--ink-soft); margin-top:14px; max-width:44ch; line-height:1.4;}
-  .cover .byline{margin-top:clamp(24px,3.4vw,46px); display:flex; flex-direction:column; gap:2px;}
-  .cover .byline .name{font-weight:700; font-size:clamp(16px,1.3vw,19px);}
-  .cover .byline .role{color:var(--muted); font-size:clamp(13px,1.05vw,15.5px);}
+  .cover .byline{margin-top:clamp(40px,5.6vw,74px); display:flex; flex-direction:column; gap:4px;}
+  .cover .byline .name{font-weight:700; font-size:clamp(20px,1.7vw,25px);}
+  .cover .byline .role{color:var(--muted); font-size:clamp(15px,1.25vw,18.5px);}
   .cover-gallery{
-    position:absolute; right:clamp(24px,4vw,64px); bottom:clamp(20px,3vw,40px);
-    display:grid; grid-template-columns:repeat(2,1fr); gap:10px; width:clamp(180px,26vw,340px);
+    position:absolute; right:clamp(10px,2vw,28px); top:50%; transform:translateY(-50%);
+    display:grid; grid-template-columns:repeat(2,1fr); gap:17px; width:clamp(310px,38vw,500px);
   }
   .cover-gallery .frame{aspect-ratio:4/3;}
   .cover-gallery .frame:nth-child(1){transform:rotate(-2deg);}
@@ -288,17 +262,16 @@
 
     <!-- 1 -->
     <section class="slide cover active">
-      <img class="logo" src="media/roketsan_logo_black.png" alt="Roketsan">
       <div class="kicker">Computer Vision — Technical Presentation</div>
       <h1>Object Detection<br>Under Label Scarcity</h1>
-      <p class="sub">Drone video, thirteen short clips, almost no ground truth — how do you build and validate a person detector anyway?</p>
+      <p class="sub">Thirteen short drone video clips, almost no ground truth — how do you build and validate an object detection system anyway?</p>
       <div class="byline">
         <span class="name">Mehmet Recep Aşkar</span>
         <span class="role">Computer Vision Engineer</span>
       </div>
       <div class="cover-gallery">
         <div class="frame"><img src="media/slide06_yolo_success_berghouse.jpg" alt=""></div>
-        <div class="frame"><img src="media/slide13_sam3_success_berghouse.jpg" alt=""></div>
+        <div class="frame"><img src="media/slide05_dji0790_ground_truth.jpg" alt=""></div>
         <div class="frame"><img src="media/slide14_statue_dji0501.jpg" alt=""></div>
         <div class="frame"><img src="media/slide11_13_sam3_three_outcomes_dji0596.jpg" alt=""></div>
       </div>
@@ -306,33 +279,38 @@
 
     <!-- 2 -->
     <section class="slide">
-      <div class="eyebrow"><span>02 / 20</span><span class="dot"></span><span class="sec">Motivation</span></div>
+      <div class="eyebrow"><span>02 / 21</span><span class="dot"></span><span class="sec">Motivation</span></div>
       <h1 class="title">Problem Definition &amp; Real-World Motivation</h1>
       <p class="thesis">This isn't an object-detection problem — it's object detection <b>under label scarcity</b>. That constraint is the actual, recurring situation in the field, not an artificial one.</p>
       <div class="body">
         <div class="row">
-          <div class="col frame" style="flex:0 0 38%;"><img src="media/slide02_drone_frame_raw.jpg" alt="Raw drone frame"></div>
+          <div class="col frame" style="flex:0 0 24%;"><img src="media/slide02_drone_frame_raw.jpg" alt="Raw drone frame"></div>
           <div class="col">
             <div class="block">
               <h3><span class="tag">A</span>The assignment</h3>
               <ul class="bullets">
-                <li>Detect and localize one chosen class in drone video</li>
-                <li><b>13 short videos. Little data, and no ground truth at all.</b></li>
-                <li>Full manual labelling explicitly out of scope</li>
-                <li>Real question: build <b>and validate</b> a detector without labels?</li>
+                <li>Detect and localize one class in drone video</li>
+                <li><b>13 short videos. Little data, no ground truth at all.</b></li>
+                <li>Full manual labelling out of scope</li>
+                <li>Real question: build <b>and validate</b> without labels?</li>
               </ul>
             </div>
             <div class="block">
               <h3><span class="tag">B</span>Why this matters in practice</h3>
               <ul class="bullets">
-                <li>Surveillance networks: hundreds of cameras, thousands of simultaneous detections</li>
-                <li>A new product enters a production line → a class no model was ever trained on</li>
-                <li>Industry 5.0: product counting, occupational safety, quality inspection</li>
+                <li>Surveillance networks: hundreds of cameras, thousands of detections</li>
+                <li>A new product on the line → a class no model was trained on</li>
+                <li>Industry 5.0: product counting, safety, quality inspection</li>
                 <li>Data never arrives labelled; hardware budget is limited</li>
               </ul>
             </div>
           </div>
-          <div class="col frame" style="flex:0 0 30%;"><img src="media/slide02_camera_network.png" alt="Camera network"></div>
+          <div class="col" style="flex:0 0 30%;">
+            <div class="frame" style="aspect-ratio:16/9;"><img src="media/slide02_perimeter_intrusion.jpg" alt="Thermal perimeter intrusion detection" style="object-fit:contain;"></div>
+            <p class="cap" style="margin-bottom:8px;">Thermal camera flags a fence intrusion, tracks its path.</p>
+            <div class="frame" style="aspect-ratio:16/9;"><img src="media/slide02_factory_bottle_inspection.webp" alt="Bottle defect detection on a production line" style="object-fit:contain;"></div>
+            <p class="cap">Bottling-line QC — one defective unit flagged.</p>
+          </div>
         </div>
       </div>
       <aside class="notes" hidden>
@@ -344,76 +322,98 @@
 
     <!-- 3 -->
     <section class="slide">
-      <div class="eyebrow"><span>03 / 20</span><span class="dot"></span><span class="sec">Target &amp; Data</span></div>
-      <h1 class="title">Target Selection &amp; Data Subset</h1>
-      <p class="thesis">We didn't use the data blindly — we read it systematically first, and chose both the target class and the videos based on that reading.</p>
+      <div class="eyebrow"><span>03 / 21</span><span class="dot"></span><span class="sec">Target &amp; Data</span></div>
+      <h1 class="title">Target Selection</h1>
+      <p class="thesis">We didn't pick the target blindly — we tested every candidate against explicit criteria, recorded what got eliminated and why, and <b>person</b> won on all four.</p>
       <div class="body">
-        <div class="row" style="flex:0 0 auto; gap:14px;">
-          <div class="frame" style="flex:1; aspect-ratio:4/3;"><img src="media/slide03_raw_dji0862.jpg" alt=""></div>
-          <div class="frame" style="flex:1; aspect-ratio:4/3;"><img src="media/slide03_raw_surenen.jpg" alt=""></div>
-          <div class="frame" style="flex:1; aspect-ratio:4/3;"><img src="media/slide03_raw_dji0790.jpg" alt=""></div>
-        </div>
-        <div class="row">
+        <div class="row" style="flex:1; min-height:0;">
           <div class="col">
+            <div class="row" style="flex:0 0 auto; height:150px; gap:10px; justify-content:flex-start;">
+              <div class="frame" style="flex:0 0 auto; height:100%; aspect-ratio:16/9;"><img src="media/slide03_raw_dji0862.jpg" alt="" style="object-fit:cover;"></div>
+              <div class="frame" style="flex:0 0 auto; height:100%; aspect-ratio:9/16;"><img src="media/slide03_raw_surenen.jpg" alt="" style="object-fit:cover;"></div>
+              <div class="frame" style="flex:0 0 auto; height:100%; aspect-ratio:16/9;"><img src="media/slide03_raw_dji0790.jpg" alt="" style="object-fit:cover;"></div>
+            </div>
             <div class="block">
               <h3><span class="tag">A</span>Systematic dataset inventory</h3>
-              <ul class="bullets">
-                <li>13 videos analysed one by one</li>
-                <li>Recorded per video: resolution, duration, frame count, <b>objects present</b>, background type, viewpoint/altitude</li>
-                <li>Full table lives in the repo — summary only here</li>
+              <ul class="bullets tight">
+                <li>13 videos read one by one before choosing anything</li>
+                <li>Recorded per video: duration, <b>objects present</b>, object size, background, occlusion</li>
+                <li>Full table lives in the repo — summary here</li>
               </ul>
             </div>
             <div class="block">
-              <h3><span class="tag">B</span>Why "person"</h3>
-              <ul class="bullets">
-                <li>Most frequent object class across the dataset — present in <b>11 of 13</b> videos</li>
-                <li>→ a more generalisable <b>training</b> set AND a more generalisable <b>test</b> set</li>
-                <li>Real scale variation across altitudes; real occlusion cases present</li>
+              <h3><span class="tag">B</span>Selection criteria, checked against every candidate</h3>
+              <ul class="bullets tight">
+                <li>Needed: <b>≥2-3 videos</b>, real <b>scale variation</b>, <b>~500+ instances</b>, genuine occlusion material</li>
+                <li><b>person</b>: <b>11 of 13</b> videos — a full manual re-watch corrected an initial 6/13 sparse-frame estimate</li>
+                <li>Strong altitude-driven scale variation; rich occlusion (vegetation, footbridge, shadow, snow/dog confusion)</li>
               </ul>
             </div>
           </div>
-          <div class="col" style="flex:0 0 34%;">
-            <div class="stat-grid">
-              <div class="stat"><span class="stat-num">13</span><span class="stat-label">videos, 7 min 52 s total</span></div>
-              <div class="stat"><span class="stat-num">11 / 13</span><span class="stat-label">videos containing the target</span></div>
-              <div class="stat"><span class="stat-num">~2,130</span><span class="stat-label">labelled person boxes, all splits</span></div>
+          <div class="col" style="flex:0 0 38%;">
+            <div class="block">
+              <h3><span class="tag">C</span>Alternatives considered and rejected</h3>
+              <div class="table-wrap">
+                <table class="wrap-cells prose" style="font-size:clamp(11px,0.95vw,14px);">
+                  <tr><th>Candidate</th><th>Videos</th><th>Verdict</th></tr>
+                  <tr><td>boat / sailboat</td><td>2</td><td>mostly static, weak scale variation</td></tr>
+                  <tr><td>vehicle (pickup)</td><td>1</td><td>single fleeting frame</td></tr>
+                  <tr><td>dog (sled team)</td><td>1</td><td>fails the "2-3 videos" rule</td></tr>
+                  <tr><td>statue / lagoon</td><td>1 each</td><td>no scale variation, no repeats</td></tr>
+                  <tr class="hi"><td><b>person</b></td><td class="best"><b>11</b></td><td>wins on every criterion</td></tr>
+                </table>
+              </div>
             </div>
+            <div class="callout"><b>Why staying inside COCO's vocabulary matters:</b> <span class="num">person</span> is already a COCO class, so the baseline method (Slide 7) measures a genuine <b>domain gap</b> — unusual angle, small scale, low resolution — not an unfamiliar class.</div>
           </div>
         </div>
       </div>
       <aside class="notes" hidden>
-        <p>Before choosing anything, I went through all thirteen videos systematically and built an inventory: what objects appear, what the background looks like, the viewpoint, the duration. The full table is in the repository; here is the summary.</p>
-        <p>Person turned out to be the right target: it is the most frequent class and appears in eleven of the thirteen videos. That matters twice over — a more generalisable training set, and just as importantly, a more generalisable test set.</p>
+        <p>Before choosing anything, I went through all thirteen videos systematically and built an inventory: what objects appear, what the background looks like, the viewpoint, the duration.</p>
+        <p>Then I checked every candidate class against four criteria: does it appear in several videos, does it show real scale variation, are there enough instances, is there genuine occlusion material. A boat, a vehicle, a sled dog, a statue — each failed at least one. Person passed all four: eleven of thirteen videos, strong scale variation from altitude, easily five hundred-plus instances, rich occlusion material.</p>
+        <p>It also happens to already be a COCO class, which matters later — it means the very first baseline measures a genuine domain gap, not just an unfamiliar class.</p>
       </aside>
     </section>
 
     <!-- 4 -->
     <section class="slide">
-      <div class="eyebrow"><span>04 / 20</span><span class="dot"></span><span class="sec">Data Preparation</span></div>
+      <div class="eyebrow"><span>04 / 21</span><span class="dot"></span><span class="sec">Data Preparation</span></div>
       <h1 class="title">Data Preparation: Splitting Strategy</h1>
-      <p class="thesis">Split at the <b>video level</b>, never the frame level — and the test set is the most valuable asset, so it was labelled by hand.</p>
+      <p class="thesis">Split at the <b>video level</b>, never the frame level — and every split deliberately spans different domains. That's what makes the later numbers mean something.</p>
       <div class="body">
         <div class="row">
-          <div class="col" style="flex:0 0 44%;">
-            <div class="frame" style="aspect-ratio:16/10;"><img src="media/slide04_split_scheme.png" alt="Split scheme"></div>
-            <div class="frame" style="aspect-ratio:16/9; margin-top:4px;"><img src="media/slide04_cvat_annotation_ui.png" alt="CVAT annotation UI"></div>
+          <div class="col" style="flex:0 0 40%;">
+            <div class="frame" style="aspect-ratio:16/10;"><img src="media/slide04_split_scheme.png" alt="Split scheme" style="object-fit:contain;"></div>
+            <div class="stat-grid" style="grid-template-columns:1fr 1fr;">
+              <div class="stat"><span class="stat-num">13</span><span class="stat-label">videos, 7m52s total</span></div>
+              <div class="stat"><span class="stat-num">11/13</span><span class="stat-label">contain the target</span></div>
+              <div class="stat"><span class="stat-num">4/6/1</span><span class="stat-label">test/train/val videos</span></div>
+              <div class="stat"><span class="stat-num">2</span><span class="stat-label">background (person-free)</span></div>
+            </div>
           </div>
           <div class="col">
             <div class="block">
               <h3><span class="tag">A</span>Split at video level — not frame level</h3>
-              <ul class="bullets">
+              <ul class="bullets tight">
                 <li>Frames within one video are near-duplicates, one domain</li>
                 <li>Frame-level split → leaks test domain into training → inflated scores</li>
                 <li><b>Train / Val / Test: 6 / 1 / 4 videos</b> (of 11 person-containing), plus 2 background videos held out separately</li>
               </ul>
             </div>
             <div class="block">
-              <h3><span class="tag">B–C</span>Why, and the test set's provenance</h3>
-              <ul class="bullets">
+              <h3><span class="tag">B</span>Why each split was sized that way</h3>
+              <ul class="bullets tight">
                 <li>Test: enough videos to evaluate in a genuinely general context</li>
-                <li>Train: enough videos to avoid one narrow domain; Val: tuning only, never in final numbers</li>
-                <li>Test labels drawn <b>by hand in CVAT</b> — no model output ever enters ground truth</li>
-                <li>Human labelling budget spent on <b>measurement</b>, not training</li>
+                <li>Train: enough videos to avoid one narrow domain</li>
+                <li>Val: threshold tuning and model selection only, never in final numbers</li>
+              </ul>
+            </div>
+            <div class="block">
+              <h3><span class="tag">C</span>Deliberate domain diversity</h3>
+              <ul class="bullets tight">
+                <li><b>Test</b> spans 4 different domains — grass trail, hilltop monument, ship deck, volcanic terrain</li>
+                <li><b>Train</b> spans 6 more, non-overlapping — snow ridge, vineyard/lake, snow field, glacial lagoon, rocky summit, grass trail</li>
+                <li>No split leans on near-duplicate footage of one scene</li>
               </ul>
             </div>
           </div>
@@ -421,13 +421,43 @@
       </div>
       <aside class="notes" hidden>
         <p>One decision here is more important than it looks. I did not split frames — I split videos. Frames inside a single video are almost identical and share one domain; a frame-level split would leak the test domain straight into training and inflate every number I show you today.</p>
-        <p>The test set is labelled entirely by hand, in CVAT. No model output ever enters the ground truth. Without a test set I can trust, none of the numbers that follow would mean anything.</p>
+        <p>Test had to cover enough videos to evaluate the methods in a genuinely general context. Train had to cover enough not to overfit to one domain. And this wasn't just about counts — test spans four genuinely different domains, train spans six more, and none of them overlap. That's what makes every mAP number later in this talk actually mean something.</p>
       </aside>
     </section>
 
     <!-- 5 -->
     <section class="slide">
-      <div class="eyebrow"><span>05 / 20</span><span class="dot"></span><span class="sec">Automatic Labelling</span></div>
+      <div class="eyebrow"><span>05 / 21</span><span class="dot"></span><span class="sec">The Test Set</span></div>
+      <h1 class="title">The Test Set: Labelled by Hand</h1>
+      <p class="thesis">The test set is the most valuable asset in this project — every number in this talk depends on it, so it was labelled entirely by hand.</p>
+      <div class="body">
+        <div class="row">
+          <div class="col" style="flex:0 0 46%;">
+            <div class="frame" style="aspect-ratio:16/9;"><img src="media/slide04_cvat_annotation_ui.png" alt="CVAT annotation UI" style="object-fit:contain;"></div>
+            <p class="cap">CVAT, mid-annotation: small, distant people on a glacial lagoon scene, boxed by hand.</p>
+          </div>
+          <div class="col">
+            <div class="block">
+              <h3><span class="tag">A</span>Manually labelled, on purpose</h3>
+              <ul class="bullets">
+                <li>Test labels drawn <b>by hand in CVAT</b> — no model output ever enters ground truth</li>
+                <li>The human labelling budget was spent on <b>measurement, not training</b></li>
+                <li>Without a trustworthy test set, no other number in this talk means anything</li>
+              </ul>
+            </div>
+            <div class="callout warn"><b>Honest limitation:</b> with only 4 held-out videos, this test set is small. Generalisation claims are bounded accordingly — and stated again when the results come in.</div>
+          </div>
+        </div>
+      </div>
+      <aside class="notes" hidden>
+        <p>The test set is labelled entirely by hand, in CVAT. No model output ever enters the ground truth. That was a deliberate choice about where to spend my human labelling budget: on measurement, not on training. Without a test set I can trust, none of the numbers that follow would mean anything.</p>
+        <p>Honestly: with only four held-out videos, this test set is small. My generalisation claims are bounded accordingly, and I'll say so again when the results come in.</p>
+      </aside>
+    </section>
+
+    <!-- 5 -->
+    <section class="slide">
+      <div class="eyebrow"><span>06 / 21</span><span class="dot"></span><span class="sec">Automatic Labelling</span></div>
       <h1 class="title">Automatic Labelling with SAM&nbsp;3</h1>
       <p class="citation-line">SAM 3 — Segment Anything with Concepts, Meta AI, 2025</p>
       <div class="body">
@@ -445,7 +475,8 @@
               <h3><span class="tag">C</span>Validated against ground truth first</h3>
               <ul class="bullets tight">
                 <li>Run on the manually labelled test videos too, compared to our own CVAT boxes — only then trusted for training</li>
-                <li>Agreement: <b class="num">mAP@.5 = 0.846</b> vs. gold test set (Slide 11)</li>
+                <li>Agreement: <b class="num">mAP@.5 = 0.846</b> vs. gold test set (Slide 12)</li>
+                <li>Inference: <b class="num">2.72s/frame mean on T4</b> (≈0.37 FPS) — from the zero-shot benchmark under matching settings, not logged separately during the labelling run itself</li>
                 <li><b class="num">471 frames, 1,411 boxes</b> produced (train+val, post quality filtering)</li>
               </ul>
             </div>
@@ -453,6 +484,8 @@
           <div class="col" style="flex:0 0 40%;">
             <div class="frame" style="aspect-ratio:16/9;"><img src="media/slide05_shadow_before_after.png" alt="Shadow fix before/after"></div>
             <p class="cap"><b>Failure caught and fixed:</b> a runner's shadow scored 0.47 and got boxed as a person. Threshold raised 0.3→0.4→0.5 to exclude it — deliberately, accepting some risk to genuine hard/small instances elsewhere.</p>
+            <div class="frame" style="aspect-ratio:16/9; margin-top:10px;"><img src="media/slide05_dji0790_ground_truth.jpg" alt="DJI_0790 sled team, corrected ground truth"></div>
+            <p class="cap"><b>A different video, same discipline:</b> DJI_0790's sled team — 6-8 dogs correctly excluded, only the musher and passenger boxed as <span class="num">person</span>. The dogs were SAM3's other failure mode (Slide 8).</p>
           </div>
         </div>
       </div>
@@ -464,47 +497,66 @@
 
     <!-- 6 -->
     <section class="slide">
-      <div class="eyebrow"><span>06 / 20</span><span class="dot"></span><span class="sec">Baseline</span></div>
-      <h1 class="title">Baseline Approach: YOLO26n, Zero-Shot</h1>
+      <div class="eyebrow"><span>07 / 21</span><span class="dot"></span><span class="sec">Baseline Method</span></div>
+      <h1 class="title">Baseline Approach: YOLO26n, Zero Fine-Tuning</h1>
       <p class="thesis">Before training anything: measure the raw domain gap. This baseline exposes one structural failure everything after it responds to.</p>
       <div class="body">
         <div class="row">
-          <div class="col" style="flex:0 0 40%;">
-            <div class="stat-grid" style="grid-template-columns:1fr 1fr;">
-              <div class="stat"><span class="stat-num">0.693</span><span class="stat-label">mAP@.5</span></div>
-              <div class="stat"><span class="stat-num">0.784</span><span class="stat-label">F1 @ conf 0.25</span></div>
-              <div class="stat"><span class="stat-num">0.676</span><span class="stat-label">mAP, large objects</span></div>
-              <div class="stat neg"><span class="stat-num">0.018</span><span class="stat-label">mAP, small objects</span></div>
+          <div class="col" style="flex:0 0 42%;">
+            <div class="block">
+              <h3>Setup</h3>
+              <ul class="bullets tight">
+                <li>COCO-pretrained — <b>already knows "person"</b>, zero fine-tuning on our data</li>
+                <li><span class="num">imgsz=1920</span>, not 640 — aerial people are tiny, 640 would erase them</li>
+                <li><b>Nano</b>, not s/m/l — 1920 already multiplies compute per image; smallest checkpoint keeps FPS up</li>
+                <li>Confidence threshold at Ultralytics' default (<span class="num">0.25</span>), untouched</li>
+              </ul>
             </div>
-            <div class="callout warn" style="margin-top:10px;"><b>0 of 44</b> small/distant people caught on the two hardest test videos, at any confidence threshold — a feature-map resolution limit, not a tuning problem.</div>
+            <div class="stat-grid dense" style="grid-template-columns:1fr 1fr 1fr 1fr;">
+              <div class="stat"><span class="stat-num">0.693</span><span class="stat-label">mAP@.5</span></div>
+              <div class="stat"><span class="stat-num">0.479</span><span class="stat-label">mAP@[.5:.95]</span></div>
+              <div class="stat"><span class="stat-num">0.784</span><span class="stat-label">F1 @ 0.25</span></div>
+              <div class="stat"><span class="stat-num">7.3</span><span class="stat-label">FPS on T4</span></div>
+              <div class="stat"><span class="stat-num">0.853</span><span class="stat-label">Precision @ 0.25</span></div>
+              <div class="stat"><span class="stat-num">0.726</span><span class="stat-label">Recall @ 0.25</span></div>
+              <div class="stat"><span class="stat-num">0.676</span><span class="stat-label">mAP, large (&gt;96px)</span></div>
+              <div class="stat neg"><span class="stat-num">0.018</span><span class="stat-label">mAP, small (&lt;32px)</span></div>
+            </div>
           </div>
           <div class="col">
-            <div class="frame" style="flex:1;"><img src="media/slide06_yolo_success_berghouse.jpg" alt="Success case"></div>
+            <div class="frame" style="aspect-ratio:16/9;"><img src="media/slide06_yolo_success_berghouse.jpg" alt="Success case" style="object-fit:contain;"></div>
             <p class="cap"><b>Success</b> — two runners, boxed tightly at high confidence.</p>
+            <div class="callout">Threshold trades recall for precision (low conf → more recall, less precision) — that's why lowering it is worth trying (Slide 8).</div>
           </div>
           <div class="col">
-            <div class="frame" style="flex:1;"><img src="media/slide06_yolo_failure_dji0596.jpg" alt="Failure case"></div>
+            <div class="frame" style="aspect-ratio:16/9;"><img src="media/slide06_yolo_failure_dji0596.jpg" alt="Failure case" style="object-fit:contain;"></div>
             <p class="cap"><b>Failure</b> — tiny distant people on a ship's deck, zero predictions anywhere.</p>
+            <div class="callout warn" style="margin-top:8px;"><b>0 of 44</b> small/distant people caught at YOLO's default confidence (0.25) — but 26 of 44 <i>do</i> get a low-confidence candidate box, just not confident enough to survive the default cutoff.</div>
           </div>
         </div>
       </div>
       <aside class="notes" hidden>
-        <p>Before training anything, I wanted a number for the raw domain gap. Overall it looks reasonable — but look at the size breakdown. mAP on small objects is essentially zero. On the two hardest test videos, this detector finds zero of forty-four small, distant people, at any confidence level. That's not a threshold problem — it's a resolution problem. Everything I show you next responds to this one number.</p>
+        <p>Before training anything, I wanted a number for the raw domain gap — so I ran COCO-pretrained YOLO26n, zero fine-tuning on our data. The weights already know "person" from COCO — that's deliberate, it means I'm measuring a domain gap, not testing an unfamiliar class. Input resolution is 1920, not the default 640, because aerial people are tiny and 640 would erase them before the network even sees them. And I stayed on the nano variant, not s or m — pushing resolution to 1920 already multiplies the compute per image, so the smallest checkpoint is what keeps FPS reasonable. Confidence threshold is Ultralytics' own default, deliberately untouched.</p>
+        <p>Overall it looks reasonable: point-seven mAP, point-eight F1, about seven frames a second on a T4. But look at the size breakdown. mAP on large objects is point-six-eight. mAP on small objects is point-zero-two — essentially zero. On the two hardest test videos, this detector finds zero of forty-four small, distant people, at its default confidence. But I checked lower thresholds too — twenty-six of those forty-four actually do get a candidate box, just too low-confidence to survive the default cutoff. That's not a dead end, it's exactly the opening the next method uses. Everything I show you next responds to this one number.</p>
       </aside>
     </section>
 
     <!-- 7 -->
     <section class="slide">
-      <div class="eyebrow"><span>07 / 20</span><span class="dot"></span><span class="sec">Method 2 — Cascade · Part 1</span></div>
+      <div class="eyebrow"><span>08 / 21</span><span class="dot"></span><span class="sec">Alternative Method 1 — Cascade · Part 1</span></div>
       <h1 class="title">Cascade: Architecture &amp; Training Data</h1>
-      <p class="thesis">Method 1's blind spot motivates a two-stage detect-then-verify system — built and trained around a real labelling failure it uncovered.</p>
+      <p class="thesis">Method 1's blind spot motivates a two-stage system: adding a second model, specialized through human-corrected training data.</p>
       <div class="body">
-        <div class="frame" style="flex:0 0 34%;"><img src="media/slide07_cascade_system_diagram.png" alt="Cascade system diagram" style="object-fit:contain; background:var(--surface);"></div>
+        <div class="row" style="flex:0 0 auto; align-items:flex-start;">
+          <div class="frame" style="width:44%; aspect-ratio:3.39/1;"><img src="media/slide07_cascade_system_diagram.png" alt="Cascade system diagram" style="object-fit:contain; background:var(--surface);"></div>
+          <div class="frame" style="width:32%; aspect-ratio:1.5/1;"><img src="media/slide07_18_dog_vs_person.png" alt="Dog vs person" style="object-fit:contain; background:var(--surface);"></div>
+        </div>
         <div class="row">
           <div class="col">
             <div class="block">
-              <h3><span class="tag">B</span>Two-stage system</h3>
+              <h3><span class="tag">A–B</span>The gap, and the two-stage answer</h3>
               <ul class="bullets tight">
+                <li>The gap this closes: Method 1 <i>alone</i>, at its default confidence (Slide 7), finds <b>0 of 44</b> small/distant people</li>
                 <li>Stage 1: same YOLO26n, confidence floor <span class="num">0.25→0.01</span> — raises reachable recall 27%→80%</li>
                 <li>Stage 2: ResNet18 binary classifier on a 64×64 crop, not the whole frame</li>
               </ul>
@@ -520,7 +572,6 @@
             </div>
           </div>
         </div>
-        <div class="frame" style="flex:0 0 40%;"><img src="media/slide07_18_dog_vs_person.png" alt="Dog vs person" style="object-fit:contain; background:var(--surface);"></div>
       </div>
       <aside class="notes" hidden>
         <p>Method 1 exposed one very specific gap: zero small or distant people caught, at any threshold. My response was a two-stage system. Building the training data for that second stage is where I found the most interesting problem in this whole project: auditing SAM3's pseudo-labels on the snow and sled-dog video, it had been boxing the sled dogs as people — from directly overhead, on white snow, a dog and a person in a coat genuinely look alike.</p>
@@ -529,7 +580,7 @@
 
     <!-- 8 -->
     <section class="slide">
-      <div class="eyebrow"><span>08 / 20</span><span class="dot"></span><span class="sec">Method 2 — Cascade · Part 2</span></div>
+      <div class="eyebrow"><span>09 / 21</span><span class="dot"></span><span class="sec">Alternative Method 1 — Cascade · Part 2</span></div>
       <h1 class="title">Cascade: The Iteration</h1>
       <p class="thesis">The first version made things worse, not better. Three measured refinements — each kept or discarded on evidence — got it past the baseline.</p>
       <div class="body">
@@ -554,7 +605,7 @@
 
     <!-- 9 -->
     <section class="slide">
-      <div class="eyebrow"><span>09 / 20</span><span class="dot"></span><span class="sec">Method 2 — Cascade · Part 3</span></div>
+      <div class="eyebrow"><span>10 / 21</span><span class="dot"></span><span class="sec">Alternative Method 1 — Cascade · Part 3</span></div>
       <h1 class="title">Cascade: Final Result</h1>
       <p class="thesis">A real, measured win on mAP — plus a verifier-backbone experiment that reinforces this project's biggest lesson about validation scores.</p>
       <div class="body">
@@ -587,7 +638,7 @@
 
     <!-- 10 -->
     <section class="slide">
-      <div class="eyebrow"><span>10 / 20</span><span class="dot"></span><span class="sec">Method 3 — Different Architecture</span></div>
+      <div class="eyebrow"><span>11 / 21</span><span class="dot"></span><span class="sec">Method 3 — Different Architecture</span></div>
       <h1 class="title">RT-DETR, a Different Architecture Family</h1>
       <p class="citation-line">RT-DETR — DETRs Beat YOLOs on Real-Time Object Detection, CVPR 2024 · RT-DETRv2, 2024</p>
       <div class="body">
@@ -607,7 +658,7 @@
             <div class="callout warn"><b>Resolution fragility:</b> forced to YOLO's 1920×1088, RT-DETRv2-R18 collapses 0.740→0.253, FP jumps to 1733 — it has <b>no NMS at inference</b>, its one-query-per-object behaviour is learned for one resolution. YOLO tolerates this fine.</div>
           </div>
           <div class="col">
-            <div class="callout">Both RT-DETR checkpoints resist the DJI_0501 statue trap that fools YOLO and SAM3 (Slide 14) — a measured, architecture-specific difference: self-attention reasons over the whole frame, not just local shape.</div>
+            <div class="callout">Both RT-DETR checkpoints resist the DJI_0501 statue trap that fools YOLO and SAM3 (Slide 15) — a measured, architecture-specific difference: self-attention reasons over the whole frame, not just local shape.</div>
           </div>
         </div>
       </div>
@@ -618,7 +669,7 @@
 
     <!-- 11 -->
     <section class="slide">
-      <div class="eyebrow"><span>11 / 20</span><span class="dot"></span><span class="sec">Method 4 — The Alternative</span></div>
+      <div class="eyebrow"><span>12 / 21</span><span class="dot"></span><span class="sec">Method 4 — The Alternative</span></div>
       <h1 class="title">SAM&nbsp;3, Zero-Shot Foundation Model</h1>
       <p class="citation-line">SAM 3 — Segment Anything with Concepts, Meta AI, 2025 · the assignment's required genuinely-different alternative</p>
       <div class="body">
@@ -629,7 +680,7 @@
               <div class="stat"><span class="stat-num">0.872</span><span class="stat-label">Recall @ 0.25 — highest of any method</span></div>
               <div class="stat neg"><span class="stat-num">0.37 FPS</span><span class="stat-label">≈10× slower than any trained detector</span></div>
             </div>
-            <p class="thesis" style="margin-top:10px;">Zero training, zero fine-tuning on this project's data — the same model that labelled the training set (Slide 5), now benchmarked under the identical protocol as every other method.</p>
+            <p class="thesis" style="margin-top:10px;">Zero training, zero fine-tuning on this project's data — the same model that labelled the training set (Slide 6), now benchmarked under the identical protocol as every other method.</p>
           </div>
           <div class="col frame"><img src="media/slide11_13_sam3_three_outcomes_dji0596.jpg" alt="SAM3 three outcomes"></div>
         </div>
@@ -641,7 +692,7 @@
 
     <!-- 12 -->
     <section class="slide">
-      <div class="eyebrow"><span>12 / 20</span><span class="dot"></span><span class="sec">Comparison</span></div>
+      <div class="eyebrow"><span>13 / 21</span><span class="dot"></span><span class="sec">Comparison</span></div>
       <h1 class="title">Quantitative Comparison</h1>
       <p class="thesis">One test set, one protocol, four paradigms — ranked by <b>mAP</b>, not a fixed confidence threshold, because these methods aren't on the same confidence scale.</p>
       <div class="body">
@@ -663,7 +714,7 @@
             <p class="footnote"><span class="fn-mark">2</span> At conf=0.25 for table consistency (comparison.csv, nothing hand-typed) — not the cascade's own best-F1 point (0.38): that number comes from scanning thresholds against this same test set, a form of leakage. Checked directly: the identical scan puts Method&nbsp;1 at F1 0.7892 @ 0.30 — <i>higher</i>. Neither swept number is trustworthy; mAP is, which is why it carries this claim.</p>
           </div>
           <div class="col">
-            <div class="callout">COCO protocol via <span class="num">pycocotools</span>. Size-based and per-video breakdowns built in from day one — a single pooled number would have hidden this project's central finding entirely (Slide 6).</div>
+            <div class="callout">COCO protocol via <span class="num">pycocotools</span>. Size-based and per-video breakdowns built in from day one — a single pooled number would have hidden this project's central finding entirely (Slide 7).</div>
           </div>
         </div>
       </div>
@@ -675,16 +726,16 @@
 
     <!-- 13 -->
     <section class="slide">
-      <div class="eyebrow"><span>13 / 20</span><span class="dot"></span><span class="sec">Comparison</span></div>
+      <div class="eyebrow"><span>14 / 21</span><span class="dot"></span><span class="sec">Comparison</span></div>
       <h1 class="title">Qualitative Comparison</h1>
       <p class="thesis">One frame can show a success, a miss, and a false positive at the same time — numbers alone don't tell you that.</p>
       <div class="body row">
         <div class="col">
-          <div class="frame" style="flex:1;"><img src="media/slide13_sam3_success_berghouse.jpg" alt="Berghouse success"></div>
-          <p class="cap"><b>Clean success</b> — two trail runners, correctly boxed at high confidence by every method. SAM3 scores this video a perfect 1.000 mAP@.5.</p>
+          <div class="frame" style="aspect-ratio:16/9;"><img src="media/slide13_sam3_success_dji0862.jpg" alt="DJI_0862 success" style="object-fit:contain;"></div>
+          <p class="cap"><b>Clean success</b> — five people on volcanic terrain, correctly boxed at high confidence by SAM3 (0.70-0.86). DJI_0862 scores 0.906 mAP@.5, SAM3's second-best test video.</p>
         </div>
         <div class="col">
-          <div class="frame" style="flex:1;"><img src="media/slide11_13_sam3_three_outcomes_dji0596.jpg" alt="DJI_0596 all outcomes"></div>
+          <div class="frame" style="aspect-ratio:16/9;"><img src="media/slide11_13_sam3_three_outcomes_dji0596.jpg" alt="DJI_0596 all outcomes" style="object-fit:contain;"></div>
           <p class="cap"><b>All three outcomes at once</b> — correct cluster on the rear deck, two people missed near the wheelhouse, 2-3 false positives over open water (plausibly wave glare read as a distant person).</p>
         </div>
       </div>
@@ -695,7 +746,7 @@
 
     <!-- 14 -->
     <section class="slide">
-      <div class="eyebrow"><span>14 / 20</span><span class="dot"></span><span class="sec">Ambiguous Results</span></div>
+      <div class="eyebrow"><span>15 / 21</span><span class="dot"></span><span class="sec">Ambiguous Results</span></div>
       <h1 class="title">Is It Even a Person?</h1>
       <p class="thesis">Some of the hardest cases aren't detection failures — they're genuine disagreements about what "person" even means, and different architectures answer differently.</p>
       <div class="body row">
@@ -721,7 +772,7 @@
 
     <!-- 15 -->
     <section class="slide">
-      <div class="eyebrow"><span>15 / 20</span><span class="dot"></span><span class="sec">Error Analysis</span></div>
+      <div class="eyebrow"><span>16 / 21</span><span class="dot"></span><span class="sec">Error Analysis</span></div>
       <h1 class="title">Error Analysis</h1>
       <p class="thesis">Difficulty tracks the footage, not the detector — every method's own best-to-worst video ranking is nearly identical.</p>
       <div class="body row">
@@ -744,7 +795,7 @@
 
     <!-- 16 -->
     <section class="slide">
-      <div class="eyebrow"><span>16 / 20</span><span class="dot"></span><span class="sec">Trade-offs</span></div>
+      <div class="eyebrow"><span>17 / 21</span><span class="dot"></span><span class="sec">Trade-offs</span></div>
       <h1 class="title">Strengths, Weaknesses, and Cost</h1>
       <p class="thesis">No method wins on every axis — the real choice is which trade-off fits the deployment.</p>
       <div class="body">
@@ -757,7 +808,7 @@
             <tr><td><b>SAM3</b></td><td>Best accuracy and recall, zero training</td><td>~10× slower than any trained detector; ideal as teacher/auditor, not deployment</td></tr>
           </table>
         </div>
-        <div class="callout">Verifier backbone: ResNet18 11.2M params vs. EfficientNet-B0 4.0M — fewer params ≠ faster on CPU, EfficientNet ran ~5× slower per crop (depthwise-separable convs vectorize poorly on CPU). SAM3: <b>0.37 FPS on T4</b>, the only committed speed number so far — YOLO/cascade/RT-DETR end-to-end FPS on T4 not yet benchmarked (Slide 18).</div>
+        <div class="callout">Verifier backbone: ResNet18 11.2M params vs. EfficientNet-B0 4.0M — fewer params ≠ faster on CPU, EfficientNet ran ~5× slower per crop (depthwise-separable convs vectorize poorly on CPU). SAM3: <b>0.37 FPS on T4</b>, the only committed speed number so far — YOLO/cascade/RT-DETR end-to-end FPS on T4 not yet benchmarked (Slide 19).</div>
       </div>
       <aside class="notes" hidden>
         <p>Put side by side, no method wins everywhere. On cost, I want to be precise about what I've actually measured versus what I haven't — SAM3's speed is measured and reproducible, the other three detectors' FPS on T4 is an honest gap, not a hidden one.</p>
@@ -766,14 +817,14 @@
 
     <!-- 17 -->
     <section class="slide">
-      <div class="eyebrow"><span>17 / 20</span><span class="dot"></span><span class="sec">Production System</span></div>
+      <div class="eyebrow"><span>18 / 21</span><span class="dot"></span><span class="sec">Production System</span></div>
       <h1 class="title">Proposed Production System</h1>
       <p class="thesis">Don't deploy one method — combine the fast one and the accurate one, each doing the job it's actually good at.</p>
       <div class="body">
         <div class="frame" style="flex:1;"><img src="media/slide17_production_system.png" alt="Production system diagram" style="object-fit:contain; background:var(--surface);"></div>
         <div class="row" style="flex:0 0 auto;">
           <div class="col"><ul class="bullets tight"><li><b>Real-time path:</b> cascade, every frame — fast, best mAP among trained methods</li><li><b>Periodic audit:</b> SAM3, ~1 call/10s — far too slow per-frame, but highest accuracy available</li></ul></div>
-          <div class="col"><ul class="bullets tight"><li>If SAM3's reading disagrees sharply with the cascade's recent output, flag the segment for human review</li><li>Mirrors exactly how both models are already used: SAM3 as teacher (Slide 5), cascade as deployed student (Slides 7-9)</li></ul></div>
+          <div class="col"><ul class="bullets tight"><li>If SAM3's reading disagrees sharply with the cascade's recent output, flag the segment for human review</li><li>Mirrors exactly how both models are already used: SAM3 as teacher (Slide 6), cascade as deployed student (Slides 8-10)</li></ul></div>
         </div>
       </div>
       <aside class="notes" hidden>
@@ -783,7 +834,7 @@
 
     <!-- 18 -->
     <section class="slide">
-      <div class="eyebrow"><span>18 / 20</span><span class="dot"></span><span class="sec">Limitations</span></div>
+      <div class="eyebrow"><span>19 / 21</span><span class="dot"></span><span class="sec">Limitations</span></div>
       <h1 class="title">Honest Limitations &amp; Future Work</h1>
       <p class="thesis">What didn't get done this cycle, and why, stated plainly.</p>
       <div class="body row">
@@ -824,7 +875,7 @@
 
     <!-- 19 -->
     <section class="slide">
-      <div class="eyebrow"><span>19 / 20</span><span class="dot"></span><span class="sec">Closing</span></div>
+      <div class="eyebrow"><span>20 / 21</span><span class="dot"></span><span class="sec">Closing</span></div>
       <h1 class="title">Closing</h1>
       <p class="thesis">A simple baseline exposed one specific, real failure. Three genuinely different responses to it — a verifier cascade, a transformer architecture, a zero-shot foundation model — each traded accuracy against speed, precision against recall, in a different place.</p>
       <div class="body closing-grid">
@@ -849,7 +900,7 @@
 
     <!-- 20 -->
     <section class="slide">
-      <div class="eyebrow"><span>20 / 20</span><span class="dot"></span><span class="sec">References</span></div>
+      <div class="eyebrow"><span>21 / 21</span><span class="dot"></span><span class="sec">References</span></div>
       <h1 class="title">References</h1>
       <div class="body">
         <div class="refs-grid">
@@ -886,7 +937,7 @@
 </div>
 <div class="navbar">
   <button id="prevBtn" aria-label="Previous slide">‹</button>
-  <span class="count" id="count">1 / 20</span>
+  <span class="count" id="count">1 / 21</span>
   <button id="nextBtn" aria-label="Next slide">›</button>
   <button class="notes-btn" id="notesBtn">NOTES</button>
 </div>

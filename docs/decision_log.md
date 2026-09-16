@@ -1708,3 +1708,45 @@ This single frame demonstrates all three of the assignment's requested
 error categories (correct detection, missed detection, false positive)
 in one concrete, presentable example — more useful for the "hata analizi"
 section than the aggregate per-video numbers alone.
+
+## Correction 2026-09-16: "0 of 44 at any confidence threshold" was wrong — it's 0 at the default threshold only
+
+**Finding.** While reviewing the presentation, the user questioned how the
+cascade (Slide 8/10) could possibly recover any of the "0 of 44 small/distant
+people, at any confidence threshold" boxes YOLO26n was said to miss on
+DJI_0501/DJI_0596 (Slide 7) — since the cascade's Stage 1 is the *same*
+YOLO26n checkpoint, just run at a lower confidence floor (0.25→0.01). If
+YOLO genuinely found none of those 44 at *any* threshold, Stage 1 could
+never propose a candidate box there for Stage 2 to verify, and the later
+"10 of 44 recovered" claim (Slide 10) would be impossible.
+
+**Root cause.** The original "at any confidence threshold" claim was
+computed from `results/yolo26_zeroshot/predictions.json`, which turns out
+to be threshold-filtered at conf≥0.25 (Ultralytics' default) — its
+minimum stored score is 0.2506. It was never actually checked against the
+full confidence range, despite the wording implying it was.
+
+**Verified directly** against `results/yolo26_lowconf/predictions.json`
+(conf≥0.01, the same floor the cascade's Stage 1 uses): of the 44 small
+ground-truth boxes on DJI_0501/DJI_0596, **26 do have a matching raw YOLO
+candidate at IoU≥0.5** (scores ranging 0.011–0.192) — low-confidence, but
+real, spatially-correct localizations that simply don't survive the
+default 0.25 cutoff.
+
+**Corrected framing:** "0 of 44 caught at YOLO's default confidence
+(0.25)" — not "at any confidence threshold," and not purely "a
+feature-map resolution limit." It's mostly a confidence-threshold
+problem at the default operating point: the feature map *can* represent
+most of these objects (26/44 raw candidates exist), just not confidently
+enough for the default cutoff to keep them. This is the correct and
+actually stronger justification for Method 2's approach — lowering the
+threshold to 0.01 recovers real candidates (not fabricated ones), and the
+verifier then separates the ~26 real low-confidence person boxes from
+the surrounding noise, ultimately keeping 10 of the 44 (Slide 10).
+
+**Affected files:** `docs/sunum_icerik.md` (Slides 7 and 8 wording),
+`docs/presentation/deck.html` (same two slides — callouts, bullets, and
+speaker notes corrected). The "10 of 44 recovered" claim on Slide 10
+itself was not re-derived here and is assumed correct (it comes from the
+official evaluated cascade predictions, not this ad-hoc IoU check) —
+worth a similar direct spot-check later if time allows.

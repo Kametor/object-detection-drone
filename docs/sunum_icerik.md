@@ -10,16 +10,32 @@
 - **Hedef his:** Dinleyici film izler gibi takip etsin; her slayt bir öncekinin açtığı soruyu kapatsın
 - **Konuşma metni:** Sunum bittikten sonra bütün hâlinde yazılacak
 
-### Renk paleti (Roketsan kurumsal)
+### Renk paleti (Roketsan kurumsal — 2026-09-16'da resmî marka kılavuzuyla
+[roketsan.com.tr/uploads/docs/1709195136_roketsanmarkakilavuzu.pdf] doğrulandı)
 
-| Rol | Pantone | HEX | RGB |
-|---|---|---|---|
-| Vurgu (başlık, önemli sayı, grafik ana seri) | 7740 C | `#3A913F` | 58, 145, 63 |
-| Ana metin | Black C | `#1D1D1B` | 29, 29, 27 |
-| İkincil metin, çizgi, panel | 429 C | `#A4A9AD` | 164, 169, 173 |
+| Rol | Pantone | HEX | RGB | CMYK |
+|---|---|---|---|---|
+| Vurgu (başlık, önemli sayı, grafik ana seri) | 7740 C (ana) | `#3A913F` | 58, 145, 63 | 80/20/100/5 |
+| Ana metin | Black C (ana) | `#1D1D1B` | 29, 29, 27 | 0/0/0/100 |
+| İkincil metin, çizgi, panel | 429 C (tamamlayıcı) | `#A2AAAD` | 162, 170, 173 | 35/23/19/2 |
+| **İkincil vurgu** (gerekli yerlerde — ör. tablo highlight, ikinci seri) | **729 C (tamamlayıcı)** | **`#B58150`** | **181, 129, 80** | **30/47/73/7** |
 
-**Arka plan:** Açık ve temiz zemin + yeşil vurgu. Blur'lu/karartılmış full-bleed görsel KULLANMA.
-Görseller net, kendi başına duran küçük kartlar hâlinde yerleştirilir.
+**Karar (2026-09-16):** Arka plan **beyaz/açık zemin** — kılavuz hem beyaz hem
+tam yeşil zeminde logo kullanımını onaylı gösteriyor, ama 20 slaytlık teknik
+bir sunumda okunabilirlik/kontrast riski nedeniyle beyaz seçildi. Bronz
+(729 C) gerekli yerlerde ikincil vurgu olarak kullanılır. Blur'lu/karartılmış
+full-bleed görsel KULLANMA. Görseller net, kendi başına duran küçük kartlar
+hâlinde yerleştirilir.
+
+**Not — font:** Kılavuz tasarım için `Campton` fontunu, **ofis dokümanları
+(Word/PowerPoint/Excel) için Arial veya Calibri**'yi resmî font olarak
+belirtiyor. `docs/presentation/deck.html` şu an Google Fonts'tan Archivo +
+IBM Plex kullanıyor (Campton lisanslı, CSP'de izinli font host'larında yok)
+— nihai PowerPoint'te Calibri/Arial'e geçilecek, bu HTML önizleme amaçlı.
+
+**Tema notu:** `deck.html` artık görüntüleyenin sistem koyu/açık temasından
+bağımsız, hep açık/beyaz zeminle render ediliyor (sabit sunum çıktısı için
+bilinçli tercih — kişiye göre değişen bir arayüz değil).
 
 ---
 
@@ -29,26 +45,26 @@ PDF'in "Sonuçların Sunulması" ve "Değerlendirme" maddeleri. Hiçbiri açıkt
 
 | PDF maddesi | Slayt |
 |---|---|
-| Seçilen hedef ve kullanılan veri bölümü | 3 |
-| Veri hazırlama ve etiketleme stratejisi | 4, 5 |
-| Başlangıç yaklaşımı (Method 1) | 6 |
-| Alternatif yaklaşım (Method 2 — Cascade) | 7 (mimari/eğitim), 8 (iterasyon), 9 (final sonuç) |
-| Alternatif yaklaşım (Method 3 — farklı mimari) | 10 |
-| Alternatif yaklaşım (Method 4 — gerçek alternatif, SAM3) | 11 |
-| Nicel ve nitel karşılaştırma | 12 (nicel), 13 (nitel) |
-| Başarılı / başarısız / belirsiz sonuçlar | 13, 14 |
-| Hata analizi | 15 |
-| Güçlü ve zayıf yönler | 16 |
-| Hesaplama maliyeti | 16 |
-| Metrik seçiminin gerekçesi | 12 (Blok B, C) |
-| Colab notebook / kod deposu | 19 (Kapanış) + canlı göster |
-| README | 19 (Kapanış) |
-| Nicel sonuç tablosu | 12 |
-| Başarılı/başarısız örnekler | 13, 14 |
-| Kaynak listesi | 20 (References) + slayt içi inline atıflar (10, 11) |
-| Sonuç videosu | 19 (Kapanış) — varsa canlı göster |
-| Final sistem önerisi | 17 |
-| Dürüst limitasyonlar / kalan işler | 18 |
+| Seçilen hedef ve kullanılan veri bölümü | 3, 4 |
+| Veri hazırlama ve etiketleme stratejisi | 4, 5, 6 |
+| Başlangıç yaklaşımı (Method 1) | 7 |
+| Alternatif yaklaşım (Method 2 — Cascade) | 8 (mimari/eğitim), 9 (iterasyon), 10 (final sonuç) |
+| Alternatif yaklaşım (Method 3 — farklı mimari) | 11 |
+| Alternatif yaklaşım (Method 4 — gerçek alternatif, SAM3) | 12 |
+| Nicel ve nitel karşılaştırma | 13 (nicel), 14 (nitel) |
+| Başarılı / başarısız / belirsiz sonuçlar | 14, 15 |
+| Hata analizi | 16 |
+| Güçlü ve zayıf yönler | 17 |
+| Hesaplama maliyeti | 17 |
+| Metrik seçiminin gerekçesi | 13 (Blok B, C) |
+| Colab notebook / kod deposu | 20 (Kapanış) + canlı göster |
+| README | 20 (Kapanış) |
+| Nicel sonuç tablosu | 13 |
+| Başarılı/başarısız örnekler | 14, 15 |
+| Kaynak listesi | 21 (References) + slayt içi inline atıflar (11, 12) |
+| Sonuç videosu | 20 (Kapanış) — varsa canlı göster |
+| Final sistem önerisi | 18 |
+| Dürüst limitasyonlar / kalan işler | 19 |
 
 ---
 
@@ -63,20 +79,45 @@ PDF'in "Sonuçların Sunulması" ve "Değerlendirme" maddeleri. Hiçbiri açıkt
 
 **İçerik**
 ```
-Object Detection with Limited Data
-Drone Video Object Detection under Label Scarcity
+Computer Vision — Technical Presentation
+
+Object Detection
+Under Label Scarcity
+
+Thirteen short drone video clips, almost no ground truth —
+how do you build and validate an object detection system anyway?
 
 Mehmet Recep Aşkar
 Computer Vision Engineer
 ```
 
+**Kicker tartışması (2026-09-16):** "Computer Vision — Technical
+Presentation" yerine ödevin adını yazmak düşünüldü, ama başlığın kendisi
+zaten konuyu ("Object Detection Under Label Scarcity") söylüyor —
+kicker'ın işi farklı: bu bir CV teknik sunumu olduğu bağlamını vermek.
+İkisi çakışmadığı için kicker değiştirilmedi.
+
+**Başlık kontrolü:** "Under Label Scarcity" hem küçük veri seti hem de
+etiket eksikliğini tek ifadede birleştiriyor (label scarcity = az miktarda
+etiketli veri, nedeni ister az veri ister az etiketleme olsun) — ayrı ayrı
+belirtmeye gerek yok.
+
+**Byline:** isim/unvan büyütüldü ve aşağı kaydırıldı (`.cover .byline`
+CSS'i — font-size ve margin-top artırıldı).
+
 **Görsel notu:** Stok görsel kullanma. Kendi tespit çıktılarımızdan seçilmiş
-net kareler — önerilen 3-4'lü seçim (hepsi zaten `docs/presentation/media/`
-altında): `slide06_yolo_success_berghouse.jpg` (YOLO, 2 runner),
-`slide11_13_sam3_three_outcomes_dji0596.jpg` (SAM3, gemi güvertesi),
-`slide14_statue_dji0501.jpg` (ilginç/tartışmalı bir kare, merak uyandırır),
-`slide15_heatgrid.png` yerine tercihen dördüncü bir tespit karesi —
-`slide13_sam3_success_berghouse.jpg` de kullanılabilir.
+net kareler — kullanılan 4'lü seçim (hepsi `docs/presentation/media/`
+altında): `slide06_yolo_success_berghouse.jpg` (YOLO, 2 runner, temiz —
+gölge tespit edilmemiş), `slide05_dji0790_ground_truth.jpg` (kızak takımı,
+farklı video/ortam için), `slide14_statue_dji0501.jpg` (ilginç/tartışmalı
+bir kare, merak uyandırır), `slide11_13_sam3_three_outcomes_dji0596.jpg`
+(SAM3, gemi güvertesi).
+
+**Değişiklik notu (2026-09-16):** Önceki seçimde `slide13_sam3_success_berghouse.jpg`
+de vardı (Slayt 14'te hâlâ kullanılıyor) — kapaktan çıkarıldı çünkü hem
+Slayt 7'nın görseliyle aynı videoydu (tekrar) hem de yakından bakınca
+ikinci koşucunun yanında küçük bir gölge yanlış-pozitifi görünüyor (tam
+Slayt 6'in anlattığı hata). Yerine DJI_0790 görseli kondu.
 
 **Konuşma metni**
 > Hello, my name is Mehmet Recep Aşkar. I graduated from Middle East Technical
@@ -105,8 +146,16 @@ problemi. Ve bu, sahada sürekli karşılaşılan bir durum.
 - Data never arrives labelled; hardware budget is limited
 
 **Görsel:** Solda drone frame
-(`docs/presentation/media/slide02_drone_frame_raw.jpg`), sağda kamera ağı
-şeması (`docs/presentation/media/slide02_camera_network.png`).
+(`docs/presentation/media/slide02_drone_frame_raw.jpg`), sağda Blok B'nin
+iki senaryosunu somutlaştıran gerçek örnekler, alt alta:
+1) `docs/presentation/media/slide02_perimeter_intrusion.jpg` — termal
+kamera, çitten atlayan bir kişiyi kutulamış ve yolunu (kırmızı çizgi)
+takip etmiş; "surveillance networks" senaryosu.
+2) `docs/presentation/media/slide02_factory_bottle_inspection.webp` —
+şişeleme hattında kalite kontrol, kusurlu şişe kırmızı kutuyla
+işaretlenmiş; "production line / quality inspection" senaryosu.
+İkisi de kullanıcının bulup verdiği gerçek örnek görseller (2026-09-16),
+eski soyut "camera network" şeması yerine kondu.
 
 **Konuşma akışı**
 > The task itself is straightforward: detect an object in drone video.
@@ -123,38 +172,59 @@ gibi varsayımsal dil kullan.
 
 ---
 
-## Slayt 3 — Target Selection & Data Subset
+## Slayt 3 — Target Selection
 
-**Tek mesaj:** Veriyi körlemesine kullanmadık; önce sistematik olarak okuduk, hedefi
-ve kullanacağımız videoları o okumaya dayanarak seçtik.
+**Tek mesaj:** Hedefi körlemesine seçmedik — açık kriterlere karşı test
+ettik, alternatifleri elemeyle kaydettik, ve `person` her kriterde kazandı.
 
-**Kapsam notu:** Bu slayt PDF'in *"Seçilen hedef ve kullanılan veri bölümü"* maddesini
-karşılar. Split stratejisi buraya DEĞİL, slayt 4'e girer.
+**Kapsam notu (2026-09-16 revizyonu):** Bu slayt artık **sadece hedef
+seçimi**. Split'in kendisi (hangi video hangi sette, neden video
+seviyesinde) slayt 4'e taşındı — eskiden burada "direkt 6/4/1 sayılarını
+veriyoruz sonra slayt 4'te neden video seviyesinde ayırdığımızı
+anlatıyoruz" gibi tuhaf bir sıralama vardı. Şimdi akış doğru: önce hedefi
+seçtik (burada), sonra veriyi nasıl ayırdığımızı anlattık (slayt 4), sonra
+test setinin neden elle etiketlendiğini anlattık (slayt 5).
 
 *Blok A: Systematic dataset inventory*
-- 13 videos analysed one by one
-- Recorded per video: resolution, duration, frame count, **objects present**,
-  background type, viewpoint/altitude
-- Tablonun tamamı repoda — slaytta sadece özet, koca tablo koyma
+- 13 videos analysed one by one — at least 1 frame per video, plus 4-5
+  extra sampled frames from six of them in the first pass
+- Recorded per video: resolution, duration, **objects present**, object
+  size, background type, occlusion
+- Full table lives in the repo (`results/dataset_overview/table.csv`) —
+  summary only here, koca tablo koyma
 
-*Blok B: Why "person"*
-- Most frequent object class across the dataset
-- Present in **11 of 13** videos
-- → more generalisable **training** set AND more generalisable **test** set
-- Scale variation across altitudes; occlusion cases present
+*Blok B: Selection criteria, checked against every candidate*
+- Needed: present in **≥2-3 different videos**, real **scale variation**
+  (altitude changes), **~500+ instances**, genuine occlusion/hard-negative
+  material — not just "picked the obvious one"
+- `person`: present in **11 of 13** videos (a full manual re-watch
+  corrected an initial 6/13 sparse-frame estimate — small/distant figures
+  don't reliably land in a sparse sample), strong altitude-driven scale
+  variation, easily 500+ instances, rich occlusion material (vegetation,
+  footbridge crossings, shadow/rock blending, small figures blending with
+  sled dogs in snow)
 
-*Blok C: Key numbers*
-- Total videos / total duration: **13 videos, 7 min 52 s** combined
-  (`results/inventory/video_inventory.csv`)
-- Videos containing the target: 11 / 13
-- Approx. person instances observed: **~2,130 labelled boxes** across all
-  labelled frames — 1,411 from SAM3 pseudo-labels (train+val) + 719 from
-  the hand-labelled gold test set (Slide 5, Slide 6)
-- Videos selected for this study: **all 13** — 11 person-containing videos
-  split across train/val/test, plus 2 person-free videos (Creux du Van,
-  Isles of Glencoe) kept as hard-negative background sources
+*Blok C: Alternatives considered and rejected*
 
-**Kaynak:** `results/inventory/video_inventory.csv`, `results/dataset_overview/table.md`
+| Candidate | Videos | Verdict |
+|---|---|---|
+| boat / sailboat | 2 | mostly static, weak scale variation — poor fit |
+| vehicle (pickup) | 1 | single fleeting frame |
+| dog (sled team) | 1 | high per-video count, but fails the "2-3 videos" rule |
+| static objects (statue, lagoon) | 1 each | no scale variation, no repeated instances |
+| **person** | **11** | wins on every criterion |
+
+*Blok D: Why staying inside COCO's own vocabulary matters*
+- `person` is already a COCO class — keeps the baseline method's
+  **domain-gap measurement meaningful** (Slide 7)
+- We're testing whether unusual angle, small scale, and low resolution
+  defeat a class the model already knows — not testing an unfamiliar class
+- Bonus: the footage itself spans multiple countries/terrains (Scotland,
+  likely Iceland, Switzerland, and more) — that geographic spread is
+  actually an asset for `person`'s appearance diversity, not a complication
+
+**Kaynak:** `docs/00_target_selection.md`, `results/dataset_overview/table.csv`,
+`results/inventory/video_inventory.csv`
 
 **Görsel:** Hedefin göründüğü, **henüz bbox atılmamış** ham frame'lerden
 3 kare — `docs/presentation/media/slide03_raw_dji0862.jpg` (Iceland,
@@ -166,17 +236,21 @@ Ham kare göstermek bilinçli: "önce baktık, sonra karar verdik" anlatısını
 **Konuşma akışı**
 > Before choosing anything, I went through all thirteen videos systematically and built
 > an inventory: what objects appear, what the background looks like, the viewpoint, the
-> duration. The full table is in the repository; here is the summary.
-> Person turned out to be the right target: it is the most frequent class and appears
-> in eleven of the thirteen videos. That matters twice over — a more generalisable
-> training set, and just as importantly, a more generalisable test set.
+> duration. Then I checked every candidate class against four criteria: does it appear in
+> several videos, does it show real scale variation, are there enough instances, is there
+> genuine occlusion material to learn from. A boat, a vehicle, a sled dog, a statue — each
+> failed at least one of those. Person passed all four: eleven of thirteen videos, strong
+> scale variation from altitude, easily five hundred-plus instances, and rich occlusion
+> material. It also happens to already be a COCO class, which matters later — it means
+> the very first baseline measures a genuine domain gap, not just an unfamiliar class.
 
 ---
 
 ## Slayt 4 — Data Preparation: Splitting Strategy
 
-**Tek mesaj:** Split **video seviyesinde** yapıldı, frame seviyesinde değil. Ve test
-seti en kıymetli varlığımız olduğu için elle etiketlendi.
+**Tek mesaj:** Split **video seviyesinde** yapıldı, frame seviyesinde değil — ve her
+split kasıtlı olarak farklı domain'lerden geliyor, sonraki her mAP sayısını
+anlamlı kılan da bu.
 
 *Blok A: Split at video level — not frame level*
 - Frames within one video are near-duplicates and share a single domain
@@ -192,21 +266,28 @@ seti en kıymetli varlığımız olduğu için elle etiketlendi.
 - **Train:** enough videos to avoid training on one narrow domain
 - **Val:** threshold tuning and model selection only; never used for final numbers
 
-*Blok C: The test set is manually labelled*
-- Test labels drawn **by hand in CVAT** — no model output enters ground truth
-- The human labelling budget was spent on **measurement, not training**
-- Rationale: without a trustworthy test set, no other number in this talk means anything
+*Blok C: Deliberate domain diversity — the part that makes it work*
+- **Test** spans 4 genuinely different domains: grass trail (Berghouse),
+  hilltop monument (DJI_0501), open water/ship deck (DJI_0596), volcanic
+  terrain (DJI_0862)
+- **Train** spans 6 more, non-overlapping domains: snow ridge, vineyard/lake
+  shoreline, snow field/village, glacial lagoon, rocky summit, grass trail
+- **Val** is one single, representative "easy" video (grass ridge trail) —
+  its only job is checkpoint selection, not testing generalisation
+- Not a coincidence: every split draws from **genuinely different
+  conditions**, not near-duplicate footage of the same scene
 
-*Blok D: Honest limitation*
-- With a small number of held-out videos, the test set is limited
-- Generalisation claims are bounded accordingly — reported later with the results
+*Blok D: Key numbers*
+- Total videos / total duration: **13 videos, 7 min 52 s** combined
+- Videos containing the target: **11 / 13**
+- Split composition: **4 test, 6 train, 1 val, 2 background** (person-free,
+  kept as hard-negative source — Creux du Van, Isles of Glencoe)
+
+**Kaynak:** `data/splits/*.txt`, `results/dataset_overview/table.csv`
 
 **Görsel:** Video-level split şeması
 (`docs/presentation/media/slide04_split_scheme.png` — 13 video → 4 kutu:
-train/val/test/background) + CVAT arayüzünden ekran görüntüsü
-(`docs/presentation/media/slide04_cvat_annotation_ui.png` — glacial lagoon
-sahnesinde küçük, uzak kişilerin elle kutulandığı an, video-level split'in
-ardından test setinin nasıl etiketlendiğini gösteriyor).
+train/val/test/background).
 
 **Konuşma akışı**
 > One decision here is more important than it looks. I did not split frames — I split
@@ -214,15 +295,45 @@ ardından test setinin nasıl etiketlendiğini gösteriyor).
 > frame-level split would leak the test domain straight into training and inflate every
 > number I show you today. Each split comes from separate videos.
 > Test had to cover enough videos to evaluate the methods in a genuinely general
-> context. Train had to cover enough videos not to overfit to one domain.
+> context. Train had to cover enough videos not to overfit to one domain. And this
+> wasn't just about counts — test spans four genuinely different domains, train spans
+> six more, and none of them overlap. That's what makes every mAP number later in this
+> talk actually mean something.
+
+---
+
+## Slayt 5 — The Test Set: Why It's Labelled by Hand
+
+**Tek mesaj:** Test setimiz en kıymetli varlığımız — bu konuşmadaki her sayı ona
+bağlı, o yüzden tamamen elle, CVAT ile etiketlendi.
+
+*Blok A: The test set is manually labelled*
+- Test labels drawn **by hand in CVAT** — no model output enters ground truth
+- The human labelling budget was spent on **measurement, not training**
+- Rationale: without a trustworthy test set, no other number in this talk means anything
+
+*Blok B: Honest limitation*
+- With only 4 held-out videos, the test set is limited
+- Generalisation claims are bounded accordingly — reported later with the results
+
+**Kaynak:** `data/gold_test/annotations.json`, `docs/decision_log.md`
+("Gold test set complete", 2026-09-12)
+
+**Görsel:** CVAT arayüzünden ekran görüntüsü
+(`docs/presentation/media/slide04_cvat_annotation_ui.png` — glacial lagoon
+sahnesinde küçük, uzak kişilerin elle kutulandığı an).
+
+**Konuşma akışı**
 > And the test set is labelled entirely by hand, in CVAT. No model output ever enters
 > the ground truth. That was a deliberate choice about where to spend my human labelling
 > budget: on measurement, not on training. Without a test set I can trust, none of the
 > numbers that follow would mean anything.
+> Honestly: with only four held-out videos, this test set is small. My generalisation
+> claims are bounded accordingly, and I'll say so again when the results come in.
 
 ---
 
-## Slayt 5 — Automatic Labelling with SAM 3
+## Slayt 6 — Automatic Labelling with SAM 3
 
 **Tek mesaj:** Test elle etiketlendi ama train için elle etiketleme gerçekçi değildi;
 otomatik etiketleme hattı kurduk ve **kalitesini ölçtük**.
@@ -246,11 +357,11 @@ otomatik etiketleme hattı kurduk ve **kalitesini ölçtük**.
 - Its output compared directly against our own CVAT annotations
 - Only after the agreement was satisfying did we trust it to label the training set
 - Agreement / accuracy vs. manual labels: **mAP@.5 = 0.846** against the
-  gold test set — see Slide 11 for the full benchmark (same model, same
+  gold test set — see Slide 12 for the full benchmark (same model, same
   protocol; this is what "agreement" means measured, not eyeballed)
 - Inference time per frame: not logged separately during the labelling run
   itself — the closest measured number comes from the later zero-shot
-  benchmark under comparable settings: **2.72 s/frame mean** on T4 (Slide 11)
+  benchmark under comparable settings: **2.72 s/frame mean** on T4 (Slide 12)
 - **Total labels produced (train + val, after quality filtering and the
   manual corrections below): 471 frames, 1,411 boxes**
 
@@ -293,12 +404,18 @@ otomatik etiketleme hattı kurduk ve **kalitesini ölçtük**.
   run (Block C.1 counts) was the actual backstop against that risk, not a
   fully automated safeguard
 
-**Görsel:** Before/after karşılaştırması —
-`docs/presentation/media/slide05_shadow_before_after.png` (2026-09-15,
-Colab'da tek frame yeniden koşularak üretildi: aynı Berghouse frame 0,
-solda conf=0.3 — 2 runner + gölge kutusu 0.47, sağda conf=0.5 — sadece 2
-runner, gölge dışlanmış). Ham "before" çıktısı da ayrıca duruyor:
-`docs/presentation/media/slide05_shadow_before_raw.png`.
+**Görsel:** İki görsel, sağ kolonda alt alta —
+1) Before/after karşılaştırması: `docs/presentation/media/slide05_shadow_before_after.png`
+(2026-09-15, Colab'da tek frame yeniden koşularak üretildi: aynı Berghouse
+frame 0, solda conf=0.3 — 2 runner + gölge kutusu 0.47, sağda conf=0.5 —
+sadece 2 runner, gölge dışlanmış).
+2) Farklı bir videodan çeşitlilik: `docs/presentation/media/slide05_dji0790_ground_truth.jpg`
+(2026-09-16, Drive'daki `trainval_frames.zip`'ten gerçek `DJI_0790/frame_000000.jpg`
+karesi indirilip final ground-truth kutuları [`results/pseudo_labels/annotations/DJI_0790.json`]
+üzerine yerelde çizildi) — kızak takımının 6-8 köpeği kutusuz, sadece
+musher + yolcu `person` olarak kutulu; Slayt 8'deki köpek-düzeltme
+hikâyesinin görsel kanıtı. Not: bu kare şüphesi net bir "gölge" örneği
+değil, asıl amacı görsel çeşitlilik ve etiket kalitesi kanıtı.
 
 **Kaynak:** `results/pseudo_labels/annotations/*.json` (final frame/box
 counts), `results/eval/sam3_zeroshot_T4/metrics.json` (agreement vs. manual
@@ -316,8 +433,11 @@ threshold" entry chain, 2026-09-12, for the shadow-box story and the
 > too and compared its output against my own annotations. Only once that agreement was
 > satisfying did I let it label anything I would train on — measured later at point
 > eight four six mAP against the human labels, which you'll see again in a few slides.
+> One honest number while I'm here: this model is slow — about two point seven seconds
+> per frame on a T4, well under half a frame per second. Fine for a one-time labelling
+> pass, not fine for anything real-time, which matters again later.
 > Once I trusted it, it produced four hundred seventy-one labelled frames and just
-> under nineteen hundred boxes across the training and validation videos.
+> over fourteen hundred boxes across the training and validation videos.
 > The interesting part is what went wrong. The pipeline started labelling shadows as
 > people. That is exactly the kind of failure you only find by looking at the output,
 > not at the metrics. Raising the confidence threshold removed most of it, at the cost
@@ -376,7 +496,7 @@ Bir cümle yeterli; literatürü takip ettiğin anlaşılır, akış bozulmaz.
 
 ---
 
-## Slayt 6 — Baseline Approach: YOLO26n, Zero-Shot
+## Slayt 7 — Baseline Approach: YOLO26n, Zero Fine-Tuning
 
 **Tek mesaj:** Before training anything, measure the raw domain gap with an
 off-the-shelf detector. This baseline exposes one structural failure that
@@ -395,7 +515,8 @@ every later slide is a response to.
 *Blok B: Result on the gold test set (196 frames, 719 boxes, T4)*
 - mAP@.5 **0.693** | mAP@[.5:.95] **0.479**
 - Precision 0.853 | Recall 0.726 | F1 **0.784** (@ conf 0.25)
-- mAP on large objects **0.676** — mAP on small objects **0.018**
+- mAP on large objects (COCO def., area **>96×96px**) **0.676** — mAP on
+  small objects (area **<32×32px**) **0.018**
 
 *Blok C: Measured inference time*
 - **T4:** 196 frames in 26.7 s → **7.3 FPS** (0.136 s/frame)
@@ -403,12 +524,20 @@ every later slide is a response to.
 - Caveat, stated honestly: this is measured **pipeline** throughput — frame
   read + inference + drawing/writing the annotated review image — not
   isolated model-only inference. A pure-inference number would be somewhat
-  faster; not yet separated out (see Slide 18)
+  faster; not yet separated out (see Slide 19)
 
 *Blok D: The one number that defines the rest of this talk*
 - On DJI_0501 and DJI_0596 (the two hardest test videos): YOLO catches
-  **0 of 44** small/distant people, at any confidence threshold
-- Not a tuning problem — a feature-map resolution limit
+  **0 of 44** small/distant people at its **default confidence (0.25)**
+- **Correction (2026-09-16):** checked directly against
+  `results/yolo26_lowconf/predictions.json` (conf≥0.01) — **26 of 44**
+  actually do get a matching low-confidence candidate box (IoU≥0.5,
+  scores 0.01–0.19), just not confident enough to survive the default
+  cutoff. So this is **not** purely a feature-map resolution limit as
+  earlier phrasing claimed ("at any confidence threshold") — it's mostly a
+  confidence-threshold problem at the default operating point, which is
+  exactly why Method 2's lower threshold + verifier (Slide 8) is able to
+  recover 10 of these 44 (Slide 10)
 
 **Görsel:** two side-by-side prediction-vs-ground-truth frames (red = ground
 truth, green = prediction, per the project's own visualization convention):
@@ -435,28 +564,30 @@ truth, green = prediction, per the project's own visualization convention):
 > this runs at about seven frames a second end to end. But look at the size
 > breakdown. mAP on large objects is point-six-eight. mAP on small objects is
 > point-zero-two — essentially zero. On the two hardest test videos, this
-> detector finds zero of forty-four small, distant people, at any confidence
-> level you choose. Here's what that looks like: two runners caught cleanly
-> on the left, and on the right, real people on a boat deck with not a single
-> prediction anywhere near them. That's not a threshold problem. It's a
-> resolution problem — the object is too small for the feature map to
-> represent at all. Everything I show you next responds to this one number.
+> detector finds zero of forty-four small, distant people, at its default
+> confidence. But I checked lower thresholds too — twenty-six of those
+> forty-four actually do get a candidate box, just too low-confidence to
+> survive the default cutoff. Here's what that looks like: two runners
+> caught cleanly on the left, and on the right, real people on a boat deck
+> with not a single prediction anywhere near them at conf 0.25. That's not
+> a dead end — it's exactly the opening the next method uses. Everything I
+> show you next responds to this one number.
 
 ---
 
-## Slayt 7 — Method 2 (Cascade), Part 1: Architecture & Training Data
+## Slayt 8 — Method 2 (Cascade), Part 1: Architecture & Training Data
 
-**Tek mesaj:** Method 1's structural blind spot motivates a two-stage
-detect-then-verify system — here is exactly how the second stage was built
-and trained, including a real labelling failure it had to be trained around.
+**Tek mesaj:** Method 1's blind spot motivates a two-stage system: adding a
+second model, specialized through human-corrected training data.
 
 **Kapsam notu:** Method 2 hâlâ aynı paradigma içinde bir iyileştirme (YOLO
 tabanlı, supervised detection) — PDF'in *"alternatif yaklaşım"* maddesini bu
-slayt DEĞİL, slayt 11 (SAM3) karşılar. Bunu konuşurken netçe söyle.
+slayt DEĞİL, slayt 12 (SAM3) karşılar. Bunu konuşurken netçe söyle.
 
 *Blok A: The gap this method targets*
-- Recap in one line: Method 1 (YOLO26n) finds **0 of 44** small/distant
-  people on the two hardest test videos, at any confidence threshold (Slide 6)
+- Recap in one line: Method 1 (YOLO26n) alone, at its **default confidence**
+  (Slide 7), finds **0 of 44** small/distant people on the two hardest test
+  videos
 - Idea: force YOLO to propose more boxes by lowering its confidence floor,
   then use a second, independent model to separate real detections from the
   resulting noise
@@ -528,7 +659,7 @@ labels sled dogs as people", 2026-09-13), `configs/10_train_verifier.yaml`,
 
 ---
 
-## Slayt 8 — Method 2 (Cascade), Part 2: The Iteration
+## Slayt 9 — Method 2 (Cascade), Part 2: The Iteration
 
 **Tek mesaj:** The first version of this system made things worse, not
 better. Three measured refinements — each kept or discarded on evidence —
@@ -569,7 +700,7 @@ got it past the baseline.
 - **This is the first configuration all cycle to beat Method 1 on mAP@.5
   by the widest margin yet** (0.786 vs 0.693) — mAP is the right metric to
   lean on here, not a single-threshold F1: a fused two-model score and
-  YOLO's raw objectness score aren't on the same scale (Slide 12), so a
+  YOLO's raw objectness score aren't on the same scale (Slide 13), so a
   "beats it at conf=X" F1 claim would need its own threshold search per
   method, and (checked, see `docs/decision_log.md`, "GPU (T4) validation
   of the full method comparison", 2026-09-13) doing that search on the
@@ -617,7 +748,7 @@ sampling result", "Score fusion instead of hard gating"), `configs/17`,
 
 ---
 
-## Slayt 9 — Method 2 (Cascade), Part 3: Final Result
+## Slayt 10 — Method 2 (Cascade), Part 3: Final Result
 
 **Tek mesaj:** A real, measured win over Method 1 — plus an experiment with
 an alternative verifier backbone that quietly reinforces the project's
@@ -627,7 +758,7 @@ biggest lesson about validation scores.
 fusion variants below share the same YOLO stage and the same fusion
 formula, so their scores really are on one scale; comparing them at one
 fixed point is legitimate here in a way it wouldn't be for Method 1 vs.
-Cascade (Slide 8 already made that case on mAP, not F1, for exactly that
+Cascade (Slide 9 already made that case on mAP, not F1, for exactly that
 reason).
 
 | Config | mAP@.5 | Precision | Recall | F1 | FP |
@@ -639,7 +770,7 @@ reason).
 At this **shared** point the gap between verifier backbones is actually
 clearer (0.766 vs 0.747, a 0.019 F1 gap) than at each backbone's own
 optimized threshold (0.006 gap) — exactly why this table intentionally
-does *not* hunt for each row's best threshold the way Slide 8 does for
+does *not* hunt for each row's best threshold the way Slide 9 does for
 the single cascade-vs-Method-1 claim.
 
 *Blok B: Where it actually earns its keep*
@@ -698,7 +829,7 @@ threshold instead of each row's own optimum)
 
 ---
 
-## Slayt 10 — Method 3: RT-DETR, a Different Architecture Family
+## Slayt 11 — Method 3: RT-DETR, a Different Architecture Family
 
 <span style="color:#A4A9AD">RT-DETR — *DETRs Beat YOLOs on Real-Time Object Detection*, CVPR 2024 · RT-DETRv2, 2024</span>
 
@@ -737,7 +868,7 @@ checkpoints).
 
 *Blok D: A concrete, measured example of RT-DETR's resistance — the
 DJI_0501 statue*
-- Slide 14 documents a human statue (Scottish hilltop monument) that both
+- Slide 15 documents a human statue (Scottish hilltop monument) that both
   YOLO26n (8 of 10 sampled frames, conf 0.81–0.89) and SAM3 (7 of 10
   frames, conf 0.58–0.71) confidently box as `person` — ground truth
   correctly excludes it
@@ -764,7 +895,7 @@ DJI_0501 statue*
   receptive field
 - That matters most when an object's identity depends on its relationship to
   the rest of the scene, not just its own local appearance — for instance,
-  the dog-vs-person confusion from Slide 7: a person is typically positioned
+  the dog-vs-person confusion from Slide 8: a person is typically positioned
   and postured differently *relative to the rest of a sled team*, a cue a
   global-context model is architecturally better positioned to use than a
   purely local one. **Not tested in this project — a plausible direction,
@@ -773,13 +904,13 @@ DJI_0501 statue*
   *learn* useful attention patterns from data, rather than getting locality
   "for free" as a CNN's built-in bias. This is exactly why fine-tuning
   RT-DETR was judged too risky to attempt this cycle on our modest
-  pseudo-label set (Slide 18)
+  pseudo-label set (Slide 19)
 - **Expectation, not yet measured:** with a larger, stronger training set,
   RT-DETR would plausibly pull further ahead of YOLO on exactly these
   context-dependent, ambiguous cases — likely at the cost of **even lower
   FPS**, since attention cost scales with the number of tokens the model
   processes. The same quadratic-cost lesson this project already learned
-  directly, the hard way, with SAM3's own ViT backbone (Slide 5)
+  directly, the hard way, with SAM3's own ViT backbone (Slide 6)
 
 **Görsel:** side-by-side — native-resolution RT-DETR prediction vs. the
 forced-1920 duplicate-box storm, aynı frame (Berghouse, frame 720)
@@ -833,7 +964,7 @@ aynı 2 kişi üzerinde 8 çakışan kutu.
 
 ---
 
-## Slayt 11 — Method 4 / The Alternative Approach: SAM 3, Zero-Shot Foundation Model
+## Slayt 12 — Method 4 / The Alternative Approach: SAM 3, Zero-Shot Foundation Model
 
 <span style="color:#A4A9AD">SAM 3 — Segment Anything with Concepts, Meta AI, 2025</span>
 
@@ -843,7 +974,7 @@ sees this project's data. **This is the assignment's required "genuinely
 different alternative approach."**
 
 *Blok A: What makes this genuinely different*
-- The same SAM3 model already introduced as the labelling tool (Slide 5) —
+- The same SAM3 model already introduced as the labelling tool (Slide 6) —
   here it is benchmarked directly against the gold test set, under the
   identical protocol used for every other method in this talk
 - Zero training, zero fine-tuning on this project's videos — pure
@@ -862,11 +993,11 @@ different alternative approach."**
 - Worst precision, and by far the worst speed
 - Not a deployment candidate as-is — exactly consistent with its role in
   this project: a zero-shot ceiling-finder, and the pseudo-labelling teacher
-  from Slide 5
+  from Slide 6
 
 **Görsel:** the DJI_0596 frame showing all three outcomes at once (correct /
 missed / false-positive) — the clearest single qualitative example in the
-project (also used in Slide 13). Confirmed and saved 2026-09-15:
+project (also used in Slide 14). Confirmed and saved 2026-09-15:
 `docs/presentation/media/slide11_13_sam3_three_outcomes_dji0596.jpg` —
 correct cluster on the rear deck, missed pair near the wheelhouse, 2-3
 false-positive boxes over open water at the top-right.
@@ -892,7 +1023,7 @@ false-positive boxes over open water at the top-right.
 
 ---
 
-## Slayt 12 — Quantitative Comparison
+## Slayt 13 — Quantitative Comparison
 
 **Tek mesaj:** One test set, one protocol, four paradigms — ranked by mAP,
 not by a fixed confidence threshold, because these methods are not on the
@@ -942,11 +1073,11 @@ why it — not F1 — carries the "cascade is better" claim in this talk.
   between the two tells you whether a method's boxes are loose or precise,
   not just whether it fires
 - **Size-based breakdown (small/medium/large) built in from the start** —
-  this is what actually surfaces this project's central finding (Slide 6);
+  this is what actually surfaces this project's central finding (Slide 7);
   a single pooled mAP number would have hidden it completely
 - **Per-video breakdown** — needed to show performance across genuinely
   different conditions, not one averaged-away number (feeds directly into
-  Slide 15's error analysis)
+  Slide 16's error analysis)
 - mAP itself sweeps confidence internally and never produces a single
   precision/recall/F1 triple, so a separate, custom
   `precision_recall_f1()` function (greedy IoU matching at one stated
@@ -977,7 +1108,7 @@ file, hence a footnote rather than a table edit)
 > is the box." And I broke everything down by object size and by video
 > from day one, because a single pooled number would have completely
 > hidden this project's central finding: the small-object gap you saw on
-> Slide 6.
+> Slide 7.
 > The story: SAM 3 wins on ranking quality and recall, with zero training.
 > Among the trained, deployable detectors, the cascade is best. RT-DETR sits
 > in between — better ranking than the plain baseline, worse precision. No
@@ -986,14 +1117,15 @@ file, hence a footnote rather than a table edit)
 
 ---
 
-## Slayt 13 — Qualitative Comparison
+## Slayt 14 — Qualitative Comparison
 
 **Tek mesaj:** One frame can show a success, a miss, and a false positive at
 the same time — numbers alone don't tell you that.
 
 *Blok A: A clean success*
-- Berghouse Leopard Jog: two trail runners, correctly boxed at high
-  confidence by every method — SAM3 scores this video a perfect 1.000 mAP@.5
+- DJI_0862 (volcanic terrain): five people, correctly boxed by SAM3 at
+  0.70-0.86 confidence — DJI_0862 scores 0.906 mAP@.5, SAM3's second-best
+  test video
 
 *Blok B: DJI_0596 — all three outcomes in one frame*
 - A lake steamer boat scene (not the snow/mountain scene its "tiny
@@ -1004,11 +1136,21 @@ the same time — numbers alone don't tell you that.
 - **False positive:** 2-3 "person" boxes over open water where nothing is
   present — plausibly wave/glare misread as a distant person
 
-**Görsel:** side-by-side — Berghouse success frame
-(`docs/presentation/media/slide13_sam3_success_berghouse.jpg`) and the
-DJI_0596 frame with all three outcomes
+**Görsel:** side-by-side, her ikisi de `aspect-ratio:16/9` + `object-fit:contain`
+ile (2026-09-16 düzeltmesi — önceden `flex:1` ile zorlanan varsayılan 4:3
+kutu, gerçek 16:9 görselleri kırpıyordu) — DJI_0862 success frame
+(`docs/presentation/media/slide13_sam3_success_dji0862.jpg`, 2026-09-16,
+`results/eval/sam3_zeroshot_T4/comparison/DJI_0862__frame_000000.jpg`'den
+insan kümesine kırpıldı, gökteki 0.27-güvenli drone/uçak kutusu kadraj
+dışı bırakıldı) ve DJI_0596 frame with all three outcomes
 (`docs/presentation/media/slide11_13_sam3_three_outcomes_dji0596.jpg`,
-shared with Slide 11).
+shared with Slide 12).
+
+**Değişiklik notu (2026-09-16):** Önceki Berghouse görseli hem Slayt 1/6
+ile aynı videoydu (tekrar) hem de yakından bakınca gölge yanlış-pozitifi
+içeriyordu (Slayt 6'in hikâyesi) — DJI_0862 ile değiştirildi, gerçek test
+setinden, gerçek SAM3 sonucuyla (0.906 mAP@.5, `docs/decision_log.md`
+"Tier 1 item 3: SAM3 zero-shot benchmark result").
 
 **Kaynak:** `results/eval/sam3_zeroshot_T4/comparison/` (visual inspection,
 per `docs/03_sam3_journey_summary.md`)
@@ -1025,7 +1167,7 @@ per `docs/03_sam3_journey_summary.md`)
 
 ---
 
-## Slayt 14 — Ambiguous Results: Is It Even a Person?
+## Slayt 15 — Ambiguous Results: Is It Even a Person?
 
 **Tek mesaj:** Some of the hardest cases here aren't detection failures at
 all — they're genuine "is this the target class or not" questions, and
@@ -1054,7 +1196,7 @@ this specific object.
   fine-tuned on this project's data — every one is meeting this exact
   object zero-shot. YOLO (CNN) and SAM3 (ViT, prompted purely by visual
   similarity to "person") both key on local shape/texture and get fooled.
-  Both RT-DETR checkpoints are markedly more resistant — see Slide 10 for
+  Both RT-DETR checkpoints are markedly more resistant — see Slide 11 for
   what this suggests about *why*.
 
 **Görsel:** `results/eval/yolo26n_zeroshot/comparison/DJI_0501__frame_000000.jpg`
@@ -1085,7 +1227,7 @@ location)
 
 ---
 
-## Slayt 15 — Error Analysis
+## Slayt 16 — Error Analysis
 
 **Tek mesaj:** Difficulty tracks the footage, not the detector — every
 method's own best-to-worst video ranking is nearly identical.
@@ -1125,7 +1267,7 @@ method, without exception.
 
 ---
 
-## Slayt 16 — Strengths, Weaknesses, and Cost
+## Slayt 17 — Strengths, Weaknesses, and Cost
 
 **Tek mesaj:** No method wins on every axis — the real choice is which
 trade-off fits the deployment.
@@ -1136,8 +1278,8 @@ trade-off fits the deployment.
 |---|---|---|
 | **YOLO26n** | Fastest, simplest, zero training cost, best precision of any method tried | Structurally blind to small/distant people |
 | **Cascade** | Only method that recovers small-object recall from zero; best mAP among trained, deployable methods | Two-stage cost; verifier is data-hungry |
-| **RT-DETR** | Genuinely different architecture; competitive ranking quality; measurably more resistant to the DJI_0501 statue false-positive (Slide 10, 14) | More false positives; resolution-fragile; fine-tuning not attempted this cycle (a time-boxed, stated cut — see Slide 18) |
-| **SAM3** | Best accuracy and recall of any method, zero training | ~10× slower than any trained detector; not deployable as-is; ideal as a labelling teacher and, per Slide 17, a periodic auditor |
+| **RT-DETR** | Genuinely different architecture; competitive ranking quality; measurably more resistant to the DJI_0501 statue false-positive (Slide 11, 15) | More false positives; resolution-fragile; fine-tuning not attempted this cycle (a time-boxed, stated cut — see Slide 19) |
+| **SAM3** | Best accuracy and recall of any method, zero training | ~10× slower than any trained detector; not deployable as-is; ideal as a labelling teacher and, per Slide 18, a periodic auditor |
 
 *Blok B: Cost, honestly reported*
 - Verifier backbone: ResNet18 11.2M params vs. EfficientNet-B0 4.0M params
@@ -1148,7 +1290,7 @@ trade-off fits the deployment.
 - SAM3: **0.37 FPS on T4** — the only method in this project with a
   committed, reproducible speed number so far
 - YOLO26n / cascade / RT-DETR end-to-end FPS on T4: **not yet benchmarked**
-  with a dedicated script — an open item, not a hidden one (see Slide 18)
+  with a dedicated script — an open item, not a hidden one (see Slide 19)
 
 **Görsel:** Blok A'nın kendisi tablo olarak slaytta yer alır (ayrı bir 2×2
 grid'e gerek yok) + Blok B için sade bir parametre/hız tablosu.
@@ -1171,7 +1313,7 @@ grid'e gerek yok) + Blok B için sade bir parametre/hız tablosu.
 
 ---
 
-## Slayt 17 — Proposed Production System
+## Slayt 18 — Proposed Production System
 
 **Tek mesaj:** Don't deploy one method — combine the fast one and the
 accurate one, each doing the job it's actually good at.
@@ -1192,8 +1334,8 @@ accurate one, each doing the job it's actually good at.
   genuinely unlike anything it was tuned on); a periodic foundation-model
   check can
 - This mirrors exactly how the two models are already used earlier in this
-  project: SAM3 as the pseudo-labelling teacher (Slide 5), the cascade as
-  the deployable student (Slides 7-9) — extended here into an ongoing
+  project: SAM3 as the pseudo-labelling teacher (Slide 6), the cascade as
+  the deployable student (Slides 8-10) — extended here into an ongoing
   production role instead of a one-time labelling pass
 
 **Görsel:** basit sistem şeması —
@@ -1204,7 +1346,7 @@ videosu üzerinde uçtan uca çalıştığı **kısa bir klip** hâlâ eksik —
 sistemi diyagram olarak değil, çalışırken göstermek burada tam yerine
 oturur ama bu klip GPU/Colab'a bağlı (`kalan_isler.md`, yarınki YOLO
 eğitimi/test-video inference adımıyla aynı çıktı); üretilince buraya ve
-Slayt 19'a aynı klip konur.
+Slayt 20'a aynı klip konur.
 
 **Konuşma akışı**
 > If I had to put one thing into production, it wouldn't be a single model —
@@ -1222,7 +1364,7 @@ Slayt 19'a aynı klip konur.
 
 ---
 
-## Slayt 18 — Honest Limitations & Future Work
+## Slayt 19 — Honest Limitations & Future Work
 
 **Tek mesaj:** What didn't get done this cycle, and why, stated plainly.
 
@@ -1268,7 +1410,7 @@ Slayt 19'a aynı klip konur.
 
 ---
 
-## Slayt 19 — Closing
+## Slayt 20 — Closing
 
 **Tek mesaj:** An honest account beats a clean one — here's what actually
 worked, what didn't, and what I'd build next.
@@ -1298,7 +1440,7 @@ worked, what didn't, and what I'd build next.
 (`docs/presentation/media/slide19_repo_qr.png` →
 github.com/Kametor/object-detection-drone) + README'ye referans; varsa
 birleştirilmiş sonuç videosu burada canlı gösterilir (henüz üretilmedi,
-GPU'ya bağlı — bkz. Slayt 17 notu).
+GPU'ya bağlı — bkz. Slayt 18 notu).
 
 **Konuşma akışı**
 > A simple baseline exposed one very specific failure: small, distant
@@ -1316,7 +1458,7 @@ GPU'ya bağlı — bkz. Slayt 17 notu).
 
 ---
 
-## Slayt 20 — References
+## Slayt 21 — References
 
 **Layout:** Tek slayt, iki sütun, küçük punto. Sıralama: Models → Datasets →
 Evaluation → Tools/Libraries. Bu slaytı okuma, tek cümmeyle geç (bkz.
