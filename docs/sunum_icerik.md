@@ -749,7 +749,7 @@ labels sled dogs as people", 2026-09-13), `configs/10_train_verifier.yaml`,
 better. Three measured refinements — each kept or discarded on evidence —
 got it past the baseline.
 
-*Blok A: First attempt — verify everything → worse*
+*Blok A: First attempt — verify all boxes → worse*
 - Run YOLO at the 0.01 floor, send **every** resulting box through the
   verifier, including the ones YOLO was already confident about
 - Result: F1 **collapses 0.786 → 0.514** — the verifier wrongly rejects
