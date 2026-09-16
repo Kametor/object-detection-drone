@@ -848,11 +848,11 @@ fixed point is legitimate here in a way it wouldn't be for Method 1 vs.
 Cascade (Slide 10 already made that case on mAP, not F1, for exactly that
 reason).
 
-| Config | mAP@.5 | Precision | Recall | F1 | FP |
-|---|---|---|---|---|---|
-| Method 1 (YOLO26n, conf 0.25) | 0.693 | 0.853 | 0.726 | 0.784 | 90 |
-| **Cascade — small-stem ResNet + fusion** | **0.786** | 0.754 | 0.778 | 0.766 | 182 |
-| Cascade — EfficientNet-B0 verifier | 0.777 | 0.729 | 0.765 | 0.747 | 204 |
+| Config | mAP@.5 | mAP@[.5:.95] | Precision | Recall | F1 | FP |
+|---|---|---|---|---|---|---|
+| Method 1 (YOLO26n, conf 0.25) | 0.693 | 0.479 | 0.853 | 0.726 | 0.784 | 90 |
+| **Cascade — small-stem ResNet + fusion** | **0.786** | **0.526** | 0.754 | 0.778 | 0.766 | 182 |
+| Cascade — EfficientNet-B0 verifier | 0.777 | 0.521 | 0.729 | 0.765 | 0.747 | 204 |
 
 At this **shared** point the gap between verifier backbones is actually
 clearer (0.766 vs 0.747, a 0.019 F1 gap) than at each backbone's own
