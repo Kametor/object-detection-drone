@@ -154,6 +154,8 @@ Google Drive for the video/checkpoint data, and installs
 | [`02_train_verifier.ipynb`](notebooks/02_train_verifier.ipynb) | Trains the cascade's ResNet18 crop-verifier (item 1b) |
 | [`03_gpu_method_comparison.ipynb`](notebooks/03_gpu_method_comparison.ipynb) | Re-runs Method 1 / cascade on a T4 for hardware-consistent numbers |
 | [`04_sam3_zeroshot_eval.ipynb`](notebooks/04_sam3_zeroshot_eval.ipynb) | Benchmarks SAM3 zero-shot as a detector on the gold test set |
+| [`05_rtdetr_zeroshot_T4_eval.ipynb`](notebooks/05_rtdetr_zeroshot_T4_eval.ipynb) | Re-runs both RT-DETR checkpoints on a T4 for hardware-consistent FPS |
+| [`06_render_result_video.ipynb`](notebooks/06_render_result_video.ipynb) | Renders the cascade's predictions on the 4 test videos into one annotated demo video |
 
 No standard/Pro Colab tier is used or required — every result in this
 README was produced on the free T4 tier, per the assignment's single-GPU
@@ -189,6 +191,7 @@ full pipeline, end to end, is (in order):
 10. `28`/`30_rtdetr_*_eval.py` — RT-DETR zero-shot (HF-R18 and Ultralytics-l checkpoints)
 11. `34_sam3_zeroshot_eval.py` — SAM3 as a zero-shot detector (Colab, `04_sam3_zeroshot_eval.ipynb`)
 12. `07_visualize_eval.py` — success/failure comparison images used throughout this README and the presentation
+13. `36_render_result_video.py` — renders the cascade's predictions on full test videos into one combined demo video (Colab, `06_render_result_video.ipynb`)
 
 Every script takes `--config path/to.yaml` (no magic constants) and writes
 a run manifest (config hash, git SHA, seed, timestamp) into `results/`
@@ -433,8 +436,10 @@ here into an ongoing role instead of a one-time labeling pass.
 - **YOLO P2 detection head + SAHI tiling** — both target the small-object
   failure directly inside the detector, as an alternative to the
   second-stage verifier approach actually built.
-- **A combined result video** running the best method across the test
-  videos — not yet produced (depends on the fine-tuning run above).
+- **A combined result video** running the cascade across the test
+  videos — the notebook (`notebooks/06_render_result_video.ipynb`) and
+  script (`scripts/36_render_result_video.py`) are written and pushed;
+  the actual video hasn't been rendered yet (needs a live Colab session).
 
 **Structural limitations, not a to-do list:**
 - Small-object detection remains the dominant failure mode for every

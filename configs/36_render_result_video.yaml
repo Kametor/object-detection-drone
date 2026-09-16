@@ -1,0 +1,40 @@
+seed: 42
+
+# The 4 held-out test videos, in the same order as data/splits/test.txt --
+# never seen during training or verifier fitting.
+videos:
+  - "data/raw/drone_videos/Berghouse Leopard Jog.mp4"
+  - "data/raw/drone_videos/DJI_0501.MP4"
+  - "data/raw/drone_videos/DJI_0596.MP4"
+  - "data/raw/drone_videos/DJI_0862.MOV"
+
+# Identical to configs/27_cascade_score_fusion_small_stem.yaml (the
+# reported "Cascade -- small-stem + fusion" result, mAP@.5 0.786) --
+# this renders that exact model's behaviour on full video, not a
+# different/retrained one.
+checkpoint: yolo26n.pt
+conf: 0.01
+imgsz: 1920
+high_conf_threshold: 0.25
+verifier_checkpoint: results/cascade_verifier/resnet18_verifier_small_stem.pt
+crop_size: 64
+padding_ratio: 0.4
+device: cuda
+
+# Only draw boxes at the cascade's own reported operating point (see
+# docs/decision_log.md, "GPU (T4) validation of the full method
+# comparison") -- showing every fused-score candidate, including ones
+# below the point the P/R/F1 numbers were computed at, would make the
+# video look better than the reported result actually is.
+draw_threshold: 0.38
+
+# Process every frame (stride 1) for the most faithful demo; raise this
+# if a Colab session is too slow, but note the output fps is divided by
+# the same factor so real-time playback speed is preserved either way.
+frame_stride: 1
+
+canvas_width: 1920
+canvas_height: 1080
+
+output_path: results/demo_video/cascade_test_videos.mp4
+manifest_dir: results/manifests

@@ -1897,3 +1897,47 @@ corrected — YOLO's own T4 FPS (7.3) was already measured back on Slide 7
 and simply hadn't been copied into these two slides; RT-DETR's is new.
 Only the **cascade's** end-to-end FPS on T4 remains genuinely
 unmeasured now.
+
+## 2026-09-16: Result video — cascade on the 4 test videos
+
+**Decision.** The assignment PDF lists a result video as an optional
+presentation deliverable ("Varsa sonuç videosu"). Built
+`scripts/36_render_result_video.py` + `configs/36_render_result_video.yaml`
++ `notebooks/06_render_result_video.ipynb` to produce one: the cascade
+run frame-by-frame across all 4 held-out test videos, combined into a
+single annotated `.mp4`.
+
+**Which method, and why.** The cascade (small-stem ResNet18 verifier +
+score fusion), not SAM3 despite SAM3's higher mAP (0.846 vs. 0.786) —
+SAM3 is ~10× slower (0.37 FPS) and was never proposed as the deployable
+method in this project (Slide 19's production system already casts it as
+a periodic auditor, not the primary detector). The cascade is the "best
+trained, deployable method" this project actually argues for, so it's
+the one worth showing working end-to-end.
+
+**Reused, not reinvented.** `scripts/36` calls the identical cascade
+logic as `scripts/25_cascade_score_fusion_eval.py` (same
+`Yolo26Detector` + verifier checkpoint + `sqrt(yolo_conf * verifier_prob)`
+fusion) via the same `crop_candidate` helper — this is the already-
+evaluated pipeline applied to raw video frames instead of the sampled
+gold-test frames, not a new or different model.
+
+**Boxes only drawn at the reported operating point.** `draw_threshold:
+0.38` matches the exact confidence the cascade's P/R/F1 numbers were
+computed at (see "GPU (T4) validation of the full method comparison",
+2026-09-13). Drawing every fused-score candidate instead would make the
+video look more populated than the reported result actually supports —
+the video needs to match the numbers, not flatter them.
+
+**Mechanics, smoke-tested locally before writing the Colab notebook**
+(CPU, `imgsz=640`, one short train video, `frame_stride=100` — ~10
+frames, not a real run): confirmed the letterbox-to-shared-canvas step
+doesn't distort aspect ratio, the per-clip label overlay renders, and
+`output_fps = input_fps / frame_stride` keeps playback speed correct
+regardless of how many frames are skipped. The real run (all 4 test
+videos, every frame, T4, `imgsz=1920`) has not happened yet — needs a
+live Colab session with the verifier checkpoint on Drive and either a
+Kaggle API token or the raw dataset already fetched. Video output is
+gitignored (`*.mp4`) and belongs on Drive, per this project's existing
+convention for large media — only the run's manifest JSON is pushed to
+GitHub.
