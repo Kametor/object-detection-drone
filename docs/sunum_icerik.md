@@ -309,6 +309,8 @@ bağlı, o yüzden tamamen elle, CVAT ile etiketlendi.
 
 *Blok A: The test set is manually labelled*
 - Test labels drawn **by hand in CVAT** — no model output enters ground truth
+- **196 frames, 719 boxes** (people) labelled across the 4 test videos — the
+  exact numbers every method in this talk is scored against
 - The human labelling budget was spent on **measurement, not training**
 - Rationale: without a trustworthy test set, no other number in this talk means anything
 
