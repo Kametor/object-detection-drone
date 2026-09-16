@@ -643,9 +643,11 @@
       <h1 class="title">Cascade: The Iteration</h1>
       <p class="thesis">The first version made things worse, not better. Three measured refinements — each kept or discarded on evidence — got it past the baseline.</p>
       <div class="body">
-        <div class="frame" style="flex:0 0 46%;"><img src="media/slide08_journey_timeline.png" alt="Journey timeline" style="object-fit:contain; background:var(--surface);"></div>
-        <div class="row">
-          <div class="col" style="flex:0 0 44%;"><div class="frame" style="height:100%;"><img src="media/slide08_resnet_stem.png" alt="ResNet stem" style="object-fit:contain; background:var(--surface);"></div></div>
+        <div class="row" style="align-items:flex-start;">
+          <div class="col" style="flex:0 0 32%;">
+            <div class="frame" style="aspect-ratio:1/1;"><img src="media/slide08_journey_timeline.png" alt="Journey timeline" style="object-fit:cover; object-position:left center; background:var(--surface);"></div>
+            <div class="frame" style="aspect-ratio:16/9; margin-top:10px;"><img src="media/slide08_resnet_stem.png" alt="ResNet stem" style="object-fit:contain; background:var(--surface);"></div>
+          </div>
           <div class="col">
             <ul class="bullets">
               <li><b>Verify all boxes</b> → F1 collapses 0.786→0.514: the verifier wrongly rejects boxes Method 1 already had right</li>
