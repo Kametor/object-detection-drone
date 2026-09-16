@@ -1800,3 +1800,17 @@ operating points are explicit rather than looking like cherry-picking.
 methods at conf=0.25 with a footnote explaining the choice. That table
 spans genuinely different score scales too (SAM3 and RT-DETR included),
 so it deserves the same scrutiny — not changed here, flagged for review.
+
+## Follow-up 2026-09-16: per-method operating points confirmed as the intended framing
+
+The correction above briefly moved toward hedging the cascade-vs-Method-1
+P/R/F1 comparison as "not a fair head-to-head" because the cascade's 0.38
+point comes from a test-set F1 scan. The user stopped this and confirmed
+the per-method-operating-point framing (Method 1 @ 0.25, cascade @ 0.38,
+values reported plainly, cascade shown ahead where it is) was already the
+deliberate, previously-discussed choice — not an oversight to walk back.
+Reverted Slide 11 and Slide 14 to that framing. The leakage caveat (swept
+Method 1 hits F1 0.7892 @ 0.30, edging the cascade's 0.7885) is kept as
+Q&A backup in `sunum_icerik.md`, not as an on-slide hedge — mAP already
+carries the headline "cascade is better" claim precisely because it
+doesn't need this kind of per-method threshold justification.

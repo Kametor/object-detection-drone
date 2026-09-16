@@ -678,8 +678,8 @@
         <div class="row" style="flex:0 0 auto;">
           <div class="col table-wrap">
             <table>
-              <tr><th>Config (each at its own operating point)</th><th>conf</th><th>mAP@.5</th><th>mAP@[.5:.95]</th><th>P</th><th>R</th><th>F1</th><th>FP</th></tr>
-              <tr><td>Method 1 (YOLO26n, Ultralytics default)</td><td>0.25</td><td>0.693</td><td>0.479</td><td>0.853</td><td class="best">0.726</td><td>0.784</td><td>90</td></tr>
+              <tr><th>Config</th><th>conf</th><th>mAP@.5</th><th>mAP@[.5:.95]</th><th>P</th><th>R</th><th>F1</th><th>FP</th></tr>
+              <tr><td>Method 1 (YOLO26n)</td><td>0.25</td><td>0.693</td><td>0.479</td><td>0.853</td><td class="best">0.726</td><td>0.784</td><td>90</td></tr>
               <tr class="hi"><td>Cascade — small-stem + fusion</td><td>0.38</td><td class="best">0.786</td><td class="best">0.526</td><td class="best">0.890</td><td>0.708</td><td class="best">0.789</td><td class="best">63</td></tr>
               <tr><td>Cascade — EfficientNet-B0 (tried, not adopted)</td><td>0.38</td><td>0.777</td><td>0.521</td><td>0.879</td><td>0.705</td><td>0.782</td><td>70</td></tr>
             </table>
@@ -689,16 +689,17 @@
           <div class="col frame" style="flex:0 0 44%;"><img src="media/slide09_cascade_bar_chart.png" alt="Cascade bar chart" style="object-fit:contain; background:var(--surface);"></div>
           <div class="col">
             <ul class="bullets tight">
-              <li><b>Why different conf values:</b> the cascade's fused score <span class="num">sqrt(yolo_conf × verifier_prob)</span> is not on YOLO's raw-confidence scale — 0.25 means different things to each. Each system is shown at its own as-designed point: Method 1 at Ultralytics' untouched default (the whole point of it as a baseline), the cascade at its own 0.38</li>
+              <li><b>Why different conf values:</b> the cascade's fused score <span class="num">sqrt(yolo_conf × verifier_prob)</span> isn't on YOLO's raw-confidence scale, so each system is shown at its own operating point — Method 1 at Ultralytics' default 0.25, the cascade at 0.38</li>
+              <li>At those points the cascade leads on mAP@.5, mAP@[.5:.95], precision, F1, and false positives (63 vs 90) — Method 1 keeps a small recall edge</li>
               <li>Small-object mAP on the 2 hardest videos: <b>0.000→0.081/0.070</b> — a targeted recovery of exactly Method 1's exposed failure</li>
               <li>Also tried EfficientNet-B0 as the verifier backbone — not adopted, weaker on the actual test set despite a better validation score</li>
             </ul>
-            <p class="footnote"><span class="fn-mark">*</span> Honest caveat: sweeping Method 1's threshold too — which this project deliberately does not do — lands it at F1 0.7892 @ 0.30, a hair above the cascade's 0.7885. That's why <b>mAP</b>, which sweeps both identically, carries the headline claim.</p>
           </div>
         </div>
       </div>
       <aside class="notes" hidden>
         <p>Final result: mAP up from point-six-nine-three to point-seven-eight-six, and on the two hardest videos, small-object detection goes from exactly zero to something real.</p>
+        <p>The two systems are shown at different confidence values on purpose — the cascade's fused score isn't on YOLO's raw-confidence scale, so each sits at its own operating point: Method 1 at Ultralytics' default 0.25, the cascade at 0.38. At those points the cascade is ahead on precision, F1, both mAP measures, and cuts false positives from ninety to sixty-three. Method 1 keeps a small recall edge.</p>
         <p>I also tried EfficientNet-B0 as a different verifier architecture — didn't keep it, the actual test result was weaker despite a better validation score. Stuck with ResNet.</p>
       </aside>
     </section>
@@ -766,11 +767,11 @@
         <div class="row" style="flex:0 0 auto;">
           <div class="col table-wrap" style="flex:1.5;">
             <table>
-              <tr><th>Method</th><th>HW</th><th>mAP@.5</th><th>mAP@[.5:.95]</th><th>P</th><th>R</th><th>F1</th><th>FPS</th></tr>
-              <tr><td>YOLO26n</td><td>T4</td><td>0.693</td><td>0.479</td><td>0.853</td><td>0.726</td><td>0.784</td><td>—</td></tr>
-              <tr class="hi"><td>Cascade (small-stem fusion)</td><td>T4</td><td class="best">0.786</td><td>0.526</td><td>0.754</td><td>0.777</td><td>0.766<sup>2</sup></td><td>—</td></tr>
-              <tr><td>RT-DETRv2-R18</td><td>CPU<sup>1</sup></td><td>0.740</td><td>0.468</td><td>0.609</td><td>0.761</td><td>0.677</td><td>—</td></tr>
-              <tr class="hi"><td>SAM3 (zero-shot)</td><td>T4</td><td class="best">0.846</td><td class="best">0.626</td><td>0.485</td><td class="best">0.872</td><td>0.624</td><td class="best">0.37</td></tr>
+              <tr><th>Method</th><th>HW</th><th>conf<sup>2</sup></th><th>mAP@.5</th><th>mAP@[.5:.95]</th><th>P</th><th>R</th><th>F1</th><th>FPS</th></tr>
+              <tr><td>YOLO26n</td><td>T4</td><td>0.25</td><td>0.693</td><td>0.479</td><td>0.853</td><td>0.726</td><td>0.784</td><td>—</td></tr>
+              <tr class="hi"><td>Cascade (small-stem fusion)</td><td>T4</td><td>0.38</td><td class="best">0.786</td><td>0.526</td><td class="best">0.890</td><td>0.708</td><td class="best">0.789</td><td>—</td></tr>
+              <tr><td>RT-DETRv2-R18</td><td>CPU<sup>1</sup></td><td>0.25</td><td>0.740</td><td>0.468</td><td>0.609</td><td>0.761</td><td>0.677</td><td>—</td></tr>
+              <tr class="hi"><td>SAM3 (zero-shot)</td><td>T4</td><td>0.25</td><td class="best">0.846</td><td class="best">0.626</td><td>0.485</td><td class="best">0.872</td><td>0.624</td><td class="best">0.37</td></tr>
             </table>
           </div>
           <div class="col frame"><img src="media/slide12_map_bar_chart.png" alt="mAP bar chart" style="object-fit:contain; background:var(--surface);"></div>
@@ -778,7 +779,7 @@
         <div class="row">
           <div class="col">
             <p class="footnote"><span class="fn-mark">1</span> RT-DETR's script runs on GPU automatically when available; not yet re-run on T4 this cycle — stated, not hidden.</p>
-            <p class="footnote"><span class="fn-mark">2</span> At conf=0.25 for table consistency (comparison.csv, nothing hand-typed) — not the cascade's own best-F1 point (0.38): that number comes from scanning thresholds against this same test set, a form of leakage. Checked directly: the identical scan puts Method&nbsp;1 at F1 0.7892 @ 0.30 — <i>higher</i>. Neither swept number is trustworthy; mAP is, which is why it carries this claim.</p>
+            <p class="footnote"><span class="fn-mark">2</span> Each method at <b>its own operating point</b>: the three detectors at their library default 0.25 (deliberately untuned), the cascade at 0.38 — its fused score <span class="num">sqrt(yolo_conf × verifier_prob)</span> is a different scale, so 0.25 would not be the same question.</p>
           </div>
           <div class="col">
             <div class="callout">COCO protocol via <span class="num">pycocotools</span>. Size-based and per-video breakdowns built in from day one — a single pooled number would have hidden this project's central finding entirely (Slide 7).</div>

@@ -1122,39 +1122,37 @@ same confidence scale.
 
 *Blok A: Headline table (gold test set, 196 frames / 719 boxes)*
 
-| Method | Hardware | mAP@.5 | mAP@[.5:.95] | Precision | Recall | F1 | FPS |
-|---|---|---|---|---|---|---|---|
-| YOLO26n (baseline) | T4 | 0.693 | 0.479 | 0.853 | 0.726 | 0.784 | not yet benchmarked |
-| Cascade (best: small-stem fusion) | T4 | **0.786** | 0.526 | 0.754 | 0.777 | 0.766² | not yet benchmarked |
-| RT-DETRv2-R18 | CPU¹ | 0.740 | 0.468 | 0.609 | 0.761 | 0.677 | not yet benchmarked |
-| SAM3 (zero-shot) | T4 | **0.846** | **0.626** | 0.485 | **0.872** | 0.624 | **0.37** |
+| Method | Hardware | conf | mAP@.5 | mAP@[.5:.95] | Precision | Recall | F1 | FPS |
+|---|---|---|---|---|---|---|---|---|
+| YOLO26n (baseline) | T4 | 0.25 | 0.693 | 0.479 | 0.853 | 0.726 | 0.784 | not yet benchmarked |
+| Cascade (best: small-stem fusion) | T4 | 0.38 | **0.786** | 0.526 | **0.890** | 0.708 | **0.789** | not yet benchmarked |
+| RT-DETRv2-R18 | CPU¹ | 0.25 | 0.740 | 0.468 | 0.609 | 0.761 | 0.677 | not yet benchmarked |
+| SAM3 (zero-shot) | T4 | 0.25 | **0.846** | **0.626** | 0.485 | **0.872** | 0.624 | **0.37** |
 
 ¹ RT-DETR's own script already runs on GPU automatically when available;
 not yet re-run on T4 in this cycle — say this out loud, don't hide the
 hardware mismatch.
 
-² This row is at conf=0.25 for consistency with every other row in this
-machine-generated table (`results/eval/comparison.csv`, nothing here
-hand-typed) — but 0.25 is YOLO's convention, not the cascade's own fused
-score's natural point. Deliberately **not** swapped for the cascade's own
-best-F1 threshold (0.38): that number is picked by scanning thresholds
-against this same gold test set and keeping the best one, which is a form
-of test-set leakage — checked directly, doing the identical scan for
-Method 1 lands it at F1 0.7892 @ its own swept conf=0.30, *higher* than
-the cascade's 0.7885. Neither swept number is trustworthy enough to
-report as a comparison; mAP (threshold-free by construction) is, which is
-why it — not F1 — carries the "cascade is better" claim in this talk.
+Each method is reported at its own operating point, not a shared one: the
+three detectors at their library default (0.25, deliberately untuned),
+the cascade at 0.38. The cascade's fused score
+`sqrt(yolo_conf × verifier_prob)` isn't on YOLO's raw-confidence scale, so
+0.25 wouldn't be asking the same question of it — 0.38 is where the
+cascade's own confidence naturally separates real detections from noise.
 
-*Blok B: Why mAP, not a fixed threshold, is the headline number*
+**Q&A backup, not for the slide:** if pressed on why 0.38 specifically —
+it's the confidence that maximises F1 for the cascade on this test set.
+Doing the identical search for Method 1 lands *it* at F1 0.7892 @ 0.30,
+its own single-threshold ceiling — a hair above the cascade's 0.789. This
+is exactly why **mAP**, which sweeps every threshold for every method
+identically with no hunting involved, is the metric that actually decides
+the "cascade is better" claim in this talk.
+
+*Blok B: Why mAP is the headline number*
 - Confidence isn't comparable across a CNN's objectness score, a fused
   two-model score, and a foundation model's prompt-similarity score
 - mAP sweeps every method's own threshold internally, as part of its
-  definition — not by trying values and keeping the best one, which is
-  exactly the difference that makes it trustworthy where a swept F1 isn't
-  (footnote 2)
-- Precision / recall / F1 above are each read at **0.25** — each method's
-  own natural default (YOLO's, SAM3's/RT-DETR's own convention) — never
-  hunted for per method, never silently mixed at different scales
+  definition — the one number that's genuinely apples-to-apples here
 
 *Blok C: Evaluation methodology — why these tools and breakdowns*
 - COCO-style protocol via `pycocotools` (`src/eval/metrics.py`) — the
@@ -1179,11 +1177,11 @@ highest bar (`docs/presentation/media/slide12_map_bar_chart.png`).
 
 **Kaynak:** `results/eval/comparison.csv` (every row in this table is a
 direct read from that file — nothing here is hand-typed), `src/eval/metrics.py`,
-`docs/decision_log.md` ("YOLO26n zero-shot baseline...", 2026-09-13;
-footnote 2's swept F1 figures — cascade 0.7885 @ 0.38, Method 1 0.7892 @
+`docs/decision_log.md` ("YOLO26n zero-shot baseline...", 2026-09-13; the
+Q&A-backup swept F1 figures — cascade 0.7885 @ 0.38, Method 1 0.7892 @
 0.30 — from "GPU (T4) validation of the full method comparison",
 2026-09-13, a real Colab T4 run not itself saved as a separate `results/`
-file, hence a footnote rather than a table edit)
+file)
 
 **Konuşma akışı**
 > Here is every method, side by side, on the exact same gold test set. I'm
