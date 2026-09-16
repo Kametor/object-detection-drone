@@ -779,9 +779,11 @@ got it past the baseline.
   for 224×224 ImageNet photos — on our 64×64 crops, it downsamples to 16×16
   **before the network even starts reasoning**, discarding most of the
   detail there was to begin with
-- Replaced with a 3×3 stride-1 conv, **no maxpool** (the standard
-  "CIFAR-style" adaptation for small inputs), keeping every pretrained
-  weight elsewhere unchanged
+- Replaced with a 3×3 stride-1 conv, **no maxpool** — this isn't an
+  invented tweak, it's the original ResNet paper's own design for
+  small inputs (**He et al. 2016, §4.2 "CIFAR-10 and Analysis"** — same
+  citation already on the References slide for ResNet itself, no new
+  reference needed), keeping every pretrained weight elsewhere unchanged
 - **This is the first configuration all cycle to beat Method 1 on mAP@.5
   by the widest margin yet** (0.786 vs 0.693) — mAP is the right metric to
   lean on here, not a single-threshold F1: a fused two-model score and

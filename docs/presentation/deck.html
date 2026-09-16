@@ -653,7 +653,7 @@
               <li><b>Verify all boxes</b> → F1 collapses 0.786→0.514: the verifier wrongly rejects boxes Method 1 already had right</li>
               <li><b>Band-gate + video-balance</b> → only the ambiguous [0.01, 0.25) band goes through the verifier; one video was ~75% of training crops, fixed by equal per-video weighting. mAP@.5 recovers to 0.760</li>
               <li><b>Score fusion</b> → <span class="num">sqrt(yolo_conf × verifier_prob)</span>, mAP@.5 → <b class="num">0.786</b>, biggest single jump this cycle</li>
-              <li><b>Small-input stem</b> — stock ResNet18 downsamples 64×64 crops to 16×16 before reasoning even starts; CIFAR-style 3×3 stem keeps full resolution</li>
+              <li><b>Small-input stem</b> — stock ResNet18 downsamples 64×64 crops to 16×16 before reasoning even starts; swapped for the original ResNet paper's own small-input design (He et al. 2016, §4.2), a 3×3 stem with no maxpool that keeps full resolution</li>
             </ul>
           </div>
         </div>
