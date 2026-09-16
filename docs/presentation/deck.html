@@ -628,13 +628,12 @@
               <div class="stat"><span class="stat-num">15</span><span class="stat-label">Epochs</span></div>
               <div class="stat"><span class="stat-num">64</span><span class="stat-label">Batch size</span></div>
             </div>
-            <div class="callout" style="margin-top:8px;">This 98.9% isn't the final word either — a separate backbone experiment (EfficientNet-B0) scored a strong 98.4% val F1 of its own <i>cohort</i>, yet came out <i>worst</i> of three on the real test set (Slide 11). Val numbers from different training cycles aren't even directly comparable.</div>
           </div>
         </div>
       </div>
       <aside class="notes" hidden>
         <p>Building the training data for the second stage is where I found the most interesting problem in this whole project. Auditing SAM3's own pseudo-labels on the snow and sled-dog video, I found it had been boxing the sled dogs as people — from directly overhead, on white snow, a dog and a person in a coat genuinely look alike. I corrected two hundred seventy-one of those boxes by hand and fed them back into the verifier's training set as "not a person".</p>
-        <p>On the recipe: ResNet18 pretrained on ImageNet, plain PyTorch, AdamW at a constant learning rate, fifteen epochs over about five thousand crops. The classes are imbalanced, so I weight the loss by inverse class frequency instead of resampling. Augmentation is deliberately light — these crops are already small and blurry. It trained on CPU — small model, small dataset. The best checkpoint hit ninety-eight point nine percent precision and recall on validation. One honest caveat: a later backbone experiment, EfficientNet-B0, scored a strong validation number of its own in a separate training cycle and still did worse once it went through the full cascade — validation numbers from different cycles aren't even directly comparable, which is why the number that actually matters is the downstream result, not this one.</p>
+        <p>On the recipe: ResNet18 pretrained on ImageNet, plain PyTorch, AdamW at a constant learning rate, fifteen epochs over about five thousand crops. The classes are imbalanced, so I weight the loss by inverse class frequency instead of resampling. Augmentation is deliberately light — these crops are already small and blurry. It trained on CPU — small model, small dataset. The best checkpoint hit ninety-eight point nine percent precision and recall on validation.</p>
       </aside>
     </section>
 

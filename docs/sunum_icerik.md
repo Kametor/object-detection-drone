@@ -705,14 +705,6 @@ were built — including the most interesting failure this project surfaced.
   just predicts "person" most of the time
 - Best checkpoint (epoch 7 of 15): **val loss 0.0623, val accuracy 98.2%,
   person precision/recall/F1 all 98.9%**
-- Caveat, and a segue into the next slide: this run's own 98.9% isn't the
-  final word either — a later backbone experiment (EfficientNet-B0, a
-  separate training cycle with video-balanced sampling) scored a strong
-  98.35% val F1, best of *that* cohort, yet still came out the **worst of
-  the three** on the actual downstream test set (Slide 11). Val F1 numbers
-  from different training cycles aren't even directly comparable to each
-  other, let alone predictive of test performance — what decided the
-  winning configuration was always the full cascade's test-set result, next
 
 **Görsel:** dog-vs-person crop pair
 (`docs/presentation/media/slide07_18_dog_vs_person.png` — from the DJI_0790
@@ -744,14 +736,7 @@ labels sled dogs as people", 2026-09-13), `configs/10_train_verifier.yaml`,
 > small and blurry and I didn't want to manufacture noise on top of that.
 > It trained on CPU — small model, small dataset, no need for a GPU there.
 > The best checkpoint, picked by validation F1 on the person class, hit
-> ninety-eight point nine percent precision and recall. I'll flag one
-> honest caveat: a later backbone experiment, EfficientNet-B0, scored a
-> strong validation number of its own in a separate training cycle and
-> still did worse once it went through the full cascade on the real test
-> set — validation numbers from different cycles aren't even directly
-> comparable, let alone predictive, which is exactly why the number that
-> actually matters in this talk is the downstream result on the next
-> slide, not this one.
+> ninety-eight point nine percent precision and recall.
 
 ---
 
