@@ -705,11 +705,14 @@ were built — including the most interesting failure this project surfaced.
   just predicts "person" most of the time
 - Best checkpoint (epoch 7 of 15): **val loss 0.0623, val accuracy 98.2%,
   person precision/recall/F1 all 98.9%**
-- Caveat, and a segue into the next slide: later variants scored *higher*
-  on this same val metric (EfficientNet-B0 hit 98.35% val F1) but performed
-  *worse* on the actual downstream test set — a held-out val number on its
-  own isn't the final word; what decided the winning configuration is the
-  full cascade's test-set result, next
+- Caveat, and a segue into the next slide: this run's own 98.9% isn't the
+  final word either — a later backbone experiment (EfficientNet-B0, a
+  separate training cycle with video-balanced sampling) scored a strong
+  98.35% val F1, best of *that* cohort, yet still came out the **worst of
+  the three** on the actual downstream test set (Slide 11). Val F1 numbers
+  from different training cycles aren't even directly comparable to each
+  other, let alone predictive of test performance — what decided the
+  winning configuration was always the full cascade's test-set result, next
 
 **Görsel:** dog-vs-person crop pair
 (`docs/presentation/media/slide07_18_dog_vs_person.png` — from the DJI_0790
@@ -742,10 +745,13 @@ labels sled dogs as people", 2026-09-13), `configs/10_train_verifier.yaml`,
 > It trained on CPU — small model, small dataset, no need for a GPU there.
 > The best checkpoint, picked by validation F1 on the person class, hit
 > ninety-eight point nine percent precision and recall. I'll flag one
-> honest caveat: a later variant scored even higher on this same validation
-> number and still did worse once it went through the full cascade on the
-> real test set — which is exactly why the number that actually matters in
-> this talk is the downstream result on the next slide, not this one.
+> honest caveat: a later backbone experiment, EfficientNet-B0, scored a
+> strong validation number of its own in a separate training cycle and
+> still did worse once it went through the full cascade on the real test
+> set — validation numbers from different cycles aren't even directly
+> comparable, let alone predictive, which is exactly why the number that
+> actually matters in this talk is the downstream result on the next
+> slide, not this one.
 
 ---
 
@@ -874,10 +880,10 @@ the single cascade-vs-Method-1 claim.
 *Blok C: The EfficientNet-B0 experiment*
 - Same recipe (video-balanced sampling, 15 epochs) with `torchvision`'s
   EfficientNet-B0 instead of ResNet18 as the verifier backbone
-- Scored the **highest validation F1 of any verifier tried (0.984)** — but
-  the **lowest test-set result** of the three (mAP@.5 0.777) — the clearest
-  single piece of evidence in this project that validation score does not
-  predict test-set generalisation here
+- Scored the **highest validation F1 of the three verifiers in this
+  cycle (0.984)** — but the **lowest test-set result** of the three
+  (mAP@.5 0.777) — the clearest single piece of evidence in this project
+  that validation score does not predict test-set generalisation here
 - Also ran **~5× slower per crop on CPU**, despite 64% fewer parameters
   (4.0M vs. ResNet18's 11.2M) — depthwise-separable convolutions vectorise
   poorly on general-purpose CPU kernels; the efficiency gain is real, but
@@ -911,11 +917,11 @@ threshold instead of each row's own optimum)
 > forty-four previously invisible people, caught.
 > One more thing worth sharing, because it's the clearest example in the
 > whole project of a lesson worth remembering: I also trained the verifier
-> with EfficientNet-B0 instead of ResNet18. It scored the best validation
-> score of any verifier I tried — point-nine-eight-four F1. On the actual
-> held-out test set, it was the worst of the three. Fewer parameters,
-> better validation number, worse real-world result, and slower on CPU
-> despite being smaller. I kept the ResNet configuration.
+> with EfficientNet-B0 instead of ResNet18. Of the three verifiers in this
+> comparison, it scored the best validation score — point-nine-eight-four
+> F1. On the actual held-out test set, it was the worst of the three.
+> Fewer parameters, better validation number, worse real-world result, and
+> slower on CPU despite being smaller. I kept the ResNet configuration.
 
 ---
 
