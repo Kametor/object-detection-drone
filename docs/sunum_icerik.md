@@ -877,51 +877,26 @@ the single cascade-vs-Method-1 claim.
 - Not the aggregate F1 winner by a huge margin — but the *only* method in
   this comparison that recovers any of that specific capability
 
-*Blok C: The EfficientNet-B0 experiment*
-- Same recipe (video-balanced sampling, 15 epochs) with `torchvision`'s
-  EfficientNet-B0 instead of ResNet18 as the verifier backbone
-- Scored the **highest validation F1 of the three verifiers in this
-  cycle (0.984)** — but the **lowest test-set result** of the three
-  (mAP@.5 0.777) — the clearest single piece of evidence in this project
-  that validation score does not predict test-set generalisation here
-- Also ran **~5× slower per crop on CPU**, despite 64% fewer parameters
-  (4.0M vs. ResNet18's 11.2M) — depthwise-separable convolutions vectorise
-  poorly on general-purpose CPU kernels; the efficiency gain is real, but
-  GPU-side
-- Final decision: no change — score fusion + small-input-stem ResNet18
-  remains the best configuration found this cycle
+*Blok C: Also tried — EfficientNet-B0 backbone*
+- Tried as an alternative verifier architecture; **not adopted** — its
+  actual test-set result was weaker (mAP@.5 0.777 vs. 0.786), despite
+  scoring better on validation
 
 **Görsel:** the comparison table above, rendered as a small bar chart
-(`docs/presentation/media/slide09_cascade_bar_chart.png`) + a 2-panel crop
-montage (`docs/presentation/media/slide09_efficientnet_montage.png`,
-2026-09-15, üretildi yerel CPU inference ile —
-`results/cascade_verifier/efficientnet_b0_verifier.pt` checkpoint'i
-kullanılarak): solda VerticalFlyOver val-set'ten conf=1.00 doğru `person`
-crop'u, sağda DJI_0501 test frame'inde conf=0.83 ile heykeli `person`
-işaretleyen yanlış pozitif (`results/cascade_score_fusion_efficientnet_b0/predictions.json`
-+ `data/gold_test/annotations.json`, greedy IoU eşleştirme conf≥0.25 —
-toplam FP=203 sayısıyla tutarlılığı doğrulandı).
+(`docs/presentation/media/slide09_cascade_bar_chart.png`).
 
-**Kaynak:** `results/eval/comparison.csv` (P/R/F1/FP columns — table
-values are a direct read, not hand-typed), `results/eval/yolo26n_score_fusion_small_stem_T4/metrics.json`,
-`results/eval/yolo26n_score_fusion_efficientnet_b0_T4/metrics.json`,
-`docs/decision_log.md` ("EfficientNet-B0 verifier: best val score, not best
-test score", "Simpler, cleaner verifier comparison (user's correction)",
-2026-09-13 — explains why this table deliberately uses one shared
-threshold instead of each row's own optimum)
+**Kaynak:** `results/eval/comparison.csv`, `docs/decision_log.md`
+("EfficientNet-B0 verifier: best val score, not best test score",
+2026-09-13)
 
 **Konuşma akışı**
 > Final result: mAP up from point-six-nine-three to point-seven-eight-six,
 > and — this is the part I actually care about — on the two hardest videos,
 > small-object detection goes from exactly zero to something real. Ten of
 > forty-four previously invisible people, caught.
-> One more thing worth sharing, because it's the clearest example in the
-> whole project of a lesson worth remembering: I also trained the verifier
-> with EfficientNet-B0 instead of ResNet18. Of the three verifiers in this
-> comparison, it scored the best validation score — point-nine-eight-four
-> F1. On the actual held-out test set, it was the worst of the three.
-> Fewer parameters, better validation number, worse real-world result, and
-> slower on CPU despite being smaller. I kept the ResNet configuration.
+> I also tried EfficientNet-B0 as a different verifier architecture — didn't
+> keep it, the actual test result was weaker despite a better validation
+> score. Stuck with ResNet.
 
 ---
 
